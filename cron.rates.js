@@ -1,9 +1,9 @@
-var rates = require(__dirname + "/apis.js").rates;
+
 
 
 
 var ratesPoloniexGet = function(callback) {
-   var rates = rates.poloniex;
+   var rates = require(__dirname + "/apis.js").rates.poloniex;
    var request = require("request");
    request(rates.ticker.url, function(error, response, body){
       if (error) {
