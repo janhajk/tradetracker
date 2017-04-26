@@ -13,9 +13,10 @@ var ratesPoloniexGet = function(callback) {
       else {
          var data = JSON.parse(body);
          for (let i in data) {
-            let
          }
          callback(null, data);
       }
    });
 };
+
+exports.ratesPoloniexGet = ratesPoloniexGet;

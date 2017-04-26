@@ -32,3 +32,11 @@ app.get('/', function(req, res){
    });
 });
 
+
+app.get('/rates/poloniex', function(req, res){
+   var rates = require(__dirname + '/cron.rates.js');
+   rates.ratesPoloniexGet(function(error, rates){
+      if (error) res.send(error);
+      else res.send(rates);
+   });
+});
