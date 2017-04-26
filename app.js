@@ -1,5 +1,4 @@
 var express = require('express');
-var update = require(__dirname + '/update.js');
 var compression    = require('compression');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
@@ -32,28 +31,4 @@ app.get('/', function(req, res){
       res.send(data);
    });
 });
-
-
-app.get('/data', function(req, res){
-   var data = require(__dirname + '/data.js');
-   data.get(connection, function(err, output){
-      if (err) {
-         res.send(err.message);
-      }
-      else {
-         res.send(output);
-      }
-   });
-});
-
-app.get('/cron', function(req, res){
-   update.update(connection, function(message){
-      res.send(message);
-   });
-});
-
-app.get('/new', function(req, res) {
-   res.send('New Race created');
-});
-
 
