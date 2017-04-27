@@ -60,7 +60,7 @@ passport.use(new GoogleStrategy({
 }, function(accessToken, refreshToken, profile, done) {
    utils.log(profile);
    process.nextTick(function() {
-      if (profile.id === config.googleUser) {
+      if (profile.id === config.google.googleUser) {
          utils.log('Login in user "' + profile.displayName + '"');
          return done(null, profile);
       }
