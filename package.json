@@ -16,6 +16,7 @@
       "request": "2.x.x",
       "passport": "0.3.x",
       "passport-google-oauth": "0.2.x",
-      "cookie-parser": "1.4.x"
+      "cookie-parser": "1.4.x",
+      "express-session": "1.15.x"
    }
 }
