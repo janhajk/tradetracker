@@ -5,6 +5,7 @@ var utils  = require(__dirname + '/utils.js');
 
 // System
 var path = require("path");
+var fs   = require('fs');
 
 // Auth
 var passport       = require('passport');
