@@ -58,7 +58,7 @@ var updateRatesPoloniex = function(connection, callback) {
          for (let i in cRates) {
             let val = [];
             for (let s in cRates[i]) {
-               val.push(cRates[i][s]);
+               val.push("'"+cRates[i][s]+"'");
             }
             insert.push('('+val.join(',')+')');
          }
