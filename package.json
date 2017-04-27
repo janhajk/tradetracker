@@ -1,18 +1,20 @@
 {
-    "name": "tradetracker",
-    "description": "A Tracker for your trading",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-        "start": "node app.js"
-    },
-    "dependencies": {
-        "express": "4.x",
-        "mysql": "2.12.x",
-        "async": "2.1.4",
-        "compression": "1.x.x",
-        "body-parser": "1.x.x",
-        "method-override": "2.3.x",
-        "request": "2.x.x"
-    }
+   "name": "tradetracker",
+   "description": "A Tracker for your trading",
+   "version": "0.0.1",
+   "private": true,
+   "scripts": {
+      "start": "node app.js"
+   },
+   "dependencies": {
+      "express": "4.x",
+      "mysql": "2.12.x",
+      "async": "2.1.4",
+      "compression": "1.x.x",
+      "body-parser": "1.x.x",
+      "method-override": "2.3.x",
+      "request": "2.x.x",
+      "passport": "0.3.x",
+      "passport-google-oauth": "0.2.x",
+   }
 }
