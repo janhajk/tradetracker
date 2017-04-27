@@ -133,5 +133,7 @@ app.get('/cron/:secret', function(req, res) {
          else res.send('Rates updated!');
       });
    }
-   else res.send('not autharized!');
+   else {
+      res.send('not autharized!');
+   }
 });
