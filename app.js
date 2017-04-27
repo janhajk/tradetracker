@@ -40,3 +40,12 @@ app.get('/rates/poloniex', function(req, res){
       else res.send(rates);
    });
 });
+
+
+app.get('/cron' function(req, res) {
+   var databse = require(__dirname + '/database.js');
+   database.updateRatesPoloniex(connection, function(e){
+      if (e) res.send(e)
+      else res.send('Rates updated!');
+   });
+});
