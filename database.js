@@ -27,7 +27,7 @@ exports.getPositions = getPositions;
 
 var updateRatesPoloniex = function(connection, callback) {
    //if (config.dev) console.log(stats);
-   var rates = require(__dirname + '/cron.rates.js');
+   var rates = require(__dirname + '/rates.js');
    rates.ratesPoloniexGet(function(e, rates){
       if (e) callback(e);
       else {

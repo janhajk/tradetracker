@@ -125,10 +125,12 @@ app.get('/rates/poloniex', ensureAuthenticated, function(req, res){
 });
 
 
-app.get('/cron', function(req, res) {
-   var database = require(__dirname + '/database.js');
-   database.updateRatesPoloniex(connection, function(e){
-      if (e) res.send(e)
-      else res.send('Rates updated!');
-   });
+app.get('/cron/:secret', function(req, res) {
+   if (req.param('filename')===config.cronSecret) {
+      var database = require(__dirname + '/database.js');
+      database.updateRatesPoloniex(connection, function(e){
+         if (e) res.send(e)
+         else res.send('Rates updated!');
+      });
+   }
 });
