@@ -24,7 +24,8 @@ var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
 var cookieParser   = require('cookie-parser');
 var session        = require('express-session');
-var app = express();
+
+var app            = express();
 app.use(compression());
 app.use(methodOverride());  // simulate DELETE and PUT
 app.use(bodyParser.json()); // for parsing application/json
@@ -51,8 +52,8 @@ passport.deserializeUser(function(obj, done) {
    done(null, obj);
 });
 passport.use(new GoogleStrategy({
-   clientID: config.GOOGLE_CLIENT_ID,
-   clientSecret: config.GOOGLE_CLIENT_SECRET,
+   clientID: config.google.GOOGLE_CLIENT_ID,
+   clientSecret: config.google.GOOGLE_CLIENT_SECRET,
    callbackURL: config.baseurl + "/auth/google/callback"
 }, function(accessToken, refreshToken, profile, done) {
    utils.log(profile);
@@ -68,7 +69,9 @@ passport.use(new GoogleStrategy({
    });
 }));
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {});
+app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {
+
+});
 app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function(req, res) {
    res.redirect('/start');
 });
