@@ -52,7 +52,7 @@ var getAssetId = function(pair, mysqlconnection, callback){
             if (e) callback(e);
             if (config.dev) console.log(e);
             if (config.dev) console.log(results);
-            callback(null, [{aid:results.insertId)}];
+            callback(null, [{aid:results.insertId}];
          });
       }
       else {
