@@ -80,7 +80,7 @@ var updateRatesPoloniex = function(mysqlconnection, callback) {
             let pair = {
                'internId'  : r.id,
                'aid'       : 0,
-               'pair'      : mysqlconnection.escape(i),
+               'pair'      : i,
                'market'    : 1,
                'timestamp' : Math.floor(new Date() / 1000),
                'last'      : r.last,
