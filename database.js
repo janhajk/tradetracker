@@ -50,7 +50,9 @@ var getAssetId = function(pair, mysqlconnection, callback){
          pair.name = '';
          mysqlconnection.query('INSERT INTO assets SET ?', pair, function(e, results, fields){
             if (e) callback(e);
-            callback(null, results.insertId);
+            if (config.dev) console.log(e);
+            if (config.dev) console.log(results);
+            callback(null, [{aid:results.insertId)}];
          });
       }
       else {
