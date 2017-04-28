@@ -1,4 +1,5 @@
 var config = require(__dirname + '/config.js');
+var utils  = require(__dirname + '/utils.js');
 
 
 /*
@@ -24,12 +25,41 @@ var getPositions = function(pid, connection, callback) {
 };
 exports.getPositions = getPositions;
 
+var splitPair = function(pair) {
+   var p = pair.split('_');
+   return {
+      base: p[0].toUpperCase(),
+      counter: p[1].toUpperCase()
+   };
+};
 
-var updateRatesPoloniex = function(connection, callback) {
-   //if (config.dev) console.log(stats);
+var getAssetId = function(pair, mysqlconnection, callback){
+   var query = '';
+   query += 'SELECT * FROM assets WHERE ' +
+            'base LIKE \'' + pair.base + '\' AND ' +
+            'counter LIKE \'' + pair.counter + '\'' +
+            'LIMIT 0,1';
+   mysqlconnection.query(query, function(err, rowsStats) {
+      if(err) {
+         utils.log(err)
+         callback(err);
+      }
+      else {
+         utils.log(rowsStats);
+         callback(null, rowsStats);
+      }
+
+   });
+};
+
+var updateRatesPoloniex = function(mysqlconnection, callback) {
+   var async = require('async');
    var rates = require(__dirname + '/rates.js');
    rates.ratesPoloniexGet(function(e, rates){
-      if (e) callback(e);
+      if (e) {
+         utils.log(e);
+         callback(e);
+      }
       else {
          var cols = [];
          var insert = [];
@@ -37,37 +67,47 @@ var updateRatesPoloniex = function(connection, callback) {
          for (let i in rates) {
             let r = rates[i];
             let pair = {
-               "internId": r.id,
-               "pair": i,
-               "market": 1,
-               "timestamp": Math.floor(new Date() / 1000),
-               "last": r.last,
-               "lowestAsk": r.lowestAsk,
-               "highestBid": r.highestBid,
-               "baseVolume": r.baseVolume,
-               "quoteVolume": r.quoteVolume,
-               "high24h": r.high24h,
-               "low24h": r.low24h,
-               "percentChange": r.percentChange
+               'internId'  : r.id,
+               'aid'       : 0,
+               'pair'      : i,
+               'market'    : 1,
+               'timestamp' : Math.floor(new Date() / 1000),
+               'last'      : r.last,
+               'lowestAsk' : r.lowestAsk,
+               'highestBid': r.highestBid,
+               'baseVolume': r.baseVolume,
+               'quoteVolume':r.quoteVolume,
+               'high24h'   : r.high24hr,
+               'low24h'    : r.low24hr,
+               'percentChange':r.percentChange
             };
             cRates.push(pair);
          }
          for (let colName in cRates[0]) {
             cols.push(colName);
          }
-         for (let i in cRates) {
-            let val = [];
-            for (let s in cRates[i]) {
-               val.push("'"+cRates[i][s]+"'");
+         async.eachOfLimit(cRates, 1, function(item, key, cb){
+            var pair = splitPair(item.pair);
+            getAssetId(pair, mysqlconnection, function(e, row){
+               cRates[key].aid = row[0].aid;
+               cb();
+            });
+         }, function(err){
+            for (let i in cRates) {
+               let val = [];
+               for (let s in cRates[i]) {
+                  val.push("'" + cRates[i][s] + "'");
+               }
+               insert.push('('+val.join(',')+')');
             }
-            insert.push('('+val.join(',')+')');
-         }
-         var query = 'INSERT INTO rates ('+cols.join(",")+') VALUES ' + insert.join(',');
-         if (config.dev) console.log(query);
-         connection.query(query, function(e) {
-            if(e) callback(e)
-            else callback(null);
+            var query = 'INSERT INTO rates ('+cols.join(',')+') VALUES ' + insert.join(',');
+            if (config.dev) console.log(query);
+            mysqlconnection.query(query, function(e) {
+               if(e) callback(e)
+               else callback(null);
+            });
          });
+
       }
    });
 
