@@ -28,6 +28,7 @@ exports.getPositions = getPositions;
 var splitPair = function(pair) {
    var p = pair.split('_');
    return {
+      name: p[0].toUpperCase() + '_' + p[1].toUpperCase(),
       base: p[0].toUpperCase(),
       counter: p[1].toUpperCase()
    };
@@ -46,8 +47,7 @@ var getAssetId = function(pair, mysqlconnection, callback){
          callback(err);
       }
       else if (!rowsStats.length) {
-         // Insert new Row
-         pair.name = '';
+         // Create new asset if non existent
          mysqlconnection.query('INSERT INTO assets SET ?', pair, function(e, results, fields){
             if (e) callback(e);
             if (config.dev) console.log(e);
@@ -80,7 +80,7 @@ var updateRatesPoloniex = function(mysqlconnection, callback) {
             let pair = {
                'internId'  : r.id,
                'aid'       : 0,
-               'pair'      : i,
+               'pair'      : mysqlconnection.escape(i),
                'market'    : 1,
                'timestamp' : Math.floor(new Date() / 1000),
                'last'      : r.last,
@@ -100,11 +100,15 @@ var updateRatesPoloniex = function(mysqlconnection, callback) {
          async.eachOfLimit(cRates, 1, function(item, key, cb){
             var pair = splitPair(item.pair);
             getAssetId(pair, mysqlconnection, function(e, row){
-               if (e!==0) {
+               if (e) {
+                  // TODO: Error handling
+               }
+               else {
                   cRates[key].aid = row[0].aid;
                }
                cb();
             });
+         // after all asset ids are added
          }, function(err){
             for (let i in cRates) {
                let val = [];
