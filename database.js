@@ -45,6 +45,11 @@ var getAssetId = function(pair, mysqlconnection, callback){
          utils.log(err)
          callback(err);
       }
+      else if (!rowsStats.length) {
+         // Insert new Row
+         // 
+         callback(0);
+      }
       else {
          utils.log(rowsStats);
          callback(null, rowsStats);
@@ -90,7 +95,9 @@ var updateRatesPoloniex = function(mysqlconnection, callback) {
          async.eachOfLimit(cRates, 1, function(item, key, cb){
             var pair = splitPair(item.pair);
             getAssetId(pair, mysqlconnection, function(e, row){
-               cRates[key].aid = row[0].aid;
+               if (e!==0) {
+                  cRates[key].aid = row[0].aid;
+               }
                cb();
             });
          }, function(err){
