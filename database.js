@@ -47,8 +47,11 @@ var getAssetId = function(pair, mysqlconnection, callback){
       }
       else if (!rowsStats.length) {
          // Insert new Row
-         // 
-         callback(0);
+         pair.name = '';
+         mysqlconnection.query('INSERT INTO assets SET ?', pair, function(e, results, fields){
+            if (e) callback(e);
+            callback(null, results.insertId);
+         });
       }
       else {
          utils.log(rowsStats);
