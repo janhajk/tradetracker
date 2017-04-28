@@ -39,6 +39,7 @@ var getAssetId = function(pair, mysqlconnection, callback){
             'base LIKE \'' + pair.base + '\' AND ' +
             'counter LIKE \'' + pair.counter + '\'' +
             'LIMIT 0,1';
+   if (config.dev) utils.log(query);
    mysqlconnection.query(query, function(err, rowsStats) {
       if(err) {
          utils.log(err)
