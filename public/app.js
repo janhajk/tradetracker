@@ -47,7 +47,7 @@
       var thead = document.createElement('thead');
       var tr = document.createElement('tr');
       var th;
-      for (let c in columns) {
+      for (let c in new columns()) {
          th = document.createElement('th');
          th.innerHTML = c;
          tr.appendChild(th);
@@ -65,7 +65,7 @@
       let lastRow = new columns();
       tr = document.createElement('tr');
       for (let i in lastRow) {lastRow[i] = ftd('');}
-      lastRow['Tot BTC'] = ftd(tot.btc, 'right');
+      lastRow['Tot BTC'] = ftd(Math.round(tot.btc*100)/100, 'right');
       lastRow['Tot USD'] = ftd(tot.usd, 'right');
       for (let i in lastRow) {
          tr.appendChild(lastRow[i]);
