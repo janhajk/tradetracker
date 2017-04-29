@@ -26,7 +26,18 @@
    });
 
    // Spalten ind er Reihenfolge der Darstellung
-   var columns = ['Market', 'Asset', 'Pair', 'Amount', 'open', 'last', 'Tot BTC', 'Tot USD'];
+   var columns = function() {
+      return {
+         Market: {},
+         Asset: {},
+         Pair: {},
+         Amount: {},
+         open: {},
+         last: {},
+         'Tot BTC': {},
+         'Tot USD': {}
+      };
+   };
 
    var btable = function(positions) {
       var t = document.createElement('table');
@@ -36,42 +47,37 @@
       var thead = document.createElement('thead');
       var tr = document.createElement('tr');
       var th;
-      for (var c in columns) {
+      for (let c in columns) {
          th = document.createElement('th');
-         th.innerHTML = columns[c];
+         th.innerHTML = c;
          tr.appendChild(th);
       }
       thead.appendChild(tr);
       t.appendChild(thead);
       var tbody = document.createElement('tbody');
+      let tot = {btc = 0, usd = 0};
       for (let i in positions) {
-         tbody.appendChild(positionsRow(positions[i]));
+         let row = positionsRow(positions[i]);
+         tot.btc += row.btc;
+         tot.usd += row.usd;
+         tbody.appendChild(row.tr);
       }
+      let lastRow = new columns();
+      let tr = document.createElement('tr');
+      for (let i in lastRow) {lastRow[i] = ftd('');}
+      lastRow['Tot BTC'] = ftd(tot.btc);
+      lastRow['Tot USD'] = ftd(tot.usd);
+      for (let i in lastRow) {
+         tr.appendChild(lastRow[i]);
+      }
+      tbody.appendChild(tr);
       t.appendChild(tbody);
       return t;
    };
 
    var positionsRow = function(position) {
-      var cols = {};
-      for (var i in columns) {
-         cols[columns[i]] = {};
-      }
+      var cols = new columns();
       var tr = document.createElement('tr');
-      var ftd = function(html, align) {
-         if(typeof align==='undefined' ){
-            align = 'left';
-         }
-         var td = document.createElement('td');
-         if(typeof html === 'object') {
-            td.appendChild(html);
-         } else if(typeof html === 'undefined') {
-            td.innerHTML = '';
-         } else {
-            td.innerHTML = html;
-         }
-         td.style.textAlign = align;
-         return td;
-      };
       cols.Market = ftd(position.name);
       cols.Asset = ftd(position.counter);
       cols.Pair = ftd(position.base + '_' + position.counter);
@@ -79,11 +85,29 @@
       cols.open = ftd(position.open, 'right');
       cols.last = ftd(position.rates[0].last, 'right');
       let btc = position.rates[0].last * position.amount;
-      cols['Tot BTC'] = ftd(Math.round(btc*1000)/1000, 'right');
-      cols['Tot USD'] = ftd(Math.round(btc * 1330), 'right');
-      for (var i in cols) {
+      let tot_btc = Math.round(btc*1000)/1000;
+      let tot_usd = Math.round(btc * 1330);
+      cols['Tot BTC'] = ftd(tot_btc, 'right');
+      cols['Tot USD'] = ftd(tot_usd, 'right');
+      for (let i in cols) {
          tr.appendChild(cols[i]);
       }
-      return tr;
+      return {btc: tot_btc, usd: tot_usd, tr: tr};
+   };
+
+   var ftd = function(html, align) {
+      if(typeof align==='undefined' ){
+         align = 'left';
+      }
+      var td = document.createElement('td');
+      if(typeof html === 'object') {
+         td.appendChild(html);
+      } else if(typeof html === 'undefined') {
+         td.innerHTML = '';
+      } else {
+         td.innerHTML = html;
+      }
+      td.style.textAlign = align;
+      return td;
    };
 })();
