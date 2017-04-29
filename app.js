@@ -118,9 +118,9 @@ app.get('/', ensureAuthenticated, function(req, res){
 
 app.get('/positions', ensureAuthenticated, function(req, res){
    var positions = require(__dirname + '/lib/positions.js');
-   positions.get('all', connection, function(error, positions){
-      if (error) {
-         res.send(error);
+   positions.get('all', connection, function(e, positions){
+      if (e) {
+         res.send(e);
       }
       else {
          res.send(positions);
