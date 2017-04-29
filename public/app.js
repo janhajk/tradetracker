@@ -80,8 +80,8 @@
       cols.open = ftd(position.open, 'right');
       cols.last = ftd(position.rates[0].last, 'right');
       let btc = position.rates[0].last * position.amount;
-      cols['Tot BTC'] = ftd(btc, 'right');
-      cols['Tot USD'] = ftd(btc * 1330);
+      cols['Tot BTC'] = ftd(Math.round(btc*1000)/1000, 'right');
+      cols['Tot USD'] = ftd(Math.round(btc * 1330));
       for (var i in cols) {
          tr.appendChild(cols[i]);
       }
