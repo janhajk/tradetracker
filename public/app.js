@@ -63,7 +63,7 @@
          tbody.appendChild(row.tr);
       }
       let lastRow = new columns();
-      let tr = document.createElement('tr');
+      tr = document.createElement('tr');
       for (let i in lastRow) {lastRow[i] = ftd('');}
       lastRow['Tot BTC'] = ftd(tot.btc);
       lastRow['Tot USD'] = ftd(tot.usd);
