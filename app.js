@@ -116,6 +116,18 @@ app.get('/', ensureAuthenticated, function(req, res){
 });
 
 
+app.get('/positions', ensureAuthenticated, function(req, res){
+   var positions = require(__dirname + '/lib/positions.js');
+   positions.get('all', connection, function(error, positions){
+      if (error) {
+         res.send(error);
+      }
+      else {
+         res.send(positions);
+      }
+   });
+});
+
 app.get('/rates/poloniex', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/rates.js');
    rates.ratesPoloniexGet(function(error, rates){
