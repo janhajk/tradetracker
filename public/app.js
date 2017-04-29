@@ -65,8 +65,8 @@
       let lastRow = new columns();
       tr = document.createElement('tr');
       for (let i in lastRow) {lastRow[i] = ftd('');}
-      lastRow['Tot BTC'] = ftd(tot.btc);
-      lastRow['Tot USD'] = ftd(tot.usd);
+      lastRow['Tot BTC'] = ftd(tot.btc, 'right');
+      lastRow['Tot USD'] = ftd(tot.usd, 'right');
       for (let i in lastRow) {
          tr.appendChild(lastRow[i]);
       }
@@ -84,7 +84,7 @@
       cols.Amount = ftd(position.amount, 'right');
       cols.open = ftd(position.open, 'right');
       cols.last = ftd(position.rates[0].last, 'right');
-      let btc = position.rates[0].last * position.amount;
+      let btc = position.amount * (position.counter==='BTC'?1:position.rates[0].last);
       let tot_btc = Math.round(btc*1000)/1000;
       let tot_usd = Math.round(btc * 1330);
       cols['Tot BTC'] = ftd(tot_btc, 'right');
