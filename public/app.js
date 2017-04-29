@@ -4,7 +4,6 @@
    document.addEventListener('DOMContentLoaded', function() {
       //Filter einblenden
       var body = document.getElementsByTagName("BODY")[0];
-      body.style.maxWidth = '600px';
       body.style.padding = '10px';
 
       // Load Positions
@@ -33,7 +32,7 @@
       var t = document.createElement('table');
       t.className = 'table-striped';
       t.width = '100%';
-      t.maxWidth = '400px';
+      t.maxWidth = '1000px';
       var thead = document.createElement('thead');
       var tr = document.createElement('tr');
       var th;
@@ -81,7 +80,7 @@
       cols.last = ftd(position.rates[0].last, 'right');
       let btc = position.rates[0].last * position.amount;
       cols['Tot BTC'] = ftd(Math.round(btc*1000)/1000, 'right');
-      cols['Tot USD'] = ftd(Math.round(btc * 1330));
+      cols['Tot USD'] = ftd(Math.round(btc * 1330), 'right');
       for (var i in cols) {
          tr.appendChild(cols[i]);
       }
