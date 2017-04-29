@@ -55,7 +55,7 @@
       thead.appendChild(tr);
       t.appendChild(thead);
       var tbody = document.createElement('tbody');
-      let tot = {btc = 0, usd = 0};
+      let tot = {btc:0, usd:0};
       for (let i in positions) {
          let row = positionsRow(positions[i]);
          tot.btc += row.btc;
