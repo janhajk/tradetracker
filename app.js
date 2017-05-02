@@ -132,8 +132,13 @@ app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
       var market = require(__dirname + '/lib/markets/poloniex.js');
       market.updateRates(connection, function(e){
-         if (e) res.send(e)
-         else res.send('Poloniex rates successfully updated!');
+         if (e) res.send(e);
+         else {
+            market = require(__dirname + '/lib/markets/bitstamp.js');
+            market.updateRates(connection, function(e){
+               res.send('All rates successfully updated!');
+            });
+         }
       });
    }
    else {
