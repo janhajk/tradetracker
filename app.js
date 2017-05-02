@@ -72,44 +72,23 @@ passport.use(new GoogleStrategy({
    });
 }));
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {
-
-});
-app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function(req, res) {
-   res.redirect('/start');
+app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {});
+app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
+   res.redirect('/');
 });
 app.get('/logout', function(req, res) {
    req.logout();
-   res.redirect('/login');
+   res.redirect('/');
 });
 
 function ensureAuthenticated(req, res, next) {
    if (req.isAuthenticated()) { return next(); }
-   res.redirect('/login');
+   res.redirect('/');
 }
 
 // Router
 
 app.get('/', function(req, res){
-   fs.readFile(__dirname + '/public/index.html', 'utf-8', function (err, data){
-      res.send(data);
-   });
-});
-app.get('/login', function(req, res){
-   fs.readFile(__dirname + '/public/index.html', 'utf-8', function (err, data){
-      res.send(data);
-   });
-});
-app.get('/start', ensureAuthenticated, function(req, res) {
-    fs.readFile(__dirname + '/public/start.html', 'utf-8', function (err, data) {
-        res.send(data);
-    });
-});
-
-
-
-// REST
-app.get('/', ensureAuthenticated, function(req, res){
    fs.readFile(__dirname + '/public/index.html', 'utf-8', function (err, data){
       res.send(data);
    });
