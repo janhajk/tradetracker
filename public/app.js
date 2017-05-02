@@ -25,7 +25,7 @@
       request.send();
    });
 
-   // Spalten ind er Reihenfolge der Darstellung
+   // Spalten in der Reihenfolge der Darstellung
    var columns = function() {
       return {
          Market: {},
@@ -41,9 +41,9 @@
 
    var btable = function(positions) {
       var t = document.createElement('table');
-      t.className = 'table-striped';
-      t.width = '100%';
-      t.maxWidth = '1000px';
+      t.className = 'table-bordered table-hover';
+      //t.width = '100%';
+      t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');
       var tr = document.createElement('tr');
       var th;
@@ -68,6 +68,7 @@
       for (let i in lastRow) {lastRow[i] = ftd('');}
       lastRow['Tot BTC'] = ftd(Math.round(tot.btc*100)/100, 'right');
       lastRow['Tot USD'] = ftd(tot.usd, 'right');
+      lastRow.Market = 'Total';
       for (let i in lastRow) {
          tr.appendChild(lastRow[i]);
       }
@@ -101,6 +102,7 @@
          align = 'left';
       }
       var td = document.createElement('td');
+      if (typeof html === 'number') html = html.toLocaleString('de-CH-1996');
       if(typeof html === 'object') {
          td.appendChild(html);
       } else if(typeof html === 'undefined') {
