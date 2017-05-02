@@ -107,6 +107,10 @@ app.get('/positions', ensureAuthenticated, function(req, res){
    });
 });
 
+
+
+
+
 app.get('/rates/poloniex', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/rates.js');
    rates.ratesPoloniexGet(function(error, rates){

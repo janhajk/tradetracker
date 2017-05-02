@@ -9,6 +9,7 @@
          if(request.status >= 200 && request.status < 400) {
             data = JSON.parse(request.responseText);
             var content = document.getElementById('content');
+            content.innerHTML = '';
             content.appendChild(btable(data.positions));
             console.log(data);
          } else {
@@ -39,7 +40,7 @@
    var btable = function(positions) {
       var t = document.createElement('table');
       t.className = 'table-bordered table-hover';
-      //t.width = '100%';
+      t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');
       var tr = document.createElement('tr');
