@@ -82,8 +82,8 @@
       cols.Asset = ftd(position.counter);
       cols.Pair = ftd(position.base + '_' + position.counter);
       cols.Amount = ftd(position.amount, 'right');
-      cols.open = ftd(position.open, 'right');
-      cols.last = ftd(position.rates[0].last, 'right');
+      cols.open = ftd(position.open, 'right', position.open<10?8:0);
+      cols.last = ftd(position.rates[0].last, 'right', position.rates[0].last<10?8:0);
       let btc = position.amount * (position.counter==='BTC'?1:position.rates[0].last);
       let tot_btc = Math.round(btc*1000)/1000;
       let tot_usd = Math.round(btc * data.BTC.bitstamp.last);
@@ -95,12 +95,15 @@
       return {btc: tot_btc, usd: tot_usd, tr: tr};
    };
 
-   var ftd = function(html, align) {
+   var ftd = function(html, align, digits) {
       if(typeof align==='undefined' ){
          align = 'left';
       }
+      if(typeof digits==='undefined'){
+         digits = 0;
+      }
       var td = document.createElement('td');
-      if (typeof html === 'number') html = html.toLocaleString('de-CH-1996');
+      if (typeof html === 'number') html = html.toLocaleString('de-CH-1996', {minimumIntegerDigits:digits});
       if(typeof html === 'object') {
          td.appendChild(html);
       } else if(typeof html === 'undefined') {
