@@ -1,6 +1,6 @@
 (function(){
 
-
+   var data = {};
    document.addEventListener('DOMContentLoaded', function() {
       //Filter einblenden
       var body = document.getElementsByTagName("BODY")[0];
@@ -11,8 +11,8 @@
       request.open('GET', '/positions', true);
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
-            var data = JSON.parse(request.responseText);
-            body.appendChild(btable(data));
+            data = JSON.parse(request.responseText);
+            body.appendChild(btable(data.positions));
             console.log(data);
          } else {
             // Error
@@ -87,7 +87,7 @@
       cols.last = ftd(position.rates[0].last, 'right');
       let btc = position.amount * (position.counter==='BTC'?1:position.rates[0].last);
       let tot_btc = Math.round(btc*1000)/1000;
-      let tot_usd = Math.round(btc * 1440);
+      let tot_usd = Math.round(btc * data.BTC.bitstamp);
       cols['Tot BTC'] = ftd(tot_btc, 'right');
       cols['Tot USD'] = ftd(tot_usd, 'right');
       for (let i in cols) {
