@@ -84,7 +84,7 @@
       cols.Amount = ftd(position.amount, 'right');
       cols.open = ftd(position.open, 'right', position.open<10?8:0);
       cols.last = ftd(position.rates[0].last, 'right', position.rates[0].last<10?8:0);
-      let btc = position.amount * (position.base.substr(0,3)==='USD'?1:position.rates[0].last);
+      let btc = position.amount * (position.counter.substr(0,3)==='USD'?1:position.rates[0].last);
       let tot_btc = Math.round(btc*1000)/1000;
       let tot_usd = Math.round(btc * data.BTC.bitstamp.last);
       cols['Tot BTC'] = ftd(tot_btc, 'right');
