@@ -2,17 +2,14 @@
 
    var data = {};
    document.addEventListener('DOMContentLoaded', function() {
-      //Filter einblenden
-      var body = document.getElementsByTagName("BODY")[0];
-      body.style.padding = '10px';
-
       // Load Positions
       var request = new XMLHttpRequest();
       request.open('GET', '/positions', true);
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
             data = JSON.parse(request.responseText);
-            body.appendChild(btable(data.positions));
+            var content = document.getElementById('content');
+            content.appendChild(btable(data.positions));
             console.log(data);
          } else {
             // Error
