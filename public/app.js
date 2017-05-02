@@ -68,7 +68,7 @@
       for (let i in lastRow) {lastRow[i] = ftd('');}
       lastRow['Tot BTC'] = ftd(Math.round(tot.btc*100)/100, 'right');
       lastRow['Tot USD'] = ftd(tot.usd, 'right');
-      lastRow.Market = 'Total';
+      lastRow.Market = ftd('Total');
       for (let i in lastRow) {
          tr.appendChild(lastRow[i]);
       }
