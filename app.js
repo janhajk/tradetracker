@@ -109,7 +109,7 @@ app.get('/position/all', ensureAuthenticated, function(req, res){
 
 app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
    
-};
+});
 
 
 
