@@ -4,7 +4,7 @@
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
       var request = new XMLHttpRequest();
-      request.open('GET', '/positions', true);
+      request.open('GET', '/position/all', true);
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
             data = JSON.parse(request.responseText);
@@ -17,7 +17,6 @@
          }
       };
       request.onerror = function() {
-         // There was a connection error of some sort
          console.log('There was an error in xmlHttpRequest!');
       };
       request.send();
@@ -39,7 +38,7 @@
 
    var btable = function(positions) {
       var t = document.createElement('table');
-      t.className = 'table-bordered table-hover';
+      t.className = 'table-bordered table-hover table-responsive';
       t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');

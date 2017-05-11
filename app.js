@@ -4,7 +4,7 @@ var utils  = require(__dirname + '/utils.js');
 
 
 // System
-var path = require("path");
+var path = require('path');
 var fs   = require('fs');
 
 // Auth
@@ -95,7 +95,7 @@ app.get('/', function(req, res){
 });
 
 
-app.get('/positions', ensureAuthenticated, function(req, res){
+app.get('/position/all', ensureAuthenticated, function(req, res){
    var positions = require(__dirname + '/lib/positions.js');
    positions.get('all', connection, function(e, positions){
       if (e) {
@@ -106,6 +106,10 @@ app.get('/positions', ensureAuthenticated, function(req, res){
       }
    });
 });
+
+app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
+   
+};
 
 
 
@@ -126,6 +130,8 @@ app.get('/rates/bitstamp/update', ensureAuthenticated, function(req, res){
       else res.send('Bitstamp rates successfully updated!');
    });
 });
+
+
 
 
 app.get('/cron/:secret', function(req, res) {
