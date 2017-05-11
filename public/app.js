@@ -42,6 +42,7 @@
       t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');
+      thead.class = 'thead-inverse';
       var tr = document.createElement('tr');
       var th;
       for (let c in new columns()) {
