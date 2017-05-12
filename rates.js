@@ -16,7 +16,7 @@ var get = function(callback) {
       }
    });
 };
-epoxrts.get = get;
+exports.get = get;
 
 
 var ratesPoloniexGet = function(callback) {
