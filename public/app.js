@@ -71,6 +71,8 @@
          tr.appendChild(lastRow[i]);
       }
       tbody.appendChild(tr);
+      // End Last Row
+
       t.appendChild(tbody);
       return t;
    };
@@ -112,6 +114,9 @@
          td.innerHTML = html;
       }
       td.style.textAlign = align;
+      td.ondblclick = function(){
+         console.log(this.innerHTML);
+      };
       return td;
    };
 })();

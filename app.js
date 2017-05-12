@@ -112,6 +112,13 @@ app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
 });
 
 
+app.get('/rates/all', ensureAuthenticated, function(req, res){
+   var rates = require(__dirname + '/rates.js');
+   rates.ratesPoloniexGet(function(error, rates){
+      if (error) res.send(error);
+      else res.send(rates);
+   });
+});
 
 
 
