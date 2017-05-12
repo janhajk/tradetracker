@@ -114,6 +114,8 @@
          td.innerHTML = html;
       }
       td.style.textAlign = align;
+      td.style.cursor = 'pointer';
+      td.onmousedown = function(){return false};
       td.ondblclick = function(){
          console.log(this.innerHTML);
       };
