@@ -108,11 +108,11 @@ app.get('/position/all', ensureAuthenticated, function(req, res){
 });
 
 app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
-   
+
 });
 
 
-app.get('/rates/all', ensureAuthenticated, function(req, res){
+app.get('/rates', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/lib/rates.js');
    rates.all(null, connection, function(error, rates){
       if (error) res.send(error);
@@ -120,23 +120,6 @@ app.get('/rates/all', ensureAuthenticated, function(req, res){
    });
 });
 
-
-
-app.get('/rates/poloniex', ensureAuthenticated, function(req, res){
-   var polo = require(__dirname + '/lib/markets/poloniex.js');
-   polo.ratesGet(null, connection, function(error, rates){
-      if (error) res.send(error);
-      else res.send(rates);
-   });
-});
-
-app.get('/rates/bitstamp/update', ensureAuthenticated, function(req, res){
-   var market = require(__dirname + '/lib/markets/bitstamp.js');
-   market.updateRates(connection, function(e){
-      if (e) res.send(e)
-      else res.send('Bitstamp rates successfully updated!');
-   });
-});
 
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
