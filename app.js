@@ -123,8 +123,8 @@ app.get('/rates/all', ensureAuthenticated, function(req, res){
 
 
 app.get('/rates/poloniex', ensureAuthenticated, function(req, res){
-   var rates = require(__dirname + '/rates.js');
-   rates.ratesPoloniexGet(function(error, rates){
+   var polo = require(__dirname + '/lib/markets/poloniex.js');
+   polo.ratesGet(null, connection, function(error, rates){
       if (error) res.send(error);
       else res.send(rates);
    });
