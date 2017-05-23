@@ -138,20 +138,12 @@ app.get('/rates/bitstamp/update', ensureAuthenticated, function(req, res){
    });
 });
 
-
-
-
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
-      var market = require(__dirname + '/lib/markets/poloniex.js');
-      market.updateRates(connection, function(e){
+      var rates = require(__dirname + '/lib/rates.js');
+      rates.all('write', connection, function(e){
          if (e) res.send(e);
-         else {
-            market = require(__dirname + '/lib/markets/bitstamp.js');
-            market.updateRates(connection, function(e){
-               res.send('All rates successfully updated!');
-            });
-         }
+         else res.send('All rates successfully updated!');
       });
    }
    else {
