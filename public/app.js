@@ -77,7 +77,7 @@
       // Cell-Renderer -> <td>
       var tCell = function() {
          var td = document.createElement('td');
-         td.innerHTML = this.TValue(this);
+         td.innerHTML = this.tValue(this);
          td.style.textAlign = this.align;
          td.style.cursor = 'pointer';
          td.onmousedown = function(){return false};
@@ -116,7 +116,7 @@
          this.visible = true;
          this.rw = false;
          this.html = '';
-         this.dom = null;
+         this.dom = this.render();
          this.update = function() {
             let val1 = this.value;
             this.calc();
