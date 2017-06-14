@@ -75,7 +75,7 @@
             }
          }
          for (let cell in self.row) {
-            self.row[cell].udpate();
+            self.row[cell].update();
          }
       }, rInterval*1000);
 
