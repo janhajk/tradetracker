@@ -75,7 +75,7 @@
             }
          }
          for (let cell in self.row) {
-            self.row[cell].update();
+            self.row[cell].update(self.row[cell]);
          }
       }, rInterval*1000);
 
@@ -122,12 +122,12 @@
          this.rw = false;
          this.html = '';
          this.dom = this.render();
-         this.update = function() {
-            let val1 = this.value;
-            this.calc();
+         this.update = function(parent) {
+            let val1 = parent.value;
+            parent.calc();
             // if value have changed, udpate html
-            if (this.value !== val1) {
-               this.dom.innerHTML = this.tValue(this);
+            if (parent.value !== val1) {
+               parent.dom.innerHTML = parent.tValue(parent);
             }
          };
       };
