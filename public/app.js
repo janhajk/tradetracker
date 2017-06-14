@@ -3,6 +3,7 @@
    var data = {};
    var rates = [];
    var positions = [];
+   var btc = 0;
    var cols = ['market', 'asset', 'pair', 'amount', 'open', 'last', 'totBtc', 'totUsd', 'btc'];
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
@@ -12,9 +13,10 @@
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
             data = JSON.parse(request.responseText);
-            for (let i in data) {
-               positions.push(new Position(data[i]));
+            for (let i in data.positions) {
+               positions.push(new Position(data.positions[i]));
             }
+            btc = data.BTC.bitstamp.last;
             var table = new Postable(positions);
             var content = document.getElementById('content');
             content.innerHTML = '';
