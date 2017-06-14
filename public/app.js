@@ -150,7 +150,7 @@
          }
          return tr;
       };
-      this.dom = tr();
+      this.dom = this.tr();
    };
 
    var btable = function() {
