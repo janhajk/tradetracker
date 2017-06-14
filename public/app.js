@@ -4,7 +4,7 @@
    var rates = [];
    var positions = [];
    var btc = 0;
-   var cols = ['market', 'asset', 'pair', 'amount', 'open', 'last', 'totBtc', 'totUsd', 'btc'];
+   var cols = ['market', 'asset', 'amount', 'open', 'last', 'totBtc', 'totUsd', 'btc'];
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
@@ -138,8 +138,8 @@
       for (let i in cols) {
          this.row[cols[i]] = new cell(cols[i], this);
       }
-      this.row.market.col = 'cid';
-      this.row.asset.col = 'aid';
+      this.row.market.col = 'name';
+      this.row.asset.col = 'counter';
       this.row.totBtc.formula = {type:'*', x:'btc', y:'amount'};
       this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btcusd'};
       this.row.last.formula = function(parent) {
