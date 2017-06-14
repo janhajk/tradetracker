@@ -57,6 +57,7 @@
          for (let i in positions) {
             table.tBodies[0].appendChild(positions[i].dom);
          }
+         return table;
       };
    };
 
