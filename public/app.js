@@ -188,6 +188,9 @@
          return tr;
       };
       this.dom = this.tr(this);
+      for (let cell in this.row) {
+         this.row[cell].update(this, this.row[cell]);
+      }
    };
 
    var btable = function() {
