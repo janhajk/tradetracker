@@ -65,12 +65,13 @@
    var Position = function(position) {
       this.values = position;
       this.aid = position.aid;
-      this.last = position.last;
+      this.last = position.rates[0].last;
       var self = this;
       this.update = setInterval(function(){
-         for(let i in rates) {
+         for(let i=0;i<rates.length;i++) {
             if(rates[i].aid === position.aid && rates[i].cid === position.cid) {
                self.last = rates[i].last;
+               break;
             }
          }
          for (let cell in self.row) {
