@@ -193,54 +193,6 @@
       return t;
    };
 
-   var positionsRow = function(position) {
-      var pos = new columns();
-      pos.market.value = position.name;
-      pos.market.cell = ftd(pos.market);
-      pos.asset.value = position.counter;
-      pos.asset.cell = ftd(pos.asset);
-      pos.pair.value = position.base + '_' + position.counter;
-      pos.pair.cell = ftd(pos.pair);
-      pos.amount.value = position.amount;
-      pos.amount.cell = ftd(pos.amount);
-      pos.open.value = position.open;
-      pos.open.cell = ftd(position.open, 'right', position.open<10?8:0);
-      pos.last.value = position.rates[0].last;
-      pos.last.cell = ftd(position.rates[0].last, 'right', position.rates[0].last<10?8:0);
-      let btc = position.amount * (position.counter.substr(0,3)==='USD'?1:position.rates[0].last); // if already BTC multipply by 1
-      let tot_btc = Math.round(btc*1000)/1000;
-      let tot_usd = Math.round(btc * data.BTC.bitstamp.last);
-      pos.totBtc.value = tot_btc;
-      pos.totBtc.cell = ftd(tot_btc, 'right');
-      pos.totUsd.value = tot_usd;
-      pos.totUsd.cell = ftd(tot_usd, 'right');
-      return {btc: tot_btc, usd: tot_usd, pos.pos};
-   };
-
-   var ftd = function(html, align, digits) {
-      if(typeof align==='undefined' ){
-         align = 'left';
-      }
-      if(typeof digits==='undefined'){
-         digits = 0;
-      }
-      var td = document.createElement('td');
-      if (typeof html === 'number') html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
-      if(typeof html === 'object') {
-         td.appendChild(html);
-      } else if(typeof html === 'undefined') {
-         td.innerHTML = '';
-      } else {
-         td.innerHTML = html;
-      }
-      td.style.textAlign = align;
-      td.style.cursor = 'pointer';
-      td.onmousedown = function(){return false};
-      td.ondblclick = function(){
-         console.log(this.innerHTML);
-      };
-      return td;
-   };
 
    var getLatestRate = function(aid, cid) {
       for (let i in rates) {
