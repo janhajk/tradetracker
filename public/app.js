@@ -133,7 +133,7 @@
             }
          };
          this.tValue = function(parent){
-            let html = parent.value;
+            var html = parent.value;
             if (parent.round === -1) {
                if (typeof html === 'number') {
                   let digits = smartRound(html);
@@ -141,8 +141,8 @@
                   parent.align = 'right';
                }
             }
-            else if (parent.round >= 0) {
-               html.toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
+            else if (typeof html === 'number' && parent.round >= 0) {
+               html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
             }
             return html;
          };
