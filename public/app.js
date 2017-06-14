@@ -145,7 +145,9 @@
       this.row.asset.col = 'counter';
       this.row.amount.col = 'amount';
       this.row.open.col = 'open';
-      this.row.totBtc.formula = {type:'*', x:'last', y:'amount'};
+      this.row.totBtc.formula = function(parent, pos){
+         parent.value = (pos.counter=='USD')?parent.value:pos.last * pos.amount;
+      };
       this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btc'};
       this.row.last.formula = function(parent, pos) {
          parent.value = pos.last;
