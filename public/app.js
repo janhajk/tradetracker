@@ -102,7 +102,7 @@
             }
             if (parent.formula !== null) {
                if (typeof parent.formula === 'function') {
-                  parent.formula(parent);
+                  parent.formula(parent, pos);
                }
                else if (parent.formula.type === '*') {
                   parent.value = pos.row[parent.formula.x].value * pos.row[parent.formula.y].value;
@@ -142,8 +142,11 @@
       this.row.asset.col = 'counter';
       this.row.totBtc.formula = {type:'*', x:'btc', y:'amount'};
       this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btcusd'};
-      this.row.last.formula = function(parent) {
-         this.value = parent.last;
+      this.row.last.formula = function(parent, pos) {
+         parent.value = pos.last;
+      };
+      this.row.btc.formula = function(parent,pos){
+         parent.value = btc;
       };
 
       // Row-Renderer -> <tr>
