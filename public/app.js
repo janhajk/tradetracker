@@ -96,13 +96,13 @@
          this.col = 0;
          this.value = null;
          this.render = tCell;
-         this.calc = function(){
-            if (this.formula !== null) {
-               if (typeof this.formula === 'function') {
-                  this.formula(this);
+         this.calc = function(parent){
+            if (parent.formula !== null) {
+               if (typeof parent.formula === 'function') {
+                  parent.formula(parent);
                }
-               else if (this.formula.type === '*') {
-                  this.value = row[this.formula.x].value * row[this.formula.y].value;
+               else if (parent.formula.type === '*') {
+                  parent.value = row[parent.formula.x].value * row[parent.formula.y].value;
                }
             }
          };
