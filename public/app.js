@@ -117,6 +117,9 @@
                parent.align = 'right';
                return html;
             }
+            else {
+               return parent.value;
+            }
          };
          this.align = 'left';
          this.formula = null;
