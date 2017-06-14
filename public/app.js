@@ -4,7 +4,20 @@
    var rates = [];
    var positions = [];
    var btc = 0;
-   var cols = ['btc', 'market', 'asset', 'amount', 'open', 'last', 'totBtc', 'totUsd'];
+   var cols = {
+      'btc': {
+         hidden:true
+      },
+      'market': {},
+      'asset': {},
+      'amount': {},
+      'open': {},
+      'last': {},
+      'totBtc': {},
+      'totUsd': {
+         round: 0
+      }
+   };
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
@@ -91,10 +104,20 @@
          };
          return td;
       };
-      var cell = function(title, pos){
+      var cell = function(title, defaults, pos){
          this.title = title;
          this.col = 0;
          this.value = null;
+         this.align = 'left';
+         this.formula = null;
+         this.pos = 0;
+         this.hidden = false;
+         this.rw = false;
+         this.html = '';
+         this.round = -1;
+         for (let i in defaults) {
+            this[i] = defaults[i];
+         }
          this.render = tCell;
          this.calc = function(parent, pos){
             if (parent.col) {
@@ -111,22 +134,18 @@
          };
          this.tValue = function(parent){
             let html = parent.value;
-            if (typeof html === 'number') {
-               let digits = (html<10)?8:0;
-               html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
-               parent.align = 'right';
-               return html;
+            if (parent.round === -1) {
+               if (typeof html === 'number') {
+                  let digits = smartRound(html);
+                  html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
+                  parent.align = 'right';
+               }
             }
-            else {
-               return parent.value;
+            else if (parent.round >= 0) {
+               html.toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
             }
+            return html;
          };
-         this.align = 'left';
-         this.formula = null;
-         this.pos = 0;
-         this.visible = true;
-         this.rw = false;
-         this.html = '';
          this.dom = this.render(this);
          this.update = function(pos, parent) {
             let val1 = parent.value;
@@ -139,7 +158,7 @@
       };
       this.row = {};
       for (let i in cols) {
-         this.row[cols[i]] = new cell(cols[i], this);
+         this.row[i] = new cell(i, cols[i], this);
       }
       this.row.market.col = 'name';
       this.row.asset.col = 'counter';
@@ -184,7 +203,7 @@
       var th;
       for (let c in cols) {
          th = document.createElement('th');
-         th.innerHTML = cols[c];
+         th.innerHTML = c;
          tr.appendChild(th);
       }
       thead.appendChild(tr);
@@ -219,6 +238,14 @@
          }
       }
       return null;
+   };
+
+   var smartRound = function(number) {
+      if (number < 1) return 8;
+      if (number < 10) return 4;
+      if (number < 100) return 3;
+      if (number < 1000) return 2;
+      return 0;
    };
 
    var charts = function(){
