@@ -66,14 +66,15 @@
       this.values = position;
       this.aid = position.aid;
       this.last = position.last;
+      var self = this;
       this.update = setInterval(function(){
          for(let i in rates) {
             if(rates[i].aid === position.aid && rates[i].cid === position.cid) {
-               this.last = rates[i].last;
+               self.last = rates[i].last;
             }
          }
-         for (let cell in this.row) {
-            this.row[cell].udpate();
+         for (let cell in self.row) {
+            self.row[cell].udpate();
          }
       }, rInterval*1000);
 
