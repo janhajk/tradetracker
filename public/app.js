@@ -54,7 +54,7 @@
       this.positions = positions;
       this.render = function(){
          var table = btable();
-         for (let i in positions) {
+         for (let i=0;i<positions.length;i++) {
             table.tBodies[0].appendChild(positions[i].dom);
          }
          return table;
