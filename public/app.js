@@ -80,10 +80,10 @@
       }, rInterval*1000);
 
       // Cell-Renderer -> <td>
-      var tCell = function() {
+      var tCell = function(self) {
          var td = document.createElement('td');
-         td.innerHTML = this.tValue(this);
-         td.style.textAlign = this.align;
+         td.innerHTML = self.tValue(this);
+         td.style.textAlign = self.align;
          td.style.cursor = 'pointer';
          td.onmousedown = function(){return false};
          td.ondblclick = function(){
@@ -124,7 +124,7 @@
          this.visible = true;
          this.rw = false;
          this.html = '';
-         this.dom = this.render();
+         this.dom = this.render(this);
          this.update = function(pos, parent) {
             let val1 = parent.value;
             parent.calc(parent, pos);
@@ -141,7 +141,7 @@
       this.row.market.col = 'name';
       this.row.asset.col = 'counter';
       this.row.totBtc.formula = {type:'*', x:'btc', y:'amount'};
-      this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btcusd'};
+      this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btcUsd'};
       this.row.last.formula = function(parent, pos) {
          parent.value = pos.last;
       };
