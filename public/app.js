@@ -142,10 +142,10 @@
       };
 
       // Row-Renderer -> <tr>
-      this.tr = function(){
+      this.tr = function(parent){
          let cells = [];
-         for (let cell in this.row) {
-            cells.push(this.row[cell].dom);
+         for (let cell in parent.row) {
+            cells.push(parent.row[cell].dom);
          }
          let tr = document.createElement('tr');
          for (let i in cells) {
@@ -153,7 +153,7 @@
          }
          return tr;
       };
-      this.dom = this.tr();
+      this.dom = this.tr(this);
    };
 
    var btable = function() {
