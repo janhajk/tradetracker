@@ -65,7 +65,7 @@
       this.last = position.last;
       this.update = setInterval(function(){
          for(let i in rates) {
-            if(rates[i].pair === position.pair && rates[i].mid = position.mid) {
+            if(rates[i].pair === position.pair && rates[i].mid === position.mid) {
                this.last = rates[i].last;
             }
          }
