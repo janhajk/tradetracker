@@ -130,11 +130,11 @@
       for (let i in cols) {
          this.row[cols[i]] = new cell(cols[i], this.row);
       }
-      this.col.market.col = 'cid';
-      this.col.asset.col = 'aid';
-      this.col.totBtc.formula = {type:'*', x:'btc', y:'amount'};
-      this.col.totUsd.formula = {type:'*', x:'totBtc', y:'btcusd'};
-      this.col.last.formula = function(parent) {
+      this.row.market.col = 'cid';
+      this.row.asset.col = 'aid';
+      this.row.totBtc.formula = {type:'*', x:'btc', y:'amount'};
+      this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btcusd'};
+      this.row.last.formula = function(parent) {
          this.value = parent.last;
       };
 
