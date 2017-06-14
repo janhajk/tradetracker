@@ -75,7 +75,7 @@
             }
          }
          for (let cell in self.row) {
-            self.row[cell].update(self.row[cell]);
+            self.row[cell].update(self, self.row[cell]);
          }
       }, rInterval*1000);
 
@@ -91,18 +91,21 @@
          };
          return td;
       };
-      var cell = function(title, row){
+      var cell = function(title, pos){
          this.title = title;
          this.col = 0;
          this.value = null;
          this.render = tCell;
-         this.calc = function(parent){
+         this.calc = function(parent, pos){
+            if (parent.col) {
+               parent.value = pos.values.col;
+            }
             if (parent.formula !== null) {
                if (typeof parent.formula === 'function') {
                   parent.formula(parent);
                }
                else if (parent.formula.type === '*') {
-                  parent.value = row[parent.formula.x].value * row[parent.formula.y].value;
+                  parent.value = pos.row[parent.formula.x].value * pos.row[parent.formula.y].value;
                }
             }
          };
@@ -122,9 +125,9 @@
          this.rw = false;
          this.html = '';
          this.dom = this.render();
-         this.update = function(parent) {
+         this.update = function(pos, parent) {
             let val1 = parent.value;
-            parent.calc(parent);
+            parent.calc(parent, pos);
             // if value have changed, udpate html
             if (val1 == null || parent.value !== val1) {
                parent.dom.innerHTML = parent.tValue(parent);
@@ -133,7 +136,7 @@
       };
       this.row = {};
       for (let i in cols) {
-         this.row[cols[i]] = new cell(cols[i], this.row);
+         this.row[cols[i]] = new cell(cols[i], this);
       }
       this.row.market.col = 'cid';
       this.row.asset.col = 'aid';
