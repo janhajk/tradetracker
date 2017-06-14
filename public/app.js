@@ -4,7 +4,7 @@
    var rates = [];
    var positions = [];
    var btc = 0;
-   var cols = ['market', 'asset', 'amount', 'open', 'last', 'totBtc', 'totUsd', 'btc'];
+   var cols = ['btc', 'market', 'asset', 'amount', 'open', 'last', 'totBtc', 'totUsd'];
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
