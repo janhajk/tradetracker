@@ -95,7 +95,7 @@ app.get('/', function(req, res){
 });
 
 
-app.get('/position/all', ensureAuthenticated, function(req, res){
+app.get('/position', ensureAuthenticated, function(req, res){
    var positions = require(__dirname + '/lib/positions.js');
    positions.get('all', connection, function(e, positions){
       if (e) {
@@ -114,6 +114,7 @@ app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
 
 app.get('/rates', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/lib/rates.js');
+   // Get all rates live (mode=null); don't udpate db
    rates.all(null, connection, function(error, rates){
       if (error) res.send(error);
       else res.send(rates);
