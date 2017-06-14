@@ -21,7 +21,7 @@
             var content = document.getElementById('content');
             content.innerHTML = '';
             content.appendChild(table.render());
-            content.appendChild(charts());
+            //content.appendChild(charts());
          } else {
             // Error
          }
