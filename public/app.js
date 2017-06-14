@@ -126,7 +126,7 @@
             let val1 = parent.value;
             parent.calc(parent);
             // if value have changed, udpate html
-            if (parent.value !== val1) {
+            if (val1 == null || parent.value !== val1) {
                parent.dom.innerHTML = parent.tValue(parent);
             }
          };
