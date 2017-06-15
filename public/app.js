@@ -16,7 +16,8 @@
          }
       },
       'market': {
-         col: 'name'
+         col: 'name',
+         image : {folder:'markets', filetype: 'png'}
       },
       'asset': {
          col: 'pair'
@@ -171,13 +172,23 @@
       // Cell-Renderer -> <td>
       var tCell = function(self) {
          var td = document.createElement('td');
-         td.innerHTML = self.tValue(this);
+         if (self.image) {
+            var img = document.createElement('img');
+            let value = self.value.replace(/\s/g, '').toLowerCase();
+            img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
+            img.height = '20';
+            img.title = self.tValue(this);
+            td.appendChild(img);
+         }
+         else {
+            td.innerHTML = self.tValue(this);
+         }
          td.style.textAlign = self.align;
          td.style.cursor = 'pointer';
          td.className = self.class;
          td.onmousedown = function(){return false};
          td.ondblclick = function(){
-            console.log(this.innerHTML);
+            console.log(this.self.value);
          };
          return td;
       };
@@ -193,6 +204,7 @@
          this.html = '';
          this.class = '';
          this.round = -1;
+         this.image = 0;
          // Set defaults
          for (let i in defaults) {
             this[i] = defaults[i];
