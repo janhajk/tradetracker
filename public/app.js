@@ -76,7 +76,7 @@
       var navbar = document.getElementById('navbarul');
       // <li><a href="#">add position</a></li>
       var li = document.createElement('li');
-      var a = document.createElement(''
+      var a = document.createElement('a');
    };
 
    var Postable = function(positions) {
