@@ -80,7 +80,7 @@
    var Position = function(position) {
       var self = this;
       var getTot = function(base, counter, last, amount){
-         let tot = {btc:0; usd:0};
+         let tot = {btc:0, usd:0};
          tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
          tot.usd = tot.btc * btc;
          return tot;
