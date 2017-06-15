@@ -175,7 +175,7 @@
          this.render = tCell;
          this.calc = function(parent, pos){
             if (parent.col) {
-               parent.value = pos.[parent.col];
+               parent.value = pos[parent.col];
             }
             if (parent.formula !== null) {
                if (typeof parent.formula === 'function') {
