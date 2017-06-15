@@ -93,7 +93,14 @@
                   labels.btc.className = 'label label-success';
                   dashline.appendChild(labels.btc);
                }
-               labels.btc.innerHTML = 'BTC: ' + tot.btc;
+               labels.btc.innerHTML = 'Tot USD: ' + tot.btc;
+               if (!labels.usd) {
+                  let dashline = document.getElementById('dashline');
+                  labels.usd = document.createElement('span');
+                  labels.usd.className = 'label label-primary';
+                  dashline.appendChild(labels.usd);
+               }
+               labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
             } else {
                // Error
                console.log('There was an Error when updating rates;')
