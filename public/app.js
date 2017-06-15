@@ -192,7 +192,10 @@
                td.innerHTML = '';
                var img = document.createElement('img');
                let value = self.value.replace(/\s/g, '').toLowerCase();
-               img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
+               let path = 'images/' + self.image.folder + '/';
+               let src = path + value + '.' + self.image.filetype;
+               if (!imageExists(src)) src = path + 'wallet.png';
+               img.src = src;
                img.height = '20';
                img.title = self.tValue(this);
                td.appendChild(img);
@@ -377,4 +380,12 @@
       });
       return canvas;
    };
+
+   var imageExists = function (image_url){
+      var http = new XMLHttpRequest();
+      http.open('HEAD', image_url, false);
+      http.send();
+      return http.status != 404;
+   };
+
 })();
