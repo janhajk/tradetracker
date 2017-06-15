@@ -17,10 +17,11 @@
       },
       'market': {
          col: 'name',
-         image : {folder:'markets', filetype: 'png'}
+         image: {folder:'markets', filetype: 'png'}
       },
       'asset': {
-         col: 'pair'
+         col: 'assetname',
+         image: {folder:'coins/16x16', filetype: 'png'}
       },
       'amount': {
          col: 'amount'
@@ -152,6 +153,7 @@
          return tot;
       };
       this.name = position.name;
+      this.assetname = position.assetname;
       this.base = position.base;
       this.counter = position.counter
       this.pair   = this.base + '/' + this.counter;
@@ -170,6 +172,8 @@
 
       // Cell Object
       var Cell = function(title, defaults, pos){
+         var self = this;
+         var parent = pos;
          this.title = title;
          this.col = 0;
          this.value = null;
@@ -191,7 +195,7 @@
             if (!!self.value && self.image) {
                td.innerHTML = '';
                var img = document.createElement('img');
-               let value = self.value.replace(/\s/g, '').toLowerCase();
+               let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
                if (!imageExists(src)) src = path + 'wallet.png';
