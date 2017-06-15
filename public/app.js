@@ -128,6 +128,7 @@
          tot.usd = tot.btc * btc;
          return tot;
       };
+      this.name = position.name;
       this.base = position.base;
       this.counter = position.counter
       this.pair = this.base + '/' + this.counter;
@@ -174,7 +175,7 @@
          this.render = tCell;
          this.calc = function(parent, pos){
             if (parent.col) {
-               parent.value = pos.values[parent.col];
+               parent.value = pos.[parent.col];
             }
             if (parent.formula !== null) {
                if (typeof parent.formula === 'function') {
