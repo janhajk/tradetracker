@@ -44,6 +44,11 @@
       }
    };
 
+   var labels = {
+      btc: 0,
+      usd: 0
+   };
+
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
@@ -82,6 +87,13 @@
                for (let i in positions) {
                   positions[i].update();
                }
+               if (!labels.btc) {
+                  let dashline = document.getElementById('dashline');
+                  labels.btc = document.createElement('span');
+                  labels.btc.className = 'label label-success';
+                  dashline.addChild(span);
+               }
+               labels.btc.innerHTML = 'BTC: ' + tot.btc;
             } else {
                // Error
                console.log('There was an Error when updating rates;')
@@ -98,6 +110,8 @@
       function myEventHandler(e){
          var keyCode = e.keyCode;
          console.log(e.keyCode);
+         // 43 = +
+         // 45 = -
       };
    });
 
@@ -134,6 +148,7 @@
       this.pair = this.base + '/' + this.counter;
       this.values = position;
       this.amount = position.amount;
+      this.open = position.open;
       this.aid = position.aid;
       this.last = position.rates[0].last;
       this.tot = getTot(this.base, this.counter, this.last, this.amount);
