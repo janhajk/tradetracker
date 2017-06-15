@@ -4,20 +4,46 @@
    var rates = [];
    var positions = [];
    var btc = 0;
+
+   // Table Columns / Structure
+   // p  = parent        = cell
+   // pp = parent-parent = position
    var cols = {
       'btc': {
-         hidden:true
+         hidden:true,
+         formula: function(p,pp){
+            p.value = btc;
+         }
       },
-      'market': {},
-      'asset': {},
-      'amount': {},
-      'open': {},
-      'last': {},
-      'totBtc': {},
+      'market': {
+         col: 'name'
+      },
+      'asset': {
+         col: 'pair'
+      },
+      'amount': {
+         col: 'amount'
+      },
+      'open': {
+         col: 'open'
+      },
+      'last': {
+         formula: function(p, pp) {
+            p.value = pp.last;
+         }
+      },
+      'totBtc': {
+         formula : function(p, pp){
+            p.value = (pp.counter=='USD')?pp.amount:pp.last * pp.amount;
+         },
+         round: 2
+      },
       'totUsd': {
+         formula : {type:'*', x:'totBtc', y:'btc'},
          round: 0
       }
    };
+
    var rInterval = 10; // Update interval of rates in seconds
    document.addEventListener('DOMContentLoaded', function() {
       // Load Positions
@@ -65,7 +91,7 @@
             console.log('There was an error in xmlHttpRequest!');
          };
          request.send();
-      }, 10000);
+      }, rInterval*1000);
 
       // Keyboard Shortkeys
       window.addEventListener("keypress", myEventHandler, false);
@@ -104,6 +130,7 @@
       };
       this.base = position.base;
       this.counter = position.counter
+      this.pair = this.base + '/' + this.counter;
       this.values = position;
       this.amount = position.amount;
       this.aid = position.aid;
@@ -140,6 +167,7 @@
          this.rw = false;
          this.html = '';
          this.round = -1;
+         // Set defaults
          for (let i in defaults) {
             this[i] = defaults[i];
          }
@@ -186,20 +214,6 @@
       for (let i in cols) {
          this.row[i] = new cell(i, cols[i], this);
       }
-      this.row.market.col = 'name';
-      this.row.asset.col = 'counter';
-      this.row.amount.col = 'amount';
-      this.row.open.col = 'open';
-      this.row.totBtc.formula = function(parent, pos){
-         parent.value = (pos.values.counter=='USD')?pos.values.amount:pos.last * pos.values.amount;
-      };
-      this.row.totUsd.formula = {type:'*', x:'totBtc', y:'btc'};
-      this.row.last.formula = function(parent, pos) {
-         parent.value = pos.last;
-      };
-      this.row.btc.formula = function(parent,pos){
-         parent.value = btc;
-      };
 
       // Row-Renderer -> <tr>
       this.tr = function(parent){
