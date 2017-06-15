@@ -93,7 +93,7 @@
       this.last = position.rates[0].last;
       this.tot = getTot(this.base, this.counter, this.last, this.amount);
       this.update = setInterval(function(){
-         self.last = getLatestRate(self.aid, self,cid);
+         self.last = getLatestRate(self.aid, self.cid);
          self.tot = getTot(self.base, self.counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
