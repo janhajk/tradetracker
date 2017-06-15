@@ -99,7 +99,7 @@
                break;
             }
          }
-         self.tot = getTot(self.base, self,counter, self.last, self.amount);
+         self.tot = getTot(self.base, self.counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
          }
