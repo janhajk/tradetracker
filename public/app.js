@@ -26,7 +26,7 @@
       },
       'open': {
          col: 'open',
-         class: 'hidden-xs-down'
+         class: 'hidden-sm-down'
       },
       'last': {
          formula: function(p, pp) {
@@ -65,7 +65,7 @@
             var table = new Postable(positions);
             var content = document.getElementById('content');
             content.innerHTML = '';
-            content.appendChild(table.render());
+            content.appendChild(table[1].render());
             //content.appendChild(charts());
          } else {
             // Error
@@ -135,7 +135,7 @@
       this.render = function(){
          var table = btable();
          for (let i=0;i<positions.length;i++) {
-            table.tBodies[0].appendChild(positions[i].dom);
+            table[1].tBodies[0].appendChild(positions[i].dom);
          }
          return table;
       };
@@ -261,9 +261,12 @@
       }
    };
 
+   /*
+    * Positions-Table
+    */
    var btable = function() {
       var t = document.createElement('table');
-      t.className = 'table-bordered table-hover table-responsive';
+      t.className = 'table table-bordered table-hover table-responsive';
       t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');
@@ -298,9 +301,11 @@
       }
       tbody.appendChild(tr); */
       // End Last Row
-
       t.appendChild(tbody);
-      return t;
+      var div = document.createElement('div');
+      div.className = 'table-responsive';
+      div.appendChild(t);
+      return [div, t];
    };
 
    var getTot = function() {
