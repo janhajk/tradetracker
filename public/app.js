@@ -174,8 +174,8 @@
          var td = document.createElement('td');
          if (self.image) {
             var img = document.createElement('img');
-            let value = self.value.replace(/\s/g, '').toLowerCase();
-            img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
+            //let value = self.value.replace(/\s/g, '').toLowerCase();
+            //img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
             img.height = '20';
             img.title = self.tValue(this);
             td.appendChild(img);
