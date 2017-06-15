@@ -151,16 +151,19 @@
          tot.usd = tot.btc * btc;
          return tot;
       };
+      this.row = {};
+      for (let i in cols) {
+         this.row[i] = new Cell(i, cols[i], this);
+      }
       this.name = position.name;
       this.base = position.base;
       this.counter = position.counter
-      this.pair = this.base + '/' + this.counter;
-      this.values = position;
+      this.pair   = this.base + '/' + this.counter;
       this.amount = position.amount;
-      this.open = position.open;
-      this.aid = position.aid;
-      this.last = position.rates[0].last;
-      this.tot = getTot(this.base, this.counter, this.last, this.amount);
+      this.open   = position.open;
+      this.aid    = position.aid;
+      this.last   = position.rates[0].last;
+      this.tot    = getTot(this.base, this.counter, this.last, this.amount);
       this.update = function(){
          self.last = getLatestRate(self.aid, self.cid);
          self.tot = getTot(self.base, self.counter, self.last, self.amount);
@@ -169,30 +172,8 @@
          }
       };
 
-      // Cell-Renderer -> <td>
-      var tCell = function(self) {
-         var td = document.createElement('td');
-         if (self.image) {
-            var img = document.createElement('img');
-            //let value = self.value.replace(/\s/g, '').toLowerCase();
-            //img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
-            img.height = '20';
-            img.title = self.tValue(this);
-            td.appendChild(img);
-         }
-         else {
-            td.innerHTML = self.tValue(this);
-         }
-         td.style.textAlign = self.align;
-         td.style.cursor = 'pointer';
-         td.className = self.class;
-         td.onmousedown = function(){return false};
-         td.ondblclick = function(){
-            console.log(this.self.value);
-         };
-         return td;
-      };
-      var cell = function(title, defaults, pos){
+      // Cell Object
+      var Cell = function(title, defaults, pos){
          this.title = title;
          this.col = 0;
          this.value = null;
@@ -209,7 +190,28 @@
          for (let i in defaults) {
             this[i] = defaults[i];
          }
-         this.render = tCell;
+         this.render =  function(self) {
+            var td = document.createElement('td');
+            if (self.image) {
+               var img = document.createElement('img');
+               //let value = self.value.replace(/\s/g, '').toLowerCase();
+               //img.src = 'images/' + self.image.folder + '/' + value + '.' + self.image.filetype;
+               img.height = '20';
+               img.title = self.tValue(this);
+               td.appendChild(img);
+            }
+            else {
+               td.innerHTML = self.tValue(this);
+            }
+            td.style.textAlign = self.align;
+            td.style.cursor = 'pointer';
+            td.className = self.class;
+            td.onmousedown = function(){return false};
+            td.ondblclick = function(){
+               console.log(this.self.value);
+            };
+            return td;
+         };
          this.calc = function(parent, pos){
             if (parent.col) {
                parent.value = pos[parent.col];
@@ -248,10 +250,6 @@
             }
          };
       };
-      this.row = {};
-      for (let i in cols) {
-         this.row[i] = new cell(i, cols[i], this);
-      }
 
       // Row-Renderer -> <tr>
       this.tr = function(parent){
