@@ -25,7 +25,8 @@
          col: 'amount'
       },
       'open': {
-         col: 'open'
+         col: 'open',
+         class: 'hidden-xs-down'
       },
       'last': {
          formula: function(p, pp) {
@@ -173,6 +174,7 @@
          td.innerHTML = self.tValue(this);
          td.style.textAlign = self.align;
          td.style.cursor = 'pointer';
+         td.className = self.class;
          td.onmousedown = function(){return false};
          td.ondblclick = function(){
             console.log(this.innerHTML);
@@ -189,6 +191,7 @@
          this.hidden = false;
          this.rw = false;
          this.html = '';
+         this.class = '';
          this.round = -1;
          // Set defaults
          for (let i in defaults) {
@@ -273,6 +276,7 @@
          if (cols[c].hidden) continue;
          th = document.createElement('th');
          th.innerHTML = c;
+         th.className = cols[c].class;
          tr.appendChild(th);
       }
       thead.appendChild(tr);
