@@ -52,7 +52,10 @@
             if(request.status >= 200 && request.status < 400) {
                rates = JSON.parse(request.responseText);
                let tot = tGetTot();
-               document.title = 'BTC:' + tot.btc + '/USD:' + tot.usd;
+               document.title = tot.btc + '/' + tot.usd;
+               for (let i in positions) {
+                  positions[i].update();
+               }
             } else {
                // Error
                console.log('There was an Error when updating rates;')
@@ -71,7 +74,7 @@
          console.log(e.keyCode);
       };
    });
-   
+
    var changeUpdateInterval = function() {
       var navbar = document.getElementById('navbarul');
       // <li><a href="#">add position</a></li>
@@ -106,13 +109,13 @@
       this.aid = position.aid;
       this.last = position.rates[0].last;
       this.tot = getTot(this.base, this.counter, this.last, this.amount);
-      this.update = setInterval(function(){
+      this.update = function(){
          self.last = getLatestRate(self.aid, self.cid);
          self.tot = getTot(self.base, self.counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
          }
-      }, rInterval*1000);
+      };
 
       // Cell-Renderer -> <td>
       var tCell = function(self) {
