@@ -91,7 +91,7 @@
                   let dashline = document.getElementById('dashline');
                   labels.btc = document.createElement('span');
                   labels.btc.className = 'label label-success';
-                  dashline.addChild(span);
+                  dashline.addChild(labels.btc);
                }
                labels.btc.innerHTML = 'BTC: ' + tot.btc;
             } else {
