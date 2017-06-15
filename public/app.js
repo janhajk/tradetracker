@@ -261,7 +261,7 @@
    var tGetTot = function() {
       let tot = getTot();
       tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
-      tot.usd = tot.usd.toLocaleString('de-CH-1996', {minimumFractionDigits:0});
+      tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', {minimumFractionDigits:0});
       return tot;
    };
 
