@@ -165,7 +165,7 @@
             }
             else if (typeof html === 'number' && parent.round >= 0) {
                html = html.toFixed(parent.round);
-               html = NUmber(html).toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
+               html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
             }
             return html;
          };
