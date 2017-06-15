@@ -26,10 +26,10 @@
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
             data = JSON.parse(request.responseText);
+            btc = data.BTC.bitstamp.last;
             for (let i in data.positions) {
                positions.push(new Position(data.positions[i]));
             }
-            btc = data.BTC.bitstamp.last;
             var table = new Postable(positions);
             var content = document.getElementById('content');
             content.innerHTML = '';
@@ -51,6 +51,8 @@
          request.onload = function() {
             if(request.status >= 200 && request.status < 400) {
                rates = JSON.parse(request.responseText);
+               let tot = getTot();
+               document.title = 'Tot BTC: ' + tot.btc + '  Tot USD: ' + tot.usd;
             } else {
                // Error
                console.log('There was an Error when updating rates;')
@@ -76,10 +78,20 @@
 
    // Spalten in der Reihenfolge der Darstellung
    var Position = function(position) {
+      var self = this;
+      var getTot = function(base, counter, last, amount){
+         let tot = {btc:0; usd:0};
+         tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
+         tot.usd = tot.btc * btc;
+         return tot;
+      };
+      this.base = position.base;
+      this.counter = position.counter
       this.values = position;
+      this.amount = position.amount;
       this.aid = position.aid;
       this.last = position.rates[0].last;
-      var self = this;
+      this.tot = getTot(this.base, this.counter, this.last, this.amount);
       this.update = setInterval(function(){
          for(let i=0;i<rates.length;i++) {
             if(rates[i].aid === position.aid && rates[i].cid === position.cid) {
@@ -87,6 +99,7 @@
                break;
             }
          }
+         self.tot = getTot(self.base, self,counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
          }
@@ -179,7 +192,9 @@
       this.tr = function(parent){
          let cells = [];
          for (let cell in parent.row) {
-            cells.push(parent.row[cell].dom);
+            if (!parent.row[cell].hidden) {
+               cells.push(parent.row[cell].dom);
+            }
          }
          let tr = document.createElement('tr');
          for (let i in cells) {
@@ -231,6 +246,15 @@
 
       t.appendChild(tbody);
       return t;
+   };
+
+   var getTot = function() {
+      let tot = {btc:0, usd:0};
+      for (let i=0;i<positions.length;i++) {
+         tot.btc += positions[i].tot.btc;
+         tot.usd += positions[i].tot.usd;
+      }
+      return tot;
    };
 
 
