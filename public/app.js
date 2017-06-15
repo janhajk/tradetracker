@@ -93,15 +93,7 @@
       this.last = position.rates[0].last;
       this.tot = getTot(this.base, this.counter, this.last, this.amount);
       this.update = setInterval(function(){
-         for(let i=0;i<rates.length;i++) {
-            if (position.aid === 1){
-                console.log('Rate aid: ' + rates[i].aid + ' / Rate cid: ' + position.cid);
-         }
-            if(rates[i].aid === position.aid && rates[i].cid === position.cid) {
-               self.last = rates[i].last;
-               break;
-            }
-         }
+         self.last = getLatestRate(self.aid, self,cid);
          self.tot = getTot(self.base, self.counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
@@ -270,12 +262,17 @@
 
 
    var getLatestRate = function(aid, cid) {
-      for (let i in rates) {
-         if (rates[i].aid === aid && rates[i].cid === cid) {
-            return rates[i];
+      let best = 0;
+      for(let i=0;i<rates.length;i++) {
+         if (best === 0 && rates[i].aid === aid) {
+            best = rates[i].last;
+         }
+         else if(rates[i].aid === aid && rates[i].cid === cid) {
+            best = rates[i].last;
+            break;
          }
       }
-      return null;
+      return best;
    };
 
    var smartRound = function(number) {
