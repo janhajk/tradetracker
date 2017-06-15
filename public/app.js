@@ -151,10 +151,6 @@
          tot.usd = tot.btc * btc;
          return tot;
       };
-      this.row = {};
-      for (let i in cols) {
-         this.row[i] = new Cell(i, cols[i], this);
-      }
       this.name = position.name;
       this.base = position.base;
       this.counter = position.counter
@@ -250,6 +246,12 @@
             }
          };
       };
+
+      // create cell for each row
+      this.row = {};
+      for (let i in cols) {
+         this.row[i] = new Cell(i, cols[i], this);
+      }
 
       // Row-Renderer -> <tr>
       this.tr = function(parent){
