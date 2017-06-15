@@ -63,7 +63,21 @@
          };
          request.send();
       }, 10000);
+
+      // Keyboard Shortkeys
+      window.addEventListener("keypress", myEventHandler, false);
+      function myEventHandler(e){
+         var keyCode = e.keyCode;
+         console.log(e.keyCode);
+      };
    });
+   
+   var changeUpdateInterval = function() {
+      var navbar = document.getElementById('navbarul');
+      // <li><a href="#">add position</a></li>
+      var li = document.createElement('li');
+      var a = document.createElement(''
+   };
 
    var Postable = function(positions) {
       this.positions = positions;
@@ -150,7 +164,8 @@
                }
             }
             else if (typeof html === 'number' && parent.round >= 0) {
-               html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
+               html = html.toFixed(parent.round);
+               html = NUmber(html).toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
             }
             return html;
          };
