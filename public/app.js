@@ -52,7 +52,7 @@
             if(request.status >= 200 && request.status < 400) {
                rates = JSON.parse(request.responseText);
                let tot = tGetTot();
-               document.title = 'Tot BTC: ' + tot.btc + '  Tot USD: ' + tot.usd;
+               document.title = 'BTC:' + tot.btc + '/USD:' + tot.usd;
             } else {
                // Error
                console.log('There was an Error when updating rates;')
