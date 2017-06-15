@@ -65,7 +65,7 @@
             var table = new Postable(positions);
             var content = document.getElementById('content');
             content.innerHTML = '';
-            content.appendChild(table[1].render());
+            content.appendChild(table.render());
             //content.appendChild(charts());
          } else {
             // Error
@@ -137,7 +137,7 @@
          for (let i=0;i<positions.length;i++) {
             table[1].tBodies[0].appendChild(positions[i].dom);
          }
-         return table;
+         return table[0];
       };
    };
 
