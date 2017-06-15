@@ -26,7 +26,7 @@
       },
       'open': {
          col: 'open',
-         class: 'hidden-sm-down'
+         class: 'hidden-xs hidden-sm'
       },
       'last': {
          formula: function(p, pp) {
