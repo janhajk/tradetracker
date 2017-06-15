@@ -237,6 +237,7 @@
             }
             return html;
          };
+         this.calc(this, pos);
          this.dom = this.render(this);
          this.update = function(pos, parent) {
             let val1 = parent.value;
