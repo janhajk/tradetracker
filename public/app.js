@@ -51,7 +51,7 @@
          request.onload = function() {
             if(request.status >= 200 && request.status < 400) {
                rates = JSON.parse(request.responseText);
-               let tot = getTot();
+               let tot = tGetTot();
                document.title = 'Tot BTC: ' + tot.btc + '  Tot USD: ' + tot.usd;
             } else {
                // Error
@@ -255,6 +255,13 @@
          tot.btc += positions[i].tot.btc;
          tot.usd += positions[i].tot.usd;
       }
+      return tot;
+   };
+
+   var tGetTot = function() {
+      let tot = getTot();
+      tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
+      tot.usd = tot.usd.toLocaleString('de-CH-1996', {minimumFractionDigits:0});
       return tot;
    };
 
