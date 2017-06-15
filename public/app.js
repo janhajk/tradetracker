@@ -220,6 +220,7 @@
       var tr = document.createElement('tr');
       var th;
       for (let c in cols) {
+         if (cols[c].hidden) continue;
          th = document.createElement('th');
          th.innerHTML = c;
          tr.appendChild(th);
