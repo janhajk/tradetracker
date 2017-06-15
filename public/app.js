@@ -94,8 +94,8 @@
       this.tot = getTot(this.base, this.counter, this.last, this.amount);
       this.update = setInterval(function(){
          for(let i=0;i<rates.length;i++) {
-            if (rates[i].aid === 1){
-                console.log(rates[i].aid);
+            if (position.aid === 1){
+                console.log('Rate aid: ' + rates[i].aid + ' / Rate cid: ' + position.cid);
          }
             if(rates[i].aid === position.aid && rates[i].cid === position.cid) {
                self.last = rates[i].last;
