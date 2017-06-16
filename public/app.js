@@ -201,7 +201,7 @@
                if (!imageExists(src)) src = path + 'wallet.png';
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
-               td.style.backgroundSize = 'contain';
+               td.style.backgroundSize = 'Auto 25px';
                //img.title = self.tValue(this);
             }
             else {

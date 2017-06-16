@@ -16,7 +16,7 @@ Next features
 - Chart of porfolio value history
 - Pie chart of positions distribution
 - edit position amount
-- add newn position
+- add new position
 
 
 
@@ -27,4 +27,5 @@ Future plans
 -----------------------------------------------------------
 
 - read 1broker value
-- make table sortable
+- make table sortable on picture cols through hidden col
+- highlight changing values in table (green for up / red for down)
