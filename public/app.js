@@ -21,7 +21,7 @@
       },
       'asset': {
          col: 'assetname',
-         image: {folder:'coins/16x16', filetype: 'png'}
+         image: {folder:'coins/32x32', filetype: 'png'}
       },
       'amount': {
          col: 'amount'
