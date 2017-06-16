@@ -1,0 +1,29 @@
+-----------------------------------------------------------
+Bugs
+-----------------------------------------------------------
+
+- update btc value for position when updating position
+
+
+
+
+
+-----------------------------------------------------------
+Next features
+-----------------------------------------------------------
+
+- Save dayly portfolio value per position and total
+- Chart of porfolio value history
+- Pie chart of positions distribution
+- edit position amount
+- add newn position
+
+
+
+
+
+-----------------------------------------------------------
+Future plans
+-----------------------------------------------------------
+
+- read 1broker value
