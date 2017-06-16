@@ -192,17 +192,16 @@
          }
          this.render =  function(self) {
             var td = document.createElement('td');
-            if (!!self.value && self.image) {
-               td.innerHTML = '';
-               var img = document.createElement('img');
+            if (self.value !== null && self.image) {
+               td.innerHTML = '  ';
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
                if (!imageExists(src)) src = path + 'wallet.png';
-               img.src = src;
-               img.height = '20';
-               img.title = self.tValue(this);
-               td.appendChild(img);
+               td.style.backgroundImage = 'url('+src+')';
+               td.style.backgroundRepeat = 'no-repeat';
+               td.style.backgroundSize = 'contain';
+               //img.title = self.tValue(this);
             }
             else {
                td.innerHTML = self.tValue(this);
