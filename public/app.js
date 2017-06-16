@@ -68,6 +68,7 @@
             var content = document.getElementById('content');
             content.innerHTML = '';
             content.appendChild(table.render());
+            $.bootstrapSortable({ applyLast: true });
             //content.appendChild(charts());
          } else {
             // Error
