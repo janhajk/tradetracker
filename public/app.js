@@ -193,7 +193,7 @@
          this.render =  function(self) {
             var td = document.createElement('td');
             if (self.value !== null && self.image) {
-               td.innerHTML = '  ';
+               td.innerHTML = '';
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
