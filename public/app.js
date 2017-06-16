@@ -204,6 +204,7 @@
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
                td.style.backgroundSize = 'Auto 25px';
+               td.style.backgroundAlign = self.align;
                //img.title = self.tValue(this);
             }
             else {
