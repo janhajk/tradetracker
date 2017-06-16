@@ -18,12 +18,12 @@
       'market': {
          col: 'name',
          image: {folder:'markets', filetype: 'png'},
-         align: 'middle'
+         align: 'center'
       },
       'asset': {
          col: 'assetname',
-         image: {folder:'coins/32x32', filetype: 'png'}
-         align: 'middle'
+         image: {folder:'coins/32x32', filetype: 'png'},
+         align: 'center'
       },
       'amount': {
          col: 'amount'
