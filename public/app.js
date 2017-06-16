@@ -204,7 +204,7 @@
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
                td.style.backgroundSize = 'Auto 25px';
-               td.style.backgroundAlign = self.align;
+               td.style.backgroundPosition = self.align;
                //img.title = self.tValue(this);
             }
             else {
@@ -304,6 +304,7 @@
          th = document.createElement('th');
          th.innerHTML = c;
          th.className = cols[c].class;
+         if (cols[c].align) th.style.textAlign = cols[c].align;
          tr.appendChild(th);
       }
       thead.appendChild(tr);
