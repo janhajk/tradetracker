@@ -27,3 +27,4 @@ Future plans
 -----------------------------------------------------------
 
 - read 1broker value
+- make table sortable
