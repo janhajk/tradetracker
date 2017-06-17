@@ -89,6 +89,8 @@
             if(request.status >= 200 && request.status < 400) {
                rates = JSON.parse(request.responseText);
                let tot = tGetTot();
+               // update Global BTC-Price
+               btc = getLatestRate(110,12);
                document.title = tot.btc + '/' + tot.usd;
                for (let i in positions) {
                   positions[i].update();

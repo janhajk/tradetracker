@@ -3,7 +3,7 @@ Bugs
 -----------------------------------------------------------
 
 - update btc value for position when updating position
-
+- update from beginning
 
 
 
@@ -21,7 +21,6 @@ Next features
 
 
 
-
 -----------------------------------------------------------
 Future plans
 -----------------------------------------------------------
@@ -29,3 +28,4 @@ Future plans
 - read 1broker value
 - make table sortable on picture cols through hidden col
 - highlight changing values in table (green for up / red for down)
+- last update progressbar, showing when was last update and how long till next
