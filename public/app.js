@@ -71,6 +71,7 @@
             content.innerHTML = '';
             content.appendChild(table.render());
             $.bootstrapSortable({ applyLast: true });
+            updateRates();
             //content.appendChild(charts());
          } else {
             // Error
@@ -81,8 +82,7 @@
       };
       request.send();
 
-      // Update rates interval
-      setInterval(function(){
+      var updateRates = function() {
          let request = new XMLHttpRequest();
          request.open('GET', '/rates', true);
          request.onload = function() {
@@ -118,7 +118,9 @@
             console.log('There was an error in xmlHttpRequest!');
          };
          request.send();
-      }, rInterval*1000);
+      };
+      // Update rates interval
+      setInterval(updateRates, rInterval*1000);
 
       // Keyboard Shortkeys
       window.addEventListener("keypress", myEventHandler, false);
