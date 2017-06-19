@@ -26,8 +26,7 @@
          align: 'center'
       },
       'amount': {
-         col: 'amount',
-         round: 3
+         col: 'amount'
       },
       'open': {
          col: 'open',
@@ -371,7 +370,8 @@
    };
 
    var smartRound = function(number) {
-      if (number < 1) return 8;
+      if (number < 0.001) return 8;
+      if (number < 1) return 5;
       if (number < 10) return 4;
       if (number < 100) return 3;
       if (number < 1000) return 2;
