@@ -208,6 +208,7 @@
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
                td.style.backgroundSize = 'Auto 25px';
+               td.title = self.value;
                td.style.backgroundPosition = self.align;
                //img.title = self.tValue(this);
             }

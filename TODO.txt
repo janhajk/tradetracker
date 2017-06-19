@@ -1,32 +1,35 @@
 -----------------------------------------------------------
-Bugs
+ Bugs
 -----------------------------------------------------------
 
-- update from beginning
+- mouseover images market
 
 
 
 
 -----------------------------------------------------------
-Next features
+ Next features
 -----------------------------------------------------------
 
 - Save dayly portfolio value per position and total
 - Chart of porfolio value history
 - Pie chart of positions distribution
-- edit position amount
-- add new position
-- auto update von bitgrail
+- Pie Chart of market distribution
+- Okex maring contracts (read or calc?)
+- add/delete/edit position
+- Tabs for Dashboard, Charts
 
 
 
 
 -----------------------------------------------------------
-Future plans
+ Feature Requests
 -----------------------------------------------------------
 
-- read 1broker value
+- read 1broker portfolio-value
+- new columns for change in past 5 min, 1h and 24h for all rates; display as columns in positions
 - make table sortable on picture cols through hidden col
 - highlight changing values in table (green for up / red for down)
 - last update progressbar, showing when was last update and how long till next
 - box with hottest currencies
+- Twitter implementation
