@@ -370,6 +370,7 @@
    };
 
    var smartRound = function(number) {
+      if (number == 0) return 0;
       if (number < 0.001) return 8;
       if (number < 1) return 5;
       if (number < 10) return 4;
