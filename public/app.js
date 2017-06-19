@@ -26,7 +26,8 @@
          align: 'center'
       },
       'amount': {
-         col: 'amount'
+         col: 'amount',
+         round: 3
       },
       'open': {
          col: 'open',
