@@ -376,9 +376,9 @@
       if (number < 0.01) return 6;
       if (number < 0.1) return 5;
       if (number < 1) return 4;
-      if (number < 10) return 4;
-      if (number < 100) return 3;
-      if (number < 1000) return 2;
+      if (number < 10) return 3;
+      if (number < 100) return 2;
+      if (number < 1000) return 1;
       return 0;
    };
 
