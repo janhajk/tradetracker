@@ -371,8 +371,11 @@
 
    var smartRound = function(number) {
       if (number == 0) return 0;
-      if (number < 0.001) return 8;
-      if (number < 1) return 5;
+      if (number < 0.0001) return 8;
+      if (number < 0.001) return 7;
+      if (number < 0.01) return 6;
+      if (number < 0.1) return 5;
+      if (number < 1) return 4;
       if (number < 10) return 4;
       if (number < 100) return 3;
       if (number < 1000) return 2;
