@@ -16,6 +16,7 @@ Next features
 - Pie chart of positions distribution
 - edit position amount
 - add new position
+- auto update von bitgrail
 
 
 
