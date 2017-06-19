@@ -295,7 +295,7 @@
     */
    var btable = function() {
       var t = document.createElement('table');
-      t.className = 'table table-bordered table-hover table-responsive sortable';
+      t.className = 'table table-bordered table-hover table-responsive table-condensed sortable';
       t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');

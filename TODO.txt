@@ -12,10 +12,10 @@
 -----------------------------------------------------------
 
 - Save dayly portfolio value per position and total
+- Okex maring contracts (read or calc?)
 - Chart of porfolio value history
 - Pie chart of positions distribution
 - Pie Chart of market distribution
-- Okex maring contracts (read or calc?)
 - add/delete/edit position
 - Tabs for Dashboard, Charts
 
