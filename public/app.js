@@ -138,14 +138,14 @@
          Notification.requestPermission();
    });
 
-   var notify = function(param) {
+   var notify = function(params) {
       if (Notification.permission !== "granted")
          Notification.requestPermission();
       else {
-         let title = param.title;
-         let body = param.body;
+         let title = params.title;
+         let body = params.body;
          let notification = new Notification(title, {
-            icon: 'images/log/logo.png',
+            icon: 'images/logo/logo512.png',
             body: body,
          });
          notification.onclick = function () {
