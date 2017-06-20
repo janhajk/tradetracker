@@ -17,6 +17,7 @@
       "passport": "0.3.x",
       "passport-google-oauth": "0.2.x",
       "cookie-parser": "1.4.x",
-      "express-session": "1.15.x"
+      "express-session": "1.15.x",
+      "md5": "2.2.x"
    }
 }
