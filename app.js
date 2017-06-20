@@ -121,6 +121,14 @@ app.get('/rates', ensureAuthenticated, function(req, res){
    });
 });
 
+app.get('/okex', ensureAuthenticated, function(req, res){
+   var okex = require(__dirname + '/lib/markets/okex.js');
+   okex.raw(connection, function(error, rates){
+      if (error) res.send(error);
+      else res.send(rates);
+   });
+});
+
 
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {

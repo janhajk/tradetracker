@@ -8,6 +8,10 @@ exports.sql = {
 exports.api = {
    '1broker': {
       key: ''
+   },
+   'okex': {
+      key: '',
+      secret: ''
    }
 };
 exports.port = 1340;
