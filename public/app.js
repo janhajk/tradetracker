@@ -132,6 +132,28 @@
       };
    });
 
+   // Grant Browser notifications
+   document.addEventListener('DOMContentLoaded', function () {
+      if (Notification.permission !== "granted")
+         Notification.requestPermission();
+   });
+
+   var notify = function(param) {
+      if (Notification.permission !== "granted")
+         Notification.requestPermission();
+      else {
+         let title = param.title;
+         let body = param.body;
+         let notification = new Notification(title, {
+            icon: 'images/log/logo.png',
+            body: body,
+         });
+         notification.onclick = function () {
+            alert('!');
+         };
+      }
+   }
+
    var changeUpdateInterval = function() {
       var navbar = document.getElementById('navbarul');
       // <li><a href="#">add position</a></li>
