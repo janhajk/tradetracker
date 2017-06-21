@@ -59,7 +59,7 @@
 
    var Countdown = function() {
       var lastUpdate = 0;
-      var interval = 1 // in seconds
+      var interval = 0.5 // in seconds
       var dashline = document.getElementById('dashline');
       var bHeight = 5;  // in px
       var bWidth = 100; // in px
