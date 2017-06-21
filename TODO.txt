@@ -3,6 +3,7 @@
 -----------------------------------------------------------
 
 - app still has node errors and stops > let run for 24 in dev mode
+- change log to always log errors not just in dev mode
 
 
 -----------------------------------------------------------
@@ -25,11 +26,12 @@
  Feature Requests
 -----------------------------------------------------------
 
-- read 1broker portfolio-value
 - new columns for change in past 5 min, 1h and 24h for all rates; display as columns in positions
 - make table sortable on picture cols through hidden col
 - highlight changing values in table (green for up / red for down)
 - box with hottest currencies
-- Twitter implementation
 - Browser notifications on changes of interest (big drop/increase)
 - Turtle signals
+- Chart analysis
+- Twitter implementation
+- Autotrader

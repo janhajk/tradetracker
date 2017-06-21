@@ -4,8 +4,7 @@
    var rates = [];
    var positions = [];
    var btc = 0;
-   var updateBar = document.createElement('div');
-   var lastUpdate = 0;
+   var bar = null;
 
    // Table Columns / Structure
    // p  = parent        = cell
@@ -58,29 +57,44 @@
 
    var rInterval = 10; // Update interval of rates in seconds
 
-   var updateBarCountdown = function() {
-      let state = updateBar.style.width;
-      state = Number(state.replace(/[^0-9]/gi,''));
-      let step = 60 / rInterval;
-      let newState = state - step;
-      if (newState <= 10) newState = 10;
-      updateBar.className = 'progress-bar progress-bar-' + ((newState > 40)?'success':(newState > 20)?'warning':'danger')
-      updateBar.style.width = newState + '%';
+   var Countdown = function() {
+      var lastUpdate = 0;
+      var dashline = document.getElementById('dashline');
+
+      var container = document.createElement('div');
+      container.className = 'progress';
+      container.style.float = 'right';
+      container.style.marginTop = '2px';
+      container.style.height = '5px';
+      container.style.width = '100px';
+
+      var bar = document.createElement('div');
+      bar.className = 'progress-bar';
+      bar.role = 'progressbar';
+      bar.style.width = '0%';
+
+      container.appendChild(bar);
+      dashline.appendChild(container);
+
+      this.update = function(){
+         lastUpdate = Date.now();
+         bar.style.width = '100%';
+      };
+      this.start = function(){
+         setInterval(function(){
+            let state = bar.style.width;
+            state = Number(state.replace(/[^0-9]/gi,''));
+            let step = 60 / rInterval;
+            let newState = state - step;
+            if (newState <= 10) newState = 10;
+            bar.className = 'progress-bar progress-bar-' + ((newState > 40)?'success':(newState > 20)?'warning':'danger')
+            bar.style.width = newState + '%';
+         },1000);
+      };
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      let div = document.createElement('div');
-      div.appendChild(updateBar);
-      div.className = 'progress';
-      let dashline = document.getElementById('dashline');
-      dashline.appendChild(div);
-      updateBar.className = 'progress-bar';
-      updateBar.role = 'progressbar';
-      updateBar.style.width = '0%';
-      div.style.float = 'right';
-      div.style.marginTop = '2px';
-      div.style.height = '5px';
-      div.style.width = '100px';
+      bar = new Countdown();
       // Load Positions
       var request = new XMLHttpRequest();
       request.open('GET', '/position', true);
@@ -96,7 +110,7 @@
             content.innerHTML = '';
             content.appendChild(table.render());
             $.bootstrapSortable({ applyLast: true });
-            setInterval(updateBarCountdown, 1000);
+            bar.start();
             updateRates();
             //content.appendChild(charts());
          } else {
@@ -135,8 +149,7 @@
                   dashline.appendChild(labels.usd);
                }
                labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
-               lastUpdate = Date.now();
-               updateBar.style.width = '100%';
+               bar.update();
             } else {
                // Error
                console.log('There was an Error when updating rates;')
