@@ -9,10 +9,9 @@
  Next features
 -----------------------------------------------------------
 
-- last update progressbar, showing when was last update and how long till next
 - activate browser notification and show Tot BTC and USD on change of 1%
 - Save dayly portfolio value per position and total
-- Okex maring contracts (read or calc?)
+- Okex maring contracts read (figure out sign bug)
 - Chart of porfolio value history
 - Pie chart of positions distribution
 - Pie Chart of market distribution
