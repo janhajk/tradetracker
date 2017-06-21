@@ -61,9 +61,10 @@
    var updateBarCountdown = function() {
       let state = updateBar.style.width;
       state = Number(state.replace(/[^0-9]/gi,''));
-      let step = 100/ rInterval;
+      let step = 60 / rInterval;
       let newState = state - step;
-      if (newState <= 0) newState = 0;
+      if (newState <= 10) newState = 10;
+      updateBar.className = 'progress-bar progress-bar-' + ((newState > 40)?'success':(newState > 20)?'warning':'danger')
       updateBar.style.width = newState + '%';
    };
 
