@@ -59,7 +59,7 @@
 
    var Countdown = function() {
       var lastUpdate = 0;
-      var interval = 0.5 // in seconds
+      var interval = 1 // in seconds
       var dashline = document.getElementById('dashline');
       var bHeight = 5;  // in px
       var bWidth = 100; // in px
@@ -72,7 +72,7 @@
       container.style.width  = bWidth  + 'px';
 
       var bar = document.createElement('div');
-      bar.className = 'progress-bar';
+      bar.className = 'progress-bar progress-bar-danger';
       bar.role = 'progressbar';
       bar.style.width = '10%';
 
