@@ -4,6 +4,8 @@
    var rates = [];
    var positions = [];
    var btc = 0;
+   var updateBar = document.createElement('div');
+   var lastUpdate = 0;
 
    // Table Columns / Structure
    // p  = parent        = cell
@@ -55,7 +57,25 @@
    };
 
    var rInterval = 10; // Update interval of rates in seconds
+
+   var updateBarCountdown = function() {
+      let state = updateBar.style.width;
+      state = Number(state.replace(/[^0-9]/gi,''));
+      let step = 100/ rInterval;
+      let newState = state - step;
+      if (newState =< 0) newState = 0;
+      updateBar.style.width = newState + '%';
+   };
+
    document.addEventListener('DOMContentLoaded', function() {
+      let div = document.createElement('div');
+      div.appendChild(updateBar);
+      div.className = 'progress';
+      let dashline = document.getElementById('dashline');
+      dashline.appendChild(div);
+      updateBar.className = 'progress-bar';
+      updateBar.role = 'progressbar';
+      updateBar.style.width = '0%';
       // Load Positions
       var request = new XMLHttpRequest();
       request.open('GET', '/position', true);
@@ -71,6 +91,7 @@
             content.innerHTML = '';
             content.appendChild(table.render());
             $.bootstrapSortable({ applyLast: true });
+            setInterval(updateBarCountdown, 1000);
             updateRates();
             //content.appendChild(charts());
          } else {
@@ -109,6 +130,8 @@
                   dashline.appendChild(labels.usd);
                }
                labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
+               lastUpdate = Date.now();
+               updateBar.style.width = '100%';
             } else {
                // Error
                console.log('There was an Error when updating rates;')
