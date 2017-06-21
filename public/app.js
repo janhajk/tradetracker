@@ -77,6 +77,7 @@
       updateBar.className = 'progress-bar';
       updateBar.role = 'progressbar';
       updateBar.style.width = '0%';
+      div.style.height = '8px';
       // Load Positions
       var request = new XMLHttpRequest();
       request.open('GET', '/position', true);
