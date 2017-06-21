@@ -63,7 +63,7 @@
       state = Number(state.replace(/[^0-9]/gi,''));
       let step = 100/ rInterval;
       let newState = state - step;
-      if (newState =< 0) newState = 0;
+      if (newState <== 0) newState = 0;
       updateBar.style.width = newState + '%';
    };
 
