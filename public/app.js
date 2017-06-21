@@ -93,7 +93,7 @@
             let min = 10;
             let state = bar.style.width;
             state = Number(state.replace(/[^0-9]/gi,''));
-            let step = (100-resetAt) / (rInterval*interval);
+            let step = (100-resetAt) / (rInterval/interval);
             let newState = state - step;
             if (newState <= min) newState = min;
             bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger')
