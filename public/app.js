@@ -59,37 +59,46 @@
 
    var Countdown = function() {
       var lastUpdate = 0;
+      var interval = 1 // in seconds
       var dashline = document.getElementById('dashline');
+      var bHeight = 5;  // in px
+      var bWidth = 100; // in px
 
       var container = document.createElement('div');
       container.className = 'progress';
       container.style.float = 'right';
       container.style.marginTop = '2px';
-      container.style.height = '5px';
-      container.style.width = '100px';
+      container.style.height = bHeight + 'px';
+      container.style.width  = bWidth  + 'px';
 
       var bar = document.createElement('div');
       bar.className = 'progress-bar';
       bar.role = 'progressbar';
-      bar.style.width = '0%';
+      bar.style.width = '10%';
 
       container.appendChild(bar);
       dashline.appendChild(container);
 
+      // Resets the progress bar to 100%
       this.update = function(){
          lastUpdate = Date.now();
          bar.style.width = '100%';
       };
+
+      // starts the progressbar
       this.start = function(){
          setInterval(function(){
+            let level = [40,20];
+            let resetAt = 40;
+            let min = 10;
             let state = bar.style.width;
             state = Number(state.replace(/[^0-9]/gi,''));
-            let step = 60 / rInterval;
+            let step = (100-resetAt) / (rInterval*interval);
             let newState = state - step;
-            if (newState <= 10) newState = 10;
-            bar.className = 'progress-bar progress-bar-' + ((newState > 40)?'success':(newState > 20)?'warning':'danger')
+            if (newState <= min) newState = min;
+            bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger')
             bar.style.width = newState + '%';
-         },1000);
+         }, interval*1000);
       };
    };
 
