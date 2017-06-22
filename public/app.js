@@ -229,6 +229,7 @@
       var getTot = function(base, counter, last, amount){
          let tot = {btc:0, usd:0};
          tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
+         tot.btc = (base === 'LTC' && counter === 'OKEX')?last*getLatestRate(25,1):amount
          tot.usd = tot.btc * btc;
          return tot;
       };
@@ -392,18 +393,6 @@
       var tbody = document.createElement('tbody');
       let tot = {btc:0, usd:0};
 
-      // Total Row
-      /*let lastRow = new columns();
-      tr = document.createElement('tr');
-      for (let i in lastRow) {lastRow[i] = ftd('');}
-      lastRow['Tot BTC'] = ftd(Math.round(tot.btc*100)/100, 'right');
-      lastRow['Tot USD'] = ftd(tot.usd, 'right');
-      lastRow.Market = ftd('Total');
-      for (let i in lastRow) {
-         tr.appendChild(lastRow[i]);
-      }
-      tbody.appendChild(tr); */
-      // End Last Row
       t.appendChild(tbody);
       var div = document.createElement('div');
       div.className = 'table-responsive';
