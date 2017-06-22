@@ -41,7 +41,7 @@
       'totBtc': {
          formula : function(p, pp){
             p.value = (pp.counter=='USD')?pp.amount:pp.last * pp.amount;
-            if (pp.base=='LTC' && pp.counter=='OKEX') p.value=pp.amount*getLatestRate(25,1);
+            if (pp.base=='LTC' && pp.counter=='OKEX') p.value=pp.last*getLatestRate(25,1);
          },
          round: 2
       },
