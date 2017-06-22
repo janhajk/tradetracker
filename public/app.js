@@ -229,7 +229,7 @@
       var getTot = function(base, counter, last, amount){
          let tot = {btc:0, usd:0};
          tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
-         tot.btc = (base === 'LTC' && counter === 'OKEX')?last*getLatestRate(25,1):amount
+         if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLatestRate(25,1);
          tot.usd = tot.btc * btc;
          return tot;
       };
