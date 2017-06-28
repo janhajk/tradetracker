@@ -2,8 +2,8 @@
  Bugs
 -----------------------------------------------------------
 
-- app still has node errors and stops > let run for 24 in dev mode
 - change log to always log errors not just in dev mode
+- app still has node errors and stops 
 
 
 -----------------------------------------------------------

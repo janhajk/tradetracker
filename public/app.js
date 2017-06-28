@@ -217,13 +217,16 @@
       this.render = function(){
          var table = btable();
          for (let i=0;i<positions.length;i++) {
-            table[1].tBodies[0].appendChild(positions[i].dom);
+            table[1].tBodies[0].appendChild(positions[i].dom());
          }
          return table[0];
       };
    };
 
-   // Spalten in der Reihenfolge der Darstellung
+
+   /*
+    * Positions
+    */
    var Position = function(position) {
       var self = this;
       var getTot = function(base, counter, last, amount){
@@ -338,14 +341,16 @@
          };
       };
 
-      // create cell for each row
+      // create cell for each col and update
       this.row = {};
       for (let i in cols) {
-         this.row[i] = new Cell(i, cols[i], this);
+         let c = new Cell(i, cols[i], this);  // i = colname, cols[i] = defaults, this = pos
+         c.update(this, c);
+         this.row[i] = c;
       }
 
-      // Row-Renderer -> <tr>
-      this.tr = function(parent){
+      // Row-Renderer -> DOM-<tr>
+      this.dom = function(parent){
          let cells = [];
          for (let cell in parent.row) {
             if (!parent.row[cell].hidden) {
@@ -358,10 +363,6 @@
          }
          return tr;
       };
-      this.dom = this.tr(this);
-      for (let cell in this.row) {
-         this.row[cell].update(this, this.row[cell]);
-      }
    };
 
    /*
