@@ -121,6 +121,15 @@ app.get('/rates', ensureAuthenticated, function(req, res){
    });
 });
 
+app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
+   var rates = require(__dirname + '/lib/rates.js');
+   // Get all rates live (mode=null); don't udpate db
+   bitgrail.ratesGet(mode, mysqlconnection, function(e, rates) {
+      res.send(e, rates);
+   });
+});
+
+
 
 
 app.get('/cron/:secret', function(req, res) {
