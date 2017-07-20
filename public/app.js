@@ -340,6 +340,7 @@
             }
          };
       };
+      // END Cell
 
       // create cell for each col and update
       this.row = {};
