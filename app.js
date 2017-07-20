@@ -125,7 +125,7 @@ app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/lib/rates.js');
    var bitgrail = require(__dirname + '/lib/markets/bitgrail.js');
    // Get all rates live (mode=null); don't udpate db
-   bitgrail.ratesGet(mode, mysqlconnection, function(e, rates) {
+   bitgrail.ratesGet(null, connection, function(e, rates) {
       res.send(e, rates);
    });
 });
