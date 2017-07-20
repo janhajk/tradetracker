@@ -217,7 +217,7 @@
       this.render = function(){
          var table = btable();
          for (let i=0;i<positions.length;i++) {
-            table[1].tBodies[0].appendChild(positions[i].dom());
+            table[1].tBodies[0].appendChild(positions[i].dom(positions[i]));
          }
          return table[0];
       };
