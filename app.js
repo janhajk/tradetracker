@@ -125,7 +125,7 @@ app.get('/nall', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/lib/rates.js');
    // Get all rates live (mode=null); don't udpate db
    rates.nall(null, connection, function(error, rates){
-      if (error) res.send(error);
+      if (error) res.send(error)
       else res.send(rates);
    });
 });
