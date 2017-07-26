@@ -433,6 +433,7 @@
    };
 
    var TotAssetChart = function(parent) {
+      var self = this;
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
@@ -449,12 +450,12 @@
       });
       this.update = function() {
          data2data();
-         this.chart.update();
+         self.chart.update();
       };
       var data2data = function() {
          var tot = getTotAsset();
-         var labels = this.chart.data.labels;
-         var data = this.chart.data.datasets[0].data;
+         var labels = self.chart.data.labels;
+         var data = self.chart.data.datasets[0].data;
          for (var i in tot) {
             var pos = -1;
             for (let s in labels) {
