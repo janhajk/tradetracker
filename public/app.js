@@ -437,15 +437,17 @@
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
+      canvas.style.width = '400px';
+      canvas.style.height = '400px';
       parent.appendChild(canvas);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
          type: 'pie',
          data: {
             datasets: [{
-               data: [1]
+               data: [0]
             }],
-            labels: ['BTC']
+            labels: ['Bitcoin']
          }
       });
       this.update = function() {
