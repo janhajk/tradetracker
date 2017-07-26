@@ -445,6 +445,10 @@
             labels: ['BTC']
          }
       });
+      this.update = function() {
+         data2data();
+         this.chart.update();
+      };
       var data2data = function() {
          let tot = getTotAsset();
          let labels = this.chart.data.labels;
@@ -467,12 +471,6 @@
          }
       };
       data2data();
-
-
-      this.update = function() {
-         data2data();
-         this.chart.update();
-      };
    };
 
 
