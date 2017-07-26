@@ -485,7 +485,8 @@
             if (pos === -1) {
                labels.push(i);
                data.data.push(tot[i].btc);
-               data.backgroundColor.push((i in assetColors)?assetColors[i]:stringToColour(i));
+               let r = i;
+               data.backgroundColor.push((r in assetColors)?assetColors[i]:stringToColour(i));
             }
             else {
                data.data[pos] = tot[i].btc;
