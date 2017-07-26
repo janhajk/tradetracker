@@ -421,7 +421,7 @@
    };
 
    var getTotAsset = function() {
-      let tot = {};
+      var tot = {};
       for (let i in positions) {
          if (!(positions[i].assetname in tot)) {
             tot[positions[i].assetname] = {btc:0,usd:0};
@@ -452,11 +452,11 @@
          this.chart.update();
       };
       var data2data = function() {
-         let tot = getTotAsset();
-         let labels = this.chart.data.labels;
-         let data = this.chart.data.datasets[0].data;
-         for (let i in tot) {
-            let pos = -1;
+         var tot = getTotAsset();
+         var labels = this.chart.data.labels;
+         var data = this.chart.data.datasets[0].data;
+         for (var i in tot) {
+            var pos = -1;
             for (let s in labels) {
                if (labels[s] === i) {
                   pos = s;
