@@ -461,7 +461,7 @@
       for (let i in positions) {
          var market = positions[i].row.market.value;
          if (!(market in tot)) {
-            tot[market] = 0;
+            tot[market] = {btc:0,usd:0};
          }
          tot[market].btc += positions[i].tot.btc;
          tot[market].usd += positions[i].tot.usd;
