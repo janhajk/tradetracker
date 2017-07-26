@@ -425,8 +425,8 @@
       var BTC = ['USD', 'OKEX', '1B'];
       for (let i in positions) {
          var assetname = positions[i].assetname;
-         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC) assetname = 'Bitcoin';
-         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC) assetname = 'Litecoin';
+         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC)) assetname = 'Bitcoin';
+         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC)) assetname = 'Litecoin';
          if (!(assetname in tot)) {
             tot[assetname] = {btc:0,usd:0};
          }
