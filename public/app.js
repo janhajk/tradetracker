@@ -441,9 +441,9 @@
          type: 'doughnut',
          data: {
             datasets: [{
-               data: []
+               data: [1]
             }],
-            labels: []
+            labels: ['BTC']
          },
          options: {
             cutoutPercentage: 10
