@@ -437,7 +437,7 @@
       canvas.width = '400';
       canvas.height = '400';
       var ctx = canvas.getContext('2d');
-      var chart = new Chart(ctx, {
+      this.chart = new Chart(ctx, {
          type: 'doughnut',
          data: {
             datasets: [{
@@ -451,8 +451,8 @@
       });
       var data2data = function() {
          let tot = getTotAsset();
-         let labels = chart.data.labels;
-         let data = chart.data.datasets[0].data;
+         let labels = this.chart.data.labels;
+         let data = this.chart.data.datasets[0].data;
          for (let i in tot) {
             let pos = -1;
             for (let s in labels) {
@@ -479,7 +479,7 @@
 
       this.update = function() {
          data2data();
-         chart.update();
+         this.chart.update();
       };
    };
 
