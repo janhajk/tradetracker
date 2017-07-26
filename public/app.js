@@ -460,8 +460,6 @@
       var tot = {};
       for (let i in positions) {
          var market = positions[i].row.market.value;
-         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC)) assetname = 'Bitcoin';
-         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC)) assetname = 'Litecoin';
          if (!(market in tot)) {
             tot[market] = 0;
          }
