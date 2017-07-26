@@ -61,6 +61,10 @@
 
    var rInterval = 10; // Update interval of rates in seconds
 
+   /**
+    * Countdown Progressbar
+    * displays time since last update
+    */
    var Countdown = function() {
       var lastUpdate = 0;
       var interval = 1 // in seconds
@@ -106,6 +110,9 @@
       };
    };
 
+   /**
+    * document Loaded listener
+    */
    document.addEventListener('DOMContentLoaded', function() {
       bar = new Countdown();
       // Load Positions
@@ -190,14 +197,16 @@
       };
    });
 
-   // Grant Browser notifications
+
+   /**
+    * Browser notifications
+    */
    document.addEventListener('DOMContentLoaded', function () {
       if (Notification.permission !== "granted")
          Notification.requestPermission();
    });
-
    var notify = function(params) {
-      if (Notification.permission !== "granted")
+      if (Notification.permission !== 'granted')
          Notification.requestPermission();
       else {
          let title = params.title;
@@ -212,6 +221,9 @@
       }
    }
 
+   /**
+    * Change update interval
+    */
    var changeUpdateInterval = function() {
       var navbar = document.getElementById('navbarul');
       // <li><a href="#">add position</a></li>
@@ -219,6 +231,10 @@
       var a = document.createElement('a');
    };
 
+
+   /**
+    * Position Table Object
+    */
    var Postable = function(positions) {
       this.positions = positions;
       this.render = function(){
@@ -230,6 +246,10 @@
       };
    };
 
+
+   /**
+    * Charts DOM
+    */
    var ChartsDom = function(parent) {
       var row = document.createElement('div');
       row.className = 'row';
@@ -250,8 +270,8 @@
    };
 
 
-   /*
-    * Positions
+   /**
+    * Position Object
     */
    var Position = function(position) {
       var self = this;
@@ -397,7 +417,7 @@
     */
    var btable = function() {
       var t = document.createElement('table');
-      t.className = 'table table-bordered table-hover table-responsive table-condensed sortable';
+      t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
       t.style.width = '100%';
       t.style.maxWidth = '1000px';
       var thead = document.createElement('thead');
@@ -428,6 +448,10 @@
       return [div, t];
    };
 
+
+   /**
+    * Get Total of all positions
+    */
    var getTot = function() {
       let tot = {btc:0, usd:0};
       for (let i=0;i<positions.length;i++) {
@@ -437,6 +461,9 @@
       return tot;
    };
 
+   /**
+    * Get Total of all positions formated
+    */
    var tGetTot = function() {
       let tot = getTot();
       tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
@@ -444,6 +471,10 @@
       return tot;
    };
 
+
+   /**
+    * Get Total of each asset
+    */
    var getTotAsset = function() {
       var tot = {};
       var BTC = ['USD', 'OKEX', '1B'];
@@ -460,7 +491,11 @@
       return tot;
    };
 
- var getTotMarket = function() {
+
+   /**
+    * Get Total for every market
+    */
+   var getTotMarket = function() {
       var tot = {};
       for (let i in positions) {
          var market = positions[i].row.market.value;
@@ -472,7 +507,7 @@
       }
       for (let i in tot) {
          if (tot[i].btc === 0) delete tot[i]
-      }
+            }
       return tot;
    };
 

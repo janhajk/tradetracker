@@ -3,15 +3,16 @@
 -----------------------------------------------------------
 
 - change log to always log errors not just in dev mode
-- app still has node errors and stops 
+- app still has node errors and stops
+- better log-in / status log-in
 
 
 -----------------------------------------------------------
  Next features
 -----------------------------------------------------------
 
-- give positions a assetgroup (client-side)
 - Save dayly portfolio value per position and total
+- give positions an assetgroup (client-side)
 - activate browser notification and show Tot BTC and USD on change of 1%
 - Chart of porfolio value history
 - add/delete/edit position
