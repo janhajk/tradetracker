@@ -10,11 +10,10 @@
  Next features
 -----------------------------------------------------------
 
+- give positions a assetgroup (client-side)
 - Save dayly portfolio value per position and total
 - activate browser notification and show Tot BTC and USD on change of 1%
 - Chart of porfolio value history
-- Pie chart of positions distribution
-- Pie Chart of market distribution
 - add/delete/edit position
 - Tabs for Dashboard, Charts
 

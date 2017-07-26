@@ -470,6 +470,9 @@
          tot[market].btc += positions[i].tot.btc;
          tot[market].usd += positions[i].tot.usd;
       }
+      for (let i in tot) {
+         if (tot[i].btc === 0) delete tot[i]
+      }
       return tot;
    };
 
