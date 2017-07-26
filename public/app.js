@@ -5,6 +5,7 @@
    var positions = [];
    var btc = 0;
    var bar = null;
+   var pieTotBtc = null;
 
    // Table Columns / Structure
    // p  = parent        = cell
@@ -122,6 +123,8 @@
             $.bootstrapSortable({ applyLast: true });
             bar.start();
             updateRates();
+            pieTotBtc = new TotAssetChart();
+            content.appendChild(pieTotBtc.dom());
             //content.appendChild(charts());
          } else {
             // Error
@@ -160,6 +163,7 @@
                }
                labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
                bar.update();
+               pieTotBtc.update();
             } else {
                // Error
                console.log('There was an Error when updating rates;')
@@ -416,6 +420,67 @@
       tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
       tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', {minimumFractionDigits:0});
       return tot;
+   };
+
+   var getTotAsset = function() {
+      let tot = {};
+      for (let i in positions) {
+         if !(positions[i].assetname in tot) tot[positions[i].assetname] = {btc:0,usd:0};
+         tot[positions[i].assetname].btc += positions[i].tot.btc;
+         tot[positions[i].assetname].usd += positions[i].tot.usd;
+      }
+      return tot;
+   };
+
+   var TotAssetChart = function(parent) {
+      var canvas = document.createElement('canvas');
+      canvas.width = '400';
+      canvas.height = '400';
+      var ctx = canvas.getContext('2d');
+      var chart = new Chart(ctx, {
+         type: 'doughnut',
+         data: {
+            datasets: [{
+               data: []
+            }],
+            labels: []
+         },
+         options: {
+            cutoutPercentage: 10
+         }
+      });
+      var data2data = function() {
+         let tot = getTotAsset();
+         let labels = chart.data.labels;
+         let data = chart.data.datasets[0].data;
+         for (let i in tot) {
+            let pos = -1;
+            for (let s in labels) {
+               if (labels[s] === i) {
+                  pos = s;
+                  break;
+               }
+            }
+            if (pos === -1) {
+               labels.push(i);
+               data.push(tot[i].btc);
+            }
+            else {
+               data[pos] = tot[i].btc;
+            }
+         }
+      };
+      data2data();
+
+      this.dom = function() {
+         return canvas;
+      };
+
+
+      this.update = function() {
+         data2data();
+         chart.update();
+      };
    };
 
 
