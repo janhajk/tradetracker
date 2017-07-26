@@ -471,7 +471,7 @@
       return tot;
    };
 
-   var chartData = function(tot, self) {
+   var chartData = function(tot, colors, self) {
       var labels = self.chart.data.labels;
       var data = self.chart.data.datasets[0];
       var pos = -1;
@@ -496,7 +496,7 @@
    };
 
    var TotAssetChart = function(parent) {
-      var assetColors = {
+      var colors = {
          'Bitcoin': '#f7931a',
          'Litecoin': '#8b8b8b',
          'Storjcoin X': '#2581fc'
@@ -523,10 +523,10 @@
          }
       });
       this.update = function() {
-         chartData(getTotAsset(), self);
+         chartData(getTotAsset(), colors, self);
          self.chart.update();
       };
-      chartData(getTotAsset(), self);
+      chartData(getTotAsset(), colors, self);
    };
 
    var TotMarketChart = function(parent) {
@@ -556,10 +556,10 @@
          }
       });
       this.update = function() {
-         chartData(getTotMarket(), self);
+         chartData(getTotMarket(), colors, self);
          self.chart.update();
       };
-      chartData(getTotMarket(), self);
+      chartData(getTotMarket(), colors, self);
    };
 
    var getLatestRate = function(aid, cid) {
