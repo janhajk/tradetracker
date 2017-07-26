@@ -493,13 +493,7 @@
       }
    };
 
-   var TotAssetChart = function(parent) {
-      var colors = {
-         'Bitcoin': '#f7931a',
-         'Litecoin': '#8b8b8b',
-         'Storjcoin X': '#2581fc'
-      };
-      var self = this;
+   var emptyPieChart = function(parent) {
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
@@ -507,7 +501,7 @@
       canvas.style.height = '400px';
       parent.appendChild(canvas);
       var ctx = canvas.getContext('2d');
-      this.chart = new Chart(ctx, {
+      var chart = new Chart(ctx, {
          type: 'doughnut',
          data: {
             datasets: [{
@@ -520,6 +514,17 @@
             cutoutPercentage: 50
          }
       });
+      return chart;
+   };
+
+   var TotAssetChart = function(parent) {
+      var colors = {
+         'Bitcoin': '#f7931a',
+         'Litecoin': '#8b8b8b',
+         'Storjcoin X': '#2581fc'
+      };
+      var self = this;
+      this.chart = emptyPieChart(self);
       this.update = function() {
          chartData(getTotAsset(), colors, self);
          self.chart.update();
@@ -533,26 +538,7 @@
          'OKEX': '#2581fc'
       };
       var self = this;
-      var canvas = document.createElement('canvas');
-      canvas.width = '400';
-      canvas.height = '400';
-      canvas.style.width = '400px';
-      canvas.style.height = '400px';
-      parent.appendChild(canvas);
-      var ctx = canvas.getContext('2d');
-      this.chart = new Chart(ctx, {
-         type: 'doughnut',
-         data: {
-            datasets: [{
-               data: [],
-               backgroundColor: []
-            }],
-            labels: []
-         },
-         options: {
-            cutoutPercentage: 50
-         }
-      });
+      this.chart = emptyPieChart(self);
       this.update = function() {
          chartData(getTotMarket(), colors, self);
          self.chart.update();
