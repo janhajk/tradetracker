@@ -442,12 +442,16 @@
       parent.appendChild(canvas);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
-         type: 'pie',
+         type: 'doughnut',
          data: {
             datasets: [{
-               data: [0]
+               data: [0],
+               backgroundColor: ['rgba(255,0,0,50)']
             }],
             labels: ['Bitcoin']
+         },
+         options: {
+            cutoutPercentage: 50
          }
       });
       this.update = function() {
