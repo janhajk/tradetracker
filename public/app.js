@@ -524,7 +524,7 @@
          'Storjcoin X': '#2581fc'
       };
       var self = this;
-      this.chart = emptyPieChart(self);
+      this.chart = emptyPieChart(parent);
       this.update = function() {
          chartData(getTotAsset(), colors, self);
          self.chart.update();
@@ -538,7 +538,7 @@
          'OKEX': '#2581fc'
       };
       var self = this;
-      this.chart = emptyPieChart(self);
+      this.chart = emptyPieChart(parent);
       this.update = function() {
          chartData(getTotMarket(), colors, self);
          self.chart.update();
