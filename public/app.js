@@ -6,6 +6,7 @@
    var btc = 0;
    var bar = null;
    var pieTotBtc = null;
+   var pieTotMarket = null;
    var chartsDom = null;
 
    // Table Columns / Structure
@@ -126,6 +127,7 @@
             updateRates();
             chartsDom = new ChartsDom(content);
             pieTotBtc = new TotAssetChart(chartsDom.col1);
+            pieTotMarket = new TotMarketChart(chartsDom.col2);
          } else {
             // Error
          }
@@ -164,6 +166,7 @@
                labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
                bar.update();
                pieTotBtc.update();
+               pieTotMarket.update();
             } else {
                // Error
                console.log('There was an Error when updating rates;')
@@ -453,6 +456,45 @@
       return tot;
    };
 
+ var getTotMarket = function() {
+      var tot = {};
+      for (let i in positions) {
+         var market = positions[i].row.market.value;
+         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC)) assetname = 'Bitcoin';
+         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC)) assetname = 'Litecoin';
+         if (!(market in tot)) {
+            tot[market] = 0;
+         }
+         tot[market].btc += positions[i].tot.btc;
+         tot[market].usd += positions[i].tot.usd;
+      }
+      return tot;
+   };
+
+   var chartData = function(tot, self) {
+      var labels = self.chart.data.labels;
+      var data = self.chart.data.datasets[0];
+      var pos = -1;
+      for (var i in tot) {
+         pos = -1;
+         for (let s in labels) {
+            if (labels[s] === i) {
+               pos = s;
+               break;
+            }
+         }
+         if (pos === -1) {
+            labels.push(i);
+            data.data.push(tot[i].btc);
+            let r = i;
+            data.backgroundColor.push((r in colors)?colors[i]:stringToColour(i));
+         }
+         else {
+            data.data[pos] = tot[i].btc;
+         }
+      }
+   };
+
    var TotAssetChart = function(parent) {
       var assetColors = {
          'Bitcoin': '#f7931a',
@@ -471,7 +513,7 @@
          type: 'doughnut',
          data: {
             datasets: [{
-               data: [0],
+               data: [],
                backgroundColor: []
             }],
             labels: []
@@ -481,36 +523,44 @@
          }
       });
       this.update = function() {
-         data2data();
+         chartData(getTotAsset(), self);
          self.chart.update();
       };
-      var data2data = function() {
-         var tot = getTotAsset();
-         var labels = self.chart.data.labels;
-         var data = self.chart.data.datasets[0];
-         var pos = -1;
-         for (var i in tot) {
-            pos = -1;
-            for (let s in labels) {
-               if (labels[s] === i) {
-                  pos = s;
-                  break;
-               }
-            }
-            if (pos === -1) {
-               labels.push(i);
-               data.data.push(tot[i].btc);
-               let r = i;
-               data.backgroundColor.push((r in assetColors)?assetColors[i]:stringToColour(i));
-            }
-            else {
-               data.data[pos] = tot[i].btc;
-            }
-         }
-      };
-      data2data();
+      chartData(getTotAsset(), self);
    };
 
+   var TotMarketChart = function(parent) {
+      var colors = {
+         'Poloniex': '#01636f',
+         'OKEX': '#2581fc'
+      };
+      var self = this;
+      var canvas = document.createElement('canvas');
+      canvas.width = '400';
+      canvas.height = '400';
+      canvas.style.width = '400px';
+      canvas.style.height = '400px';
+      parent.appendChild(canvas);
+      var ctx = canvas.getContext('2d');
+      this.chart = new Chart(ctx, {
+         type: 'doughnut',
+         data: {
+            datasets: [{
+               data: [],
+               backgroundColor: []
+            }],
+            labels: []
+         },
+         options: {
+            cutoutPercentage: 50
+         }
+      });
+      this.update = function() {
+         chartData(getTotMarket(), self);
+         self.chart.update();
+      };
+      chartData(getTotMarket(), self);
+   };
 
    var getLatestRate = function(aid, cid) {
       let best = 0;
