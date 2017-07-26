@@ -123,9 +123,7 @@
             $.bootstrapSortable({ applyLast: true });
             bar.start();
             updateRates();
-            pieTotBtc = new TotAssetChart();
-            content.appendChild(pieTotBtc.dom());
-            //content.appendChild(charts());
+            pieTotBtc = new TotAssetChart(content);
          } else {
             // Error
          }
@@ -436,17 +434,15 @@
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
+      parent.appendChild(canvas);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
-         type: 'doughnut',
+         type: 'pie',
          data: {
             datasets: [{
                data: [1]
             }],
             labels: ['BTC']
-         },
-         options: {
-            cutoutPercentage: 10
          }
       });
       var data2data = function() {
@@ -471,10 +467,6 @@
          }
       };
       data2data();
-
-      this.dom = function() {
-         return canvas;
-      };
 
 
       this.update = function() {
