@@ -465,7 +465,7 @@
       canvas.height = '400';
       canvas.style.width = '400px';
       canvas.style.height = '400px';
-      parent.appendChild(parent);
+      parent.appendChild(canvas);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
          type: 'doughnut',
