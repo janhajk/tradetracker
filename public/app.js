@@ -422,9 +422,13 @@
 
    var getTotAsset = function() {
       var tot = {};
+      var BTC = ['USD', 'OKEX', '1B'];
       for (let i in positions) {
-         if (!(positions[i].assetname in tot)) {
-            tot[positions[i].assetname] = {btc:0,usd:0};
+         var assetname = positions[i].assetname;
+         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC) assetname = 'Bitcoin';
+         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC) assetname = 'Litecoin';
+         if (!(assetname in tot)) {
+            tot[assetname] = {btc:0,usd:0};
          }
          tot[positions[i].assetname].btc += positions[i].tot.btc;
          tot[positions[i].assetname].usd += positions[i].tot.usd;
@@ -536,5 +540,13 @@
       http.send();
       return http.status != 404;
    };
+
+   var inArray = inArray(needle, haystack) {
+    var length = haystack.length;
+    for(let i = 0; i < length; i++) {
+        if(haystack[i] == needle) return true;
+    }
+    return false;
+}
 
 })();
