@@ -434,12 +434,15 @@
 
    var TotAssetChart = function(parent) {
       var self = this;
+      var div = document.createElement('div');
+      div.className = 'well';
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
       canvas.style.width = '400px';
       canvas.style.height = '400px';
-      parent.appendChild(canvas);
+      div.appendChild(canvas);
+      parent.appendChild(div);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
          type: 'doughnut',
