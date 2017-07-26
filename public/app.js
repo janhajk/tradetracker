@@ -539,8 +539,8 @@
    var TotMarketChart = function(parent) {
       var colors = {
          'Poloniex': '#01636f',
-         'OKEX': '#2581fc'
-         'ledger wallet': '#8b8b8b',
+         'OKEX': '#2581fc',
+         'ledger wallet': '#8b8b8b'
       };
       var self = this;
       this.chart = emptyPieChart(parent);
