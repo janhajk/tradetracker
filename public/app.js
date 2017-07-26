@@ -231,9 +231,9 @@
       var row = document.createElement('div');
       row.className = 'row';
       var col1 = document.createElement('div');
-      col1.classname = 'col-sm-6';
+      col1.className = 'col-sm-6';
       var col2 = document.createElement('div');
-      col2.classname = 'col-sm-6';
+      col2.className = 'col-sm-6';
       row.appendChild(col1);
       row.appendChild(col2);
       parent.appendChild(row);
