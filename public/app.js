@@ -6,6 +6,7 @@
    var btc = 0;
    var bar = null;
    var pieTotBtc = null;
+   var chartsDom = null;
 
    // Table Columns / Structure
    // p  = parent        = cell
@@ -123,7 +124,8 @@
             $.bootstrapSortable({ applyLast: true });
             bar.start();
             updateRates();
-            pieTotBtc = new TotAssetChart(content);
+            chartsDom = new ChartsDom(content);
+            pieTotBtc = new TotAssetChart(chartsDom.col1);
          } else {
             // Error
          }
@@ -223,6 +225,21 @@
          }
          return table[0];
       };
+   };
+
+   var ChartsDom = function(parent) {
+      var div = document.createElement('div');
+      div.className = 'row';
+      var col1 = document.createElement('div');
+      col1.classname = 'col-sm-6';
+      var col2 = document.createElement('div');
+      col2.classname = 'col-sm-6';
+      div.appendChild(col1);
+      div.appendChild(col2);
+      parent.appendChild(div);
+      this.row = div;
+      this.col1 = col1;
+      this.col2 = col2;
    };
 
 
