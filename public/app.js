@@ -437,6 +437,11 @@
    };
 
    var TotAssetChart = function(parent) {
+      var assetColors = {
+         'Bitcoin': '#f7931a',
+         'Litecoin': '#8b8b8b',
+         'Storjcoin X': '#2581fc'
+      };
       var self = this;
       var div = document.createElement('div');
       div.className = 'well';
@@ -453,9 +458,9 @@
          data: {
             datasets: [{
                data: [0],
-               backgroundColor: ['rgba(255,0,0,50)']
+               backgroundColor: []
             }],
-            labels: ['Bitcoin']
+            labels: []
          },
          options: {
             cutoutPercentage: 50
@@ -468,7 +473,7 @@
       var data2data = function() {
          var tot = getTotAsset();
          var labels = self.chart.data.labels;
-         var data = self.chart.data.datasets[0].data;
+         var data = self.chart.data.datasets[0];
          for (var i in tot) {
             var pos = -1;
             for (let s in labels) {
@@ -479,10 +484,11 @@
             }
             if (pos === -1) {
                labels.push(i);
-               data.push(tot[i].btc);
+               data.data.push(tot[i].btc);
+               data.backgroundColor.push((i in assetColors)?assetColors[i]:stringToColour(i));
             }
             else {
-               data[pos] = tot[i].btc;
+               data.data[pos] = tot[i].btc;
             }
          }
       };
@@ -547,6 +553,19 @@
          if(haystack[i] == needle) return true;
       }
       return false;
+   };
+
+   var stringToColour = function(str) {
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+         hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      var colour = '#';
+      for (var i = 0; i < 3; i++) {
+         var value = (hash >> (i * 8)) & 0xFF;
+         colour += ('00' + value.toString(16)).substr(-2);
+      }
+      return colour;
    };
 
 })();
