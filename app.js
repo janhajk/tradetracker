@@ -115,7 +115,7 @@ app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
 app.get('/rates', ensureAuthenticated, function(req, res){
    var rates = require(__dirname + '/lib/rates.js');
    // Get all rates live (mode=null); don't udpate db
-   rates.all(null, connection, function(error, rates){
+   rates.nall(null, connection, function(error, rates){
       if (error) res.send(error);
       else res.send(rates);
    });
@@ -145,7 +145,7 @@ app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
       var rates = require(__dirname + '/lib/rates.js');
-      rates.all('write', connection, function(e){
+      rates.nall('write', connection, function(e){
          if (e) res.send(e);
          else res.send('All rates successfully updated!');
       });
