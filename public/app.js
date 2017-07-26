@@ -474,8 +474,9 @@
          var tot = getTotAsset();
          var labels = self.chart.data.labels;
          var data = self.chart.data.datasets[0];
+         var pos = -1;
          for (var i in tot) {
-            var pos = -1;
+            pos = -1;
             for (let s in labels) {
                if (labels[s] === i) {
                   pos = s;
