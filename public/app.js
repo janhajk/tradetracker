@@ -234,15 +234,19 @@
       var row = document.createElement('div');
       row.className = 'row';
       var col1 = document.createElement('div');
-      col1.className = 'col-sm-6';
+      col1.className = 'col-sm-4';
       var col2 = document.createElement('div');
-      col2.className = 'col-sm-6';
+      col2.className = 'col-sm-4';
+      var col3 = document.createElement('div');
+      col3.className = 'col-sm-4';
       row.appendChild(col1);
       row.appendChild(col2);
+      row.appendChild(col3);
       parent.appendChild(row);
       this.row = row;
       this.col1 = col1;
       this.col2 = col2;
+      this.col3 = col3;
    };
 
 
@@ -536,6 +540,7 @@
       var colors = {
          'Poloniex': '#01636f',
          'OKEX': '#2581fc'
+         'ledger wallet': '#8b8b8b',
       };
       var self = this;
       this.chart = emptyPieChart(parent);
