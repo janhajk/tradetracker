@@ -228,16 +228,16 @@
    };
 
    var ChartsDom = function(parent) {
-      var div = document.createElement('div');
-      div.className = 'row';
+      var row = document.createElement('div');
+      row.className = 'row';
       var col1 = document.createElement('div');
       col1.classname = 'col-sm-6';
       var col2 = document.createElement('div');
       col2.classname = 'col-sm-6';
-      div.appendChild(col1);
-      div.appendChild(col2);
-      parent.appendChild(div);
-      this.row = div;
+      row.appendChild(col1);
+      row.appendChild(col2);
+      parent.appendChild(row);
+      this.row = row;
       this.col1 = col1;
       this.col2 = col2;
    };
@@ -460,15 +460,12 @@
          'Storjcoin X': '#2581fc'
       };
       var self = this;
-      var div = document.createElement('div');
-      div.className = 'well';
       var canvas = document.createElement('canvas');
       canvas.width = '400';
       canvas.height = '400';
       canvas.style.width = '400px';
       canvas.style.height = '400px';
-      div.appendChild(canvas);
-      parent.appendChild(div);
+      parent.appendChild(parent);
       var ctx = canvas.getContext('2d');
       this.chart = new Chart(ctx, {
          type: 'doughnut',
