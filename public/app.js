@@ -430,8 +430,8 @@
          if (!(assetname in tot)) {
             tot[assetname] = {btc:0,usd:0};
          }
-         tot[positions[i].assetname].btc += positions[i].tot.btc;
-         tot[positions[i].assetname].usd += positions[i].tot.usd;
+         tot[assetname].btc += positions[i].tot.btc;
+         tot[assetname].usd += positions[i].tot.usd;
       }
       return tot;
    };
