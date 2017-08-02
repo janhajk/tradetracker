@@ -326,11 +326,6 @@
                td.innerHTML = '';
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
-               let src = path + value + '.' + self.image.filetype;
-               setTimeout(imageExists(src, td, function(exists, td){
-                  if (!exists) {
-                     td.style.backgroundImage = 'url(images/noimagefound.png)';}
-               }),5000);
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
                td.style.backgroundSize = 'Auto 25px';
