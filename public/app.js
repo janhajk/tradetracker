@@ -327,7 +327,7 @@
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
-               setTimeout(new imageExists(src, td, function(exists, td){
+               setTimeout(imageExists(src, td, function(exists, td){
                   if (!exists) {
                      td.style.backgroundImage = 'url(images/noimagefound.png)';}
                }),5000);
@@ -678,13 +678,12 @@
     * @param {Function} cb callback()
     */
    var imageExists = function (image_uri, td, cb){
-      this.http = new XMLHttpRequest();
-      this.http.open('HEAD', image_uri, false);
-      var self = this;
-      this.http.onload = function() {
-         cb(self.http.status != 404, td);
+      var http = new XMLHttpRequest();
+      http.open('HEAD', image_uri, false);
+      http.onload = function() {
+         cb(http.status != 404, td);
       };
-      this.http.send();
+      http.send();
    };
 
    /**
