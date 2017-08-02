@@ -683,7 +683,7 @@
       var http = new XMLHttpRequest();
       http.open('HEAD', image_uri, false);
       http.onload = function() {
-         cb(!(http.status != 404), td);
+         cb(http.status != 404, td);
       };
       http.send();
    };
