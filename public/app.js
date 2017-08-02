@@ -333,7 +333,6 @@
                      td.style.backgroundImage = 'url('+src+')';
                   }
                });
-               if (!imageExists(src)) src = path + 'wallet.png';
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
                td.style.backgroundSize = 'Auto 25px';
@@ -684,7 +683,7 @@
       var http = new XMLHttpRequest();
       http.open('HEAD', image_uri, false);
       http.onload = function() {
-         cb(http.status != 404, td);
+         cb(!(http.status != 404), td);
       };
       http.send();
    };
