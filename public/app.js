@@ -347,7 +347,10 @@
             };
             return td;
          };
-         this.calc = function(parent, pos){
+         /**
+          * Calculates cell using formula
+          */
+         this.calc = function(parent, pos) {
             if (parent.col) {
                parent.value = pos[parent.col];
             }
@@ -360,7 +363,10 @@
                }
             }
          };
-         this.tValue = function(parent){
+         /**
+          * Formats a Cell Value to readable format
+          */
+         this.tValue = function(parent) {
             var html = parent.value;
             if (parent.round === -1) {
                if (typeof html === 'number') {
@@ -375,18 +381,21 @@
             }
             return html;
          };
-         this.calc(this, pos);
-         this.dom = this.render(this);
+         /**
+          * Updates Cell (only if value has changed)
+          */
          this.update = function(pos, parent) {
             let val1 = parent.value;
             parent.calc(parent, pos);
-            // if value have changed, udpate html
+            // update html if value has changed
             if (val1 == null || parent.value !== val1) {
                parent.dom.innerHTML = parent.tValue(parent);
             }
          };
+         this.calc(this, pos);
+         this.dom = this.render(this);
       };
-      // END Cell
+      // *** END Cell
 
       // create cell for each col and update
       this.row = {};
@@ -396,7 +405,10 @@
          this.row[i] = c;
       }
 
-      // Row-Renderer -> DOM-<tr>
+      /**
+       * Renders DOM of a row
+       * returns DOM-<tr>
+       */
       this.dom = function(parent){
          let cells = [];
          for (let cell in parent.row) {
@@ -412,26 +424,25 @@
       };
    };
 
-   /*
+   /**
     * Positions-Table
     */
    var btable = function() {
       var t = document.createElement('table');
-      t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
-      t.style.width = '100%';
+      t.className      = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
+      t.style.width    = '100%';
       t.style.maxWidth = '1000px';
-      var thead = document.createElement('thead');
-      thead.class = 'thead-inverse';
 
       // table header
+      var thead   = document.createElement('thead');
+      thead.class = 'thead-inverse';
       var tr = document.createElement('tr');
-      var th;
       for (let c in cols) {
          if (cols[c].hidden) continue;
-         th = document.createElement('th');
-         th.innerHTML = c;
-         th.className = cols[c].class;
-         if (cols[c].align) th.style.textAlign = cols[c].align;
+         let th = document.createElement('th');
+         th.innerHTML       = c;
+         th.className       = cols[c].class?cols[c].class:'';
+         th.style.textAlign = cols[c].align?cols[c].align:'left';
          tr.appendChild(th);
       }
       thead.appendChild(tr);
@@ -439,7 +450,6 @@
 
       // Positions
       var tbody = document.createElement('tbody');
-      let tot = {btc:0, usd:0};
 
       t.appendChild(tbody);
       var div = document.createElement('div');
@@ -488,6 +498,10 @@
          tot[assetname].btc += positions[i].tot.btc;
          tot[assetname].usd += positions[i].tot.usd;
       }
+      var tottot = getTot();
+      for (let i in tot) {
+         tot[i]['%'] = Math.round(tot[i]/tottot.btc);
+      }
       return tot;
    };
 
@@ -506,11 +520,18 @@
          tot[market].usd += positions[i].tot.usd;
       }
       for (let i in tot) {
-         if (tot[i].btc === 0) delete tot[i]
-            }
+         if (tot[i].btc === 0) delete tot[i];
+      }
+      var tottot = getTot();
+      for (let i in tot) {
+         tot[i]['%'] = Math.round(tot[i]/tottot.btc);
+      }
       return tot;
    };
 
+   /**
+    * 
+    */
    var chartData = function(tot, colors, self) {
       var labels = self.chart.data.labels;
       var data = self.chart.data.datasets[0];
@@ -535,6 +556,11 @@
       }
    };
 
+   /**
+    * Creates empty PieChart Object
+    * and appends to parent-DOM
+    *
+    */
    var emptyPieChart = function(parent) {
       var canvas = document.createElement('canvas');
       canvas.width = '400';
@@ -559,32 +585,44 @@
       return chart;
    };
 
+   /**
+    * Create PieChart of Asset-Distribution
+    * 
+    */
    var TotAssetChart = function(parent) {
+      // Colors that are preset
+      // those with no preset color will get
+      // an unique color from stringToColor()
       var colors = {
-         'Bitcoin': '#f7931a',
-         'Litecoin': '#8b8b8b',
+         'Bitcoin'    : '#f7931a',
+         'Litecoin'   : '#8b8b8b',
          'Storjcoin X': '#2581fc'
       };
       var self = this;
+      // Create new empty ChartJs Object and ad it
+      // to parent DOM-Element
       this.chart = emptyPieChart(parent);
+      // Handler to update Chart data
       this.update = function() {
          chartData(getTotAsset(), colors, self);
-         self.chart.update();
+         self.chart.update(); // updates chartjs object (animated stlye)
       };
+      // Call chartData() once on object-creation
+      // to set initial data-values
       chartData(getTotAsset(), colors, self);
    };
 
    var TotMarketChart = function(parent) {
       var colors = {
-         'Poloniex': '#01636f',
-         'OKEX': '#2581fc',
+         'Poloniex'     : '#01636f',
+         'OKEX'         : '#2581fc',
          'ledger wallet': '#8b8b8b'
       };
       var self = this;
       this.chart = emptyPieChart(parent);
       this.update = function() {
          chartData(getTotMarket(), colors, self);
-         self.chart.update();
+         self.chart.update(); // updates chartjs object (animated stlye)
       };
       chartData(getTotMarket(), colors, self);
    };
@@ -603,36 +641,25 @@
       return best;
    };
 
+   /**
+    * Rounds number in dependence of depth
+    */
    var smartRound = function(number) {
-      if (number == 0) return 0;
+      if (number == 0)     return 0;
       if (number < 0.0001) return 8;
-      if (number < 0.001) return 7;
-      if (number < 0.01) return 6;
-      if (number < 0.1) return 5;
-      if (number < 1) return 4;
-      if (number < 10) return 3;
-      if (number < 100) return 2;
-      if (number < 1000) return 1;
+      if (number < 0.001)  return 7;
+      if (number < 0.01)   return 6;
+      if (number < 0.1)    return 5;
+      if (number < 1)      return 4;
+      if (number < 10)     return 3;
+      if (number < 100)    return 2;
+      if (number < 1000)   return 1;
       return 0;
    };
 
-   var charts = function(){
-      var canvas = document.createElement('canvas');
-      canvas.height = '300';
-      canvas.width = '300';
-      var ctx = canvas.getContext('2d');
-      var assetChart = new Chart(ctx, {
-         type: 'pie',
-         data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-               data: [12, 19, 3, 5, 2, 3]
-            }]
-         }
-      });
-      return canvas;
-   };
-
+   /**
+    * Check if image exists
+    */
    var imageExists = function (image_url){
       var http = new XMLHttpRequest();
       http.open('HEAD', image_url, false);
@@ -640,6 +667,9 @@
       return http.status != 404;
    };
 
+   /**
+    * PHP in_array() equivalent
+    */
    var inArray = function (needle, haystack) {
       var length = haystack.length;
       for(let i = 0; i < length; i++) {
@@ -648,6 +678,9 @@
       return false;
    };
 
+   /**
+    * Unique color for string
+    */
    var stringToColour = function(str) {
       var hash = 0;
       for (var i = 0; i < str.length; i++) {
