@@ -327,6 +327,12 @@
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
+               imageExists(src, td, function(exists, td){
+                  if (!exists) {
+                     src = path + 'wallet.png';
+                     td.style.backgroundImage = 'url('+src+')';
+                  }
+               });
                if (!imageExists(src)) src = path + 'wallet.png';
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
@@ -587,7 +593,8 @@
 
    /**
     * Create PieChart of Asset-Distribution
-    * 
+    * @param  {String} parent DOM-parent of Chart
+    * @return {String} The reversed string
     */
    var TotAssetChart = function(parent) {
       // Colors that are preset
@@ -627,15 +634,24 @@
       chartData(getTotMarket(), colors, self);
    };
 
+   /**
+    * Get latest Rate for Asset for specific connector
+    *
+    * @param  {Number} aid Asset-ID
+    * @param  {Number} cid Connector-ID
+    * @return {Number} The latest rate; 0 if no rate found
+    */
    var getLatestRate = function(aid, cid) {
-      let best = 0;
+      var best = 0;
       for(let i=0;i<rates.length;i++) {
-         if (best === 0 && rates[i].aid === aid) {
-            best = rates[i].last;
+         if(rates[i].aid === aid && rates[i].cid === cid) {
+            return rates[i].last;
          }
-         else if(rates[i].aid === aid && rates[i].cid === cid) {
+         // try to get any rate for aid
+         // on the first run
+         // even not for same cid
+         else if (best === 0 && rates[i].aid === aid) {
             best = rates[i].last;
-            break;
          }
       }
       return best;
@@ -643,6 +659,8 @@
 
    /**
     * Rounds number in dependence of depth
+    * @param {Number} number Value to smart-round
+    * @return {Number} smart-rounded number; 0 for default/error
     */
    var smartRound = function(number) {
       if (number == 0)     return 0;
@@ -658,13 +676,17 @@
    };
 
    /**
-    * Check if image exists
+    * Check if an image exists
+    * @param {String} image_uri
+    * @param {Function} cb callback()
     */
-   var imageExists = function (image_url){
+   var imageExists = function (image_uri, td, cb){
       var http = new XMLHttpRequest();
-      http.open('HEAD', image_url, false);
+      http.open('HEAD', image_uri, false);
+      http.onload = function() {
+         cb(request.status != 404, td);
+      };
       http.send();
-      return http.status != 404;
    };
 
    /**
