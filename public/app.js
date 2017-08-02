@@ -327,7 +327,7 @@
                let value = self.value.replace(/\s/g, '-').toLowerCase();
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
-               imageExists(src, td, function(exists, td){
+               new imageExists(src, td, function(exists, td){
                   if (!exists) {
                      td.style.backgroundImage = 'url(images/noimagefound.png)';}
                });
