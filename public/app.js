@@ -328,7 +328,8 @@
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
                imageExists(src, td, function(exists, td){
-                  if (!exists) td.style.backgroundImage = 'url(images/noimagefound.png)';
+                  if (!exists) {
+                     td.style.backgroundImage = 'url(images/noimagefound.png)';}
                });
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
