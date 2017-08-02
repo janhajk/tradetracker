@@ -328,10 +328,7 @@
                let path = 'images/' + self.image.folder + '/';
                let src = path + value + '.' + self.image.filetype;
                imageExists(src, td, function(exists, td){
-                  if (!exists) {
-                     src = path + 'wallet.png';
-                     td.style.backgroundImage = 'url('+src+')';
-                  }
+                  if (!exists) td.style.backgroundImage = 'url(/images/noimagefound.png)';
                });
                td.style.backgroundImage = 'url('+src+')';
                td.style.backgroundRepeat = 'no-repeat';
