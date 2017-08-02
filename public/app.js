@@ -678,12 +678,13 @@
     * @param {Function} cb callback()
     */
    var imageExists = function (image_uri, td, cb){
-      var http = new XMLHttpRequest();
-      http.open('HEAD', image_uri, false);
-      http.onload = function() {
-         cb(http.status != 404, td);
+      this.http = new XMLHttpRequest();
+      this.http.open('HEAD', image_uri, false);
+      var self = this;
+      this.http.onload = function() {
+         cb(self.http.status != 404, td);
       };
-      http.send();
+      this.http.send();
    };
 
    /**
