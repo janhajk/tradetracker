@@ -425,6 +425,8 @@
 
    /**
     * Positions-Table
+    * Creates empty positions table
+    * Data is added later asynchronously
     */
    var btable = function() {
       var t = document.createElement('table');
