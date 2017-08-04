@@ -538,7 +538,7 @@
       var data = self.chart.data.datasets[0];
       var pos = -1;
       for (var i in tot) {
-         if tot[i].btc < 0 continue;
+         if (tot[i].btc < 0) continue;
          pos = -1;
          for (let s in labels) {
             if (labels[s] === i) {
