@@ -45,7 +45,7 @@
       'totBtc': {
          formula : function(p, pp){
             p.value = (pp.counter=='USD')?pp.amount:pp.last * pp.amount;
-            if (pp.base=='LTC' && pp.counter=='OKEX') p.value=pp.last*getLatestRate(25,1);
+            if (pp.base=='LTC' && pp.counter=='OKEX') p.value=pp.last*getLastRate(25,1);
          },
          round: 2
       },
@@ -55,9 +55,9 @@
       },
       '% 1h': {
          formula : function(p, pp) {
-            if (p.value >= 0) p.value = '+' + p.value;
-         },
-         col: 'change_1h'
+            var change = pp.rates[0].change_1h;
+            p.value = (change >= 0)?'+'+change:change;
+         }
       },
    };
 
@@ -166,7 +166,7 @@
                   rates = JSON.parse(request.responseText);
                   let tot = tGetTot();
                   // update Global BTC-Price
-                  btc = getLatestRate(110,12);
+                  btc = getLastRate(110,12);
                   document.title = tot.btc + '/' + tot.usd;
                   for (let i in positions) {
                      positions[i].update();
@@ -296,7 +296,7 @@
       var getTot = function(base, counter, last, amount){
          let tot = {btc:0, usd:0};
          tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
-         if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLatestRate(25,1);
+         if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLastRate(25,1);
          tot.usd = tot.btc * btc;
          return tot;
       };
@@ -312,7 +312,9 @@
       this.rates  = position.rates;
       this.tot    = getTot(this.base, this.counter, this.last, this.amount);
       this.update = function(){
-         self.last = getLatestRate(self.aid, self.cid);
+         self.last = getLastRate(self.aid, self.cid);
+         self.rates.unshift(getLatestRate(self.aid, self.cid));
+         if (self.rates.length > 3600) self.rates.pop();
          self.tot = getTot(self.base, self.counter, self.last, self.amount);
          for (let cell in self.row) {
             self.row[cell].update(self, self.row[cell]);
@@ -650,13 +652,13 @@
    };
 
    /**
-    * Get latest Rate for Asset for specific connector
+    * Get last Rate for Asset for specific connector
     *
     * @param  {Number} aid Asset-ID
     * @param  {Number} cid Connector-ID
     * @return {Number} The latest rate; 0 if no rate found
     */
-   var getLatestRate = function(aid, cid) {
+   var getLastRate = function(aid, cid) {
       var best = 0;
       for(let i=0;i<rates.length;i++) {
          if(rates[i].aid === aid && rates[i].cid === cid) {
@@ -667,6 +669,29 @@
          // even not for same cid
          else if (best === 0 && rates[i].aid === aid) {
             best = rates[i].last;
+         }
+      }
+      return best;
+   };
+
+   /**
+    * Get latest Rate Object for Asset for specific connector
+    *
+    * @param  {Number} aid Asset-ID
+    * @param  {Number} cid Connector-ID
+    * @return {Number} The latest rate; 0 if no rate found
+    */
+   var getLatestRate = function(aid, cid) {
+      var best = 0;
+      for(let i=0;i<rates.length;i++) {
+         if(rates[i].aid === aid && rates[i].cid === cid) {
+            return rates[i];
+         }
+         // try to get any rate for aid
+         // on the first run
+         // even not for same cid
+         else if (best === 0 && rates[i].aid === aid) {
+            best = rates[i];
          }
       }
       return best;
