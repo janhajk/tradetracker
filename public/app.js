@@ -538,7 +538,7 @@
       var data = self.chart.data.datasets[0];
       var pos = -1;
       for (var i in tot) {
-         if (tot[i].btc < 0) continue;
+         if (tot[i].btc < 0) tot[i].btc = 0; // Don't use negative positions
          pos = -1;
          for (let s in labels) {
             if (labels[s] === i) {
@@ -659,6 +659,7 @@
     * @return {Number} smart-rounded number; 0 for default/error
     */
    var smartRound = function(number) {
+      number = Math.abs(number);
       if (number == 0)     return 0;
       if (number < 0.0001) return 8;
       if (number < 0.001)  return 7;
