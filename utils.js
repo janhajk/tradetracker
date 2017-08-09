@@ -40,13 +40,19 @@ var log = function(log, type) {
    else if (typeof log === 'string') {
       log = new Date().toLocaleString() + log;
    }
-   if (type = 'fatal') {
+   if (type === 'header') {
+      log('-');
+   }
+   if (type === 'fatal') {
       console.log(log);
       return;
    }
    else if(config.dev) {
       console.log(log);
       return;
+   }
+   if (type === 'header') {
+      log('-');
    }
 };
 exports.log = log;
