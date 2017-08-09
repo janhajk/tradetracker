@@ -30,7 +30,8 @@
          align: 'center'
       },
       'amount': {
-         col: 'amount'
+         col: 'amount',
+         class: 'hidden-xs'
       },
       'open': {
          col: 'open',
@@ -51,7 +52,13 @@
       'totUsd': {
          formula : {type:'*', x:'totBtc', y:'btc'},
          round: 0
-      }
+      },
+      '% 1h': {
+         formula : function(p, pp) {
+            if (p.value >= 0) p.value = '+' + p.value;
+         },
+         col: 'change_1h'
+      },
    };
 
    var labels = {
