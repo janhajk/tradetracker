@@ -2,23 +2,24 @@
  Bugs
 -----------------------------------------------------------
 
-- change log to always log errors not just in dev mode
-- app still has node errors and stops
-- better log-in / status log-in
+- replace all log() to new log engine
+- better log-in
 
 
 -----------------------------------------------------------
  Next features
 -----------------------------------------------------------
 
-- new columns for change in past 5 min, 1h and 24h for all rates; display as columns in positions
+- new columns for change in past 5 min; client-side
+- new columns for change in past 24 h;  server-side
 - Save dayly portfolio value per position and total
 - give positions an assetgroup (client-side)
-- activate browser notification show Tot BTC and USD on change of 1%
+- activate browser notification show Tot BTC and USD on change of 1% in 5 min
 - Chart of porfolio value history
 - add/delete/edit position
 - Tabs for Dashboard, Charts
 - Show Percentage & USD on Charts
+- Create Alarm function
 
 
 
