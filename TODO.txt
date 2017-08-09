@@ -10,8 +10,8 @@
  Next features
 -----------------------------------------------------------
 
-- new columns for change in past 5 min; client-side
 - new columns for change in past 24 h;  server-side
+- new columns for change in past 5 min; client-side
 - Save dayly portfolio value per position and total
 - give positions an assetgroup (client-side)
 - activate browser notification show Tot BTC and USD on change of 1% in 5 min
