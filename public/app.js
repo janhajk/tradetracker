@@ -55,9 +55,9 @@
       },
       '% 1h': {
          formula : function(p, pp) {
-            var change = pp.rates[0].change_1h;
-            change = (change===undefined)?0:change;
-            p.value = change * 100;
+            var last_1h = pp.rates[0].last_1h;
+            if (last_1h===undefined) p.value = 0;
+            else p.value = (pp.last/last_1h-1) * 100;
          },
          round: 1,
          prefix: 'sign'
