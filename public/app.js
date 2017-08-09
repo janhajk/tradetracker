@@ -57,9 +57,10 @@
          formula : function(p, pp) {
             var change = pp.rates[0].change_1h;
             change = (change===undefined)?0:change;
-            var tChange = change * 100;
-            p.value = (change >= 0)?'+'+tChange:tChange;
-         }
+            p.value = change * 100;
+         },
+         round: 1,
+         prefix: 'sign'
       },
    };
 
@@ -345,6 +346,7 @@
          }
          this.render =  function(self) {
             var td = document.createElement('td');
+            // Image-Cells
             if (self.value !== null && self.image) {
                td.innerHTML = '';
                let value = self.value.replace(/\s/g, '-').toLowerCase();
@@ -357,6 +359,7 @@
                td.style.backgroundPosition = self.align;
                //img.title = self.tValue(this);
             }
+            // Text-Cells
             else {
                td.innerHTML = self.tValue(this);
             }
@@ -364,6 +367,7 @@
             td.style.cursor = 'pointer';
             td.className = self.class;
             td.onmousedown = function(){return false};
+            // For Testing purpose
             td.ondblclick = function(){
                console.log(this.self.value);
             };
@@ -398,8 +402,10 @@
                }
             }
             else if (typeof html === 'number' && parent.round >= 0) {
+               var num = html;
                html = html.toFixed(parent.round);
                html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
+               if (parent.prefix === 'sign' && num > 0) html = '+' + html;
             }
             return html;
          };
