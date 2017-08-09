@@ -46,11 +46,9 @@ log = function(log, type) {
    }
    if (type === 'fatal') {
       console.log(log);
-      return;
    }
    else if(config.dev) {
       console.log(log);
-      return;
    }
    if (type === 'header') {
       log('-');
