@@ -37,9 +37,9 @@ exports.getFilesizeInBytes = getFilesizeInBytes;
  */
 
 var log = function l(log, type) {
-   if (log === '-') log = '------------------------------------------';
+   if (log === '-') log = '------------------------------------------------------------------------------------------';
    else if (typeof log === 'string') {
-      log = new Date().toLocaleString() + log;
+      log = new Date().toLocaleString() + ': ' + log;
    }
    if (type === 'header') {
       l('-');
