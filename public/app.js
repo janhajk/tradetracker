@@ -309,6 +309,7 @@
       this.open   = position.open;
       this.aid    = position.aid;
       this.last   = position.rates[0].last;
+      this.rates  = position.rates;
       this.tot    = getTot(this.base, this.counter, this.last, this.amount);
       this.update = function(){
          self.last = getLatestRate(self.aid, self.cid);
