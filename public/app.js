@@ -370,7 +370,7 @@
             if (parent.round === -1) {
                if (typeof html === 'number') {
                   let digits = smartRound(html);
-                  html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
+                  html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
                   parent.align = 'right';
                }
             }
@@ -670,6 +670,22 @@
       if (number < 100)    return 2;
       if (number < 1000)   return 1;
       return 0;
+   };
+
+   var cutTrailingZeros = function(number) {
+      number = number.toString();
+      newNumber = number;
+      if (number.indexOf('.')) {
+         while (newNumber.length > 2){
+            if (newNumber.slice(-1) != '0') break;
+            newNumber = newNumber.slice(0, -1);
+         }
+      }
+      // if '1234.'
+      if (newNumber.slice(-1) === '.') {
+         newNumber = newNumber.slice(0, -1);
+      }
+      return newNumber;
    };
 
    /**
