@@ -56,7 +56,8 @@
       '% 1h': {
          formula : function(p, pp) {
             var change = pp.rates[0].change_1h;
-            var tChange = change * 100
+            change = (change===undefined)?0:change;
+            var tChange = change * 100;
             p.value = (change >= 0)?'+'+tChange:tChange;
          }
       },
