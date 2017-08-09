@@ -139,7 +139,7 @@
             }
             catch (e) {
                console.log(new Date().toLocaleString() + ': not logged in');
-               document.getElementById('content').innerHTML = 'not logged in.';
+               document.getElementById('content').innerHTML = 'Not logged in.';
             }
          } else {
             // Error
