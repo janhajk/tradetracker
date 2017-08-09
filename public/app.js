@@ -149,31 +149,36 @@
          request.open('GET', '/rates', true);
          request.onload = function() {
             if(request.status >= 200 && request.status < 400) {
-               rates = JSON.parse(request.responseText);
-               let tot = tGetTot();
-               // update Global BTC-Price
-               btc = getLatestRate(110,12);
-               document.title = tot.btc + '/' + tot.usd;
-               for (let i in positions) {
-                  positions[i].update();
+               try {
+                  rates = JSON.parse(request.responseText);
+                  let tot = tGetTot();
+                  // update Global BTC-Price
+                  btc = getLatestRate(110,12);
+                  document.title = tot.btc + '/' + tot.usd;
+                  for (let i in positions) {
+                     positions[i].update();
+                  }
+                  if (!labels.btc) {
+                     let dashline = document.getElementById('dashline');
+                     labels.btc = document.createElement('span');
+                     labels.btc.className = 'label label-success';
+                     dashline.appendChild(labels.btc);
+                  }
+                  labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
+                  if (!labels.usd) {
+                     let dashline = document.getElementById('dashline');
+                     labels.usd = document.createElement('span');
+                     labels.usd.className = 'label label-primary';
+                     dashline.appendChild(labels.usd);
+                  }
+                  labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
+                  bar.update();
+                  pieTotBtc.update();
+                  pieTotMarket.update();
                }
-               if (!labels.btc) {
-                  let dashline = document.getElementById('dashline');
-                  labels.btc = document.createElement('span');
-                  labels.btc.className = 'label label-success';
-                  dashline.appendChild(labels.btc);
+               catch (e) {
+                  console.log(new Date().toLocaleString() + ': not logged in');
                }
-               labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
-               if (!labels.usd) {
-                  let dashline = document.getElementById('dashline');
-                  labels.usd = document.createElement('span');
-                  labels.usd.className = 'label label-primary';
-                  dashline.appendChild(labels.usd);
-               }
-               labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
-               bar.update();
-               pieTotBtc.update();
-               pieTotMarket.update();
             } else {
                // Error
                console.log('There was an Error when updating rates;')
