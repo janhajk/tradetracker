@@ -300,6 +300,9 @@
 
    /**
     * Position Object
+    *
+    * @param {Object} position position coming from Database JSON
+    *
     */
    var Position = function(position) {
       var self = this;
@@ -369,6 +372,7 @@
             // Text-Cells
             else {
                td.innerHTML = self.tValue(this);
+               td.dataValue = this.value;
             }
             td.style.textAlign = self.align;
             td.style.cursor = 'pointer';
