@@ -20,6 +20,8 @@ var connection = mysql.createConnection({
   database: config.sql.database
 });
 
+var rates = require(__dirname + '/lib/rates.js');
+
 // Express
 var express        = require('express');
 var compression    = require('compression');
@@ -113,7 +115,6 @@ app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
 
 
 app.get('/rates', ensureAuthenticated, function(req, res){
-   var rates = require(__dirname + '/lib/rates.js');
    // Get all rates live (mode=null); don't udpate db
    rates.all(null, connection, function(error, rates){
       if (error) res.send(error);
@@ -124,7 +125,6 @@ app.get('/rates', ensureAuthenticated, function(req, res){
 
 
 app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
-   var rates = require(__dirname + '/lib/rates.js');
    var bitgrail = require(__dirname + '/lib/markets/bitgrail.js');
    // Get all rates live (mode=null); don't udpate db
    bitgrail.ratesGet(null, connection, function(e, rates) {
@@ -137,7 +137,6 @@ app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
 
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
-      var rates = require(__dirname + '/lib/rates.js');
       rates.all('write', connection, function(e){
          if (e) res.send(e);
          else res.send('All rates successfully updated!');
