@@ -30,11 +30,19 @@ var getFilesizeInBytes = function(filename) {
 exports.getFilesizeInBytes = getFilesizeInBytes;
 
 
-var log = function(log) {
-    if(config.dev) {
-        if (log === '-') log = '------------------------------------------';
-        console.log(log);
-    }
+var log = function(log, type) {
+   if (log === '-') log = '------------------------------------------';
+   else {
+      log = new Date().toLocaleString() + log;
+   }
+   if (type = 'fatal') {
+      console.log(log);
+      return;
+   }
+   else if(config.dev) {
+      console.log(log);
+      return;
+   }
 };
 exports.log = log;
 
