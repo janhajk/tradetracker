@@ -371,8 +371,7 @@
             }
             // Text-Cells
             else {
-               td.innerHTML = self.tValue(this);
-               td.dataValue = self.value;
+               td.innerHTML = self.tValue(self);
             }
             td.style.textAlign = self.align;
             td.style.cursor = 'pointer';
@@ -429,6 +428,7 @@
             // update html if value has changed
             if (val1 == null || parent.value !== val1) {
                parent.dom.innerHTML = parent.tValue(parent);
+               parent.dom.dataValue = val1;
             }
          };
          this.calc(this, pos);
