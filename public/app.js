@@ -372,7 +372,7 @@
             // Text-Cells
             else {
                td.innerHTML = self.tValue(this);
-               td.dataValue = this.value;
+               td.dataValue = self.value;
             }
             td.style.textAlign = self.align;
             td.style.cursor = 'pointer';
