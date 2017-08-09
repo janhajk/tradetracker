@@ -53,11 +53,20 @@
          formula : {type:'*', x:'totBtc', y:'btc'},
          round: 0
       },
-      '% 1h': {
+      '±1h': {
          formula : function(p, pp) {
             var last_1h = pp.rates[0].last_1h;
             if (last_1h===undefined) p.value = 0;
             else p.value = (pp.last/last_1h-1) * 100;
+         },
+         round: 1,
+         prefix: 'sign'
+      },
+      '±24h': {
+         formula : function(p, pp) {
+            var last_24h = pp.rates[0].last_24h;
+            if (last_24h===undefined) p.value = 0;
+            else p.value = (pp.last/last_24h-1) * 100;
          },
          round: 1,
          prefix: 'sign'
