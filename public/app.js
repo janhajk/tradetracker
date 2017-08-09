@@ -120,21 +120,26 @@
       request.open('GET', '/position', true);
       request.onload = function() {
          if(request.status >= 200 && request.status < 400) {
-            data = JSON.parse(request.responseText);
-            btc = data.BTC.bitstamp.last;
-            for (let i in data.positions) {
-               positions.push(new Position(data.positions[i]));
+            try {
+               data = JSON.parse(request.responseText);
+               btc = data.BTC.bitstamp.last;
+               for (let i in data.positions) {
+                  positions.push(new Position(data.positions[i]));
+               }
+               var table = new Postable(positions);
+               var content = document.getElementById('content');
+               content.innerHTML = '';
+               content.appendChild(table.render());
+               $.bootstrapSortable({ applyLast: true });
+               bar.start();
+               updateRates();
+               chartsDom = new ChartsDom(content);
+               pieTotBtc = new TotAssetChart(chartsDom.col1);
+               pieTotMarket = new TotMarketChart(chartsDom.col2);
             }
-            var table = new Postable(positions);
-            var content = document.getElementById('content');
-            content.innerHTML = '';
-            content.appendChild(table.render());
-            $.bootstrapSortable({ applyLast: true });
-            bar.start();
-            updateRates();
-            chartsDom = new ChartsDom(content);
-            pieTotBtc = new TotAssetChart(chartsDom.col1);
-            pieTotMarket = new TotMarketChart(chartsDom.col2);
+            catch (e) {
+               console.log(new Date().toLocaleString() + ': not logged in');
+            }
          } else {
             // Error
          }
