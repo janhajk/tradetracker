@@ -35,7 +35,8 @@ exports.getFilesizeInBytes = getFilesizeInBytes;
  * @param {String} log String to log; can also be object for dump
  * @param {String} type 'fatal'=always output, default=only in dev mode
  */
-var log = function(log, type) {
+var log;
+log = function(log, type) {
    if (log === '-') log = '------------------------------------------';
    else if (typeof log === 'string') {
       log = new Date().toLocaleString() + log;
