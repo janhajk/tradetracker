@@ -335,7 +335,8 @@
    };
 
    Position.prototype.update = function(){
-      this.last = getLastRate(this.aid, this.cid);
+      var last = getLastRate(this.aid, this.cid);
+      if (last != -1) this.last = last;
       this.rates.unshift(getLatestRate(this.aid, this.cid));
       if (this.rates.length > 3600) this.rates.pop();
       this.tot = this.getTot(this.base, this.counter, this.last, this.amount);
@@ -692,7 +693,7 @@
     * @return {Number} The latest rate; 0 if no rate found
     */
    var getLastRate = function(aid, cid) {
-      var best = 0;
+      var best = -1;
       for(let i=0;i<rates.length;i++) {
          if(rates[i].aid === aid && rates[i].cid === cid) {
             return rates[i].last;
