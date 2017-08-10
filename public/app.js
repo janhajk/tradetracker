@@ -268,7 +268,7 @@
       this.render = function(){
          var table = btable();
          for (let i=0;i<positions.length;i++) {
-            table[1].tBodies[0].appendChild(positions[i].dom(positions[i]));
+            table[1].tBodies[0].appendChild(positions[i].dom());
             positions[i].update();
          }
          return table[0];
@@ -314,22 +314,21 @@
       this.amount = data.amount;
       this.open   = data.open;
       this.aid    = data.aid;
-      this.last   = data.rates[0].last;
       this.rates  = data.rates;
-      this.tot    = this.getTot(this.base, this.counter, this.last, this.amount);
+      this.last   = data.rates[0].last;
+      this.tot    = this.getTot();
       // create cell for each col and update
       this.row = {};
       for (let i in cols) {
-         let c = new Cell(i, cols[i], this);  // i = colname, cols[i] = defaults, this = pos
+         let c = new Cell(i, cols[i], this);  // function Cell(title, defaults, pos)
          this.row[i] = c;
-         c.update();
       }
    };
 
-   Position.prototype.getTot = function(base, counter, last, amount){
+   Position.prototype.getTot = function(){
       let tot = {btc:0, usd:0};
-      tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
-      if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLastRate(25,1);
+      tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * this.amount:this.amount;
+      if (this.base === 'LTC' && this.counter === 'OKEX') tot.btc = this.last * getLastRate(25,1);
       tot.usd = tot.btc * btc;
       return tot;
    };
@@ -339,7 +338,7 @@
       if (last != -1) this.last = last;
       this.rates.unshift(getLatestRate(this.aid, this.cid));
       if (this.rates.length > 3600) this.rates.pop();
-      this.tot = this.getTot(this.base, this.counter, this.last, this.amount);
+      this.tot = this.getTot();
       for (let cell in this.row) {
          this.row[cell].update();
       }
@@ -693,7 +692,7 @@
     * @return {Number} The latest rate; 0 if no rate found
     */
    var getLastRate = function(aid, cid) {
-      var best = -1;
+      var best = 0;
       for(let i=0;i<rates.length;i++) {
          if(rates[i].aid === aid && rates[i].cid === cid) {
             return rates[i].last;
