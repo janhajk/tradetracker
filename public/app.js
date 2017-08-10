@@ -322,7 +322,7 @@
       this.name = {
          title: data.name,
          assetname: data.assetname,
-         pair: data.base + '/' + data.counter
+         pair: data.base + '/' + data.counter,
          base: data.base,
          counter: data.counter
       };
