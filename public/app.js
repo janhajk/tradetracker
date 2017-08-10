@@ -318,7 +318,6 @@
       this.aid    = data.aid;
       this.rates  = data.rates;
       this.last   = data.rates[0].last;
-      this.tot    = this.getTot();
       this.name = {
          title: data.name,
          assetname: data.assetname,
@@ -340,6 +339,7 @@
             rate: data.open
          }
       };
+      this.updateTotal();
       this.style = {}; // For future purposes
       // create cell for each col and update
       this.row = {};
