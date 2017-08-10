@@ -123,18 +123,6 @@ app.get('/rates', ensureAuthenticated, function(req, res){
 });
 
 
-
-app.get('/rates/bitgrail', ensureAuthenticated, function(req, res){
-   var bitgrail = require(__dirname + '/lib/markets/bitgrail.js');
-   // Get all rates live (mode=null); don't udpate db
-   bitgrail.ratesGet(null, connection, function(e, rates) {
-      res.send(e, rates);
-   });
-});
-
-
-
-
 app.get('/cron/:secret', function(req, res) {
    if (req.params.secret===config.cronSecret) {
       rates.all('write', connection, function(e){

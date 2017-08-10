@@ -351,8 +351,10 @@
    };
 
    Position.prototype.updateTotal = function(){
+      // BTC
       this.stats.totals.btc = (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
       if (this.name.base === 'LTC' && this.name.counter === 'OKEX') this.stats.totals.btc = this.last * getLastRate(25,1);
+      // USD
       this.stats.totals.usd = this.stats.totals.btc * btc;
    };
 
