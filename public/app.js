@@ -86,17 +86,16 @@
    var rInterval = 10; // Update interval of rates in seconds
 
    var login = function() {
-      var div = document.createElement('div');
-      div.style.clear = 'both';
-      div.style.float = 'right';
-      div.className = 'btn btn-xs';
-      div.innerHTML = 'Login';
-      div.onclick = function() {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.style.clear = 'both';
+      btn.style.float = 'right';
+      btn.className = 'btn btn-xs';
+      btn.innerHTML = 'Login';
+      btn.onclick = function() {
          window.location = '/auth/google';
       };
-      var dashline = document.getElementById('dashline');
-      dashline.appendChild(div);
-      this.button = div;
+      document.getElementById('dashline').appendChild(btn);
    };
 
    /**
