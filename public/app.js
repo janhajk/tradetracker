@@ -44,8 +44,8 @@
       },
       'totBtc': {
          formula : function(p, pp){
-            p.value = (pp.counter=='USD')?pp.amount:pp.last * pp.amount;
-            if (pp.base=='LTC' && pp.counter=='OKEX') p.value=pp.last*getLastRate(25,1);
+            p.value = (pp.name.counter=='USD')?pp.amount:pp.last * pp.amount;
+            if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*getLastRate(25,1);
          },
          round: 2
       },
@@ -319,6 +319,28 @@
       this.rates  = data.rates;
       this.last   = data.rates[0].last;
       this.tot    = this.getTot();
+      this.name = {
+         title: data.name,
+         assetname: data.assetname,
+         pair: data.base + '/' + data.counter
+         base: data.base,
+         counter: data.counter
+      };
+      this.stats = {
+         totals: {
+            btc: 0,
+            usd: 0
+         },
+         open: {
+            timestamp: 0,
+            rate: data.open
+         },
+         close: {
+            timestamp: 0,
+            rate: data.open
+         }
+      };
+      this.style = {}; // For future purposes
       // create cell for each col and update
       this.row = {};
       for (let i in cols) {
@@ -327,12 +349,10 @@
       }
    };
 
-   Position.prototype.getTot = function(){
-      let tot = {btc:0, usd:0};
-      tot.btc = (this.base === 'BTC' && (this.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
-      if (this.base === 'LTC' && this.counter === 'OKEX') tot.btc = this.last * getLastRate(25,1);
-      tot.usd = tot.btc * btc;
-      return tot;
+   Position.prototype.updateTotal = function(){
+      this.stats.totals.btc = (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
+      if (this.name.base === 'LTC' && this.name.counter === 'OKEX') this.stats.totals.btc = this.last * getLastRate(25,1);
+      this.stats.totals.usd = this.stats.totals.btc * btc;
    };
 
    Position.prototype.update = function(){
@@ -340,7 +360,7 @@
       if (last != -1) this.last = last;
       this.rates.unshift(getLatestRate(this.aid, this.cid));
       if (this.rates.length > 3600) this.rates.pop();
-      this.tot = this.getTot();
+      this.updateTotal();
       for (let cell in this.row) {
          this.row[cell].update();
       }
