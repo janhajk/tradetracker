@@ -301,167 +301,180 @@
    /**
     * Position Object
     *
-    * @param {Object} position position coming from Database JSON
+    * @param {Object} data position-data from Database JSON
     *
     */
-   var Position = function(position) {
-      var self = this;
-      var getTot = function(base, counter, last, amount){
-         let tot = {btc:0, usd:0};
-         tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
-         if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLastRate(25,1);
-         tot.usd = tot.btc * btc;
-         return tot;
-      };
-      this.name = position.name;
-      this.assetname = position.assetname;
-      this.base = position.base;
-      this.counter = position.counter
+   var Position = function(data) {
+      this.name   = data.name;
+      this.assetname = data.assetname;
+      this.base   = data.base;
+      this.counter= data.counter
       this.pair   = this.base + '/' + this.counter;
-      this.amount = position.amount;
-      this.open   = position.open;
-      this.aid    = position.aid;
-      this.last   = position.rates[0].last;
-      this.rates  = position.rates;
-      this.tot    = getTot(this.base, this.counter, this.last, this.amount);
-      this.update = function(){
-         self.last = getLastRate(self.aid, self.cid);
-         self.rates.unshift(getLatestRate(self.aid, self.cid));
-         if (self.rates.length > 3600) self.rates.pop();
-         self.tot = getTot(self.base, self.counter, self.last, self.amount);
-         for (let cell in self.row) {
-            self.row[cell].update(self, self.row[cell]);
-         }
-      };
-
-      // Cell Object
-      var Cell = function(title, defaults, pos){
-         var self = this;
-         var parent = pos;
-         this.title = title;
-         this.col = 0;
-         this.value = null;
-         this.align = 'left';
-         this.formula = null;
-         this.pos = 0;
-         this.hidden = false;
-         this.rw = false;
-         this.html = '';
-         this.class = '';
-         this.round = -1;
-         this.image = 0;
-         // Set defaults
-         for (let i in defaults) {
-            this[i] = defaults[i];
-         }
-         this.render =  function(self) {
-            var td = document.createElement('td');
-            // Image-Cells
-            if (self.value !== null && self.image) {
-               td.innerHTML = '';
-               let value = self.value.replace(/\s/g, '-').toLowerCase();
-               let path = 'images/' + self.image.folder + '/';
-               let src = path + value + '.' + self.image.filetype;
-               td.style.backgroundImage = 'url('+src+')';
-               td.style.backgroundRepeat = 'no-repeat';
-               td.style.backgroundSize = 'Auto 25px';
-               td.title = self.value;
-               td.style.backgroundPosition = self.align;
-               //img.title = self.tValue(this);
-            }
-            // Text-Cells
-            else {
-               td.innerHTML = self.tValue(self);
-            }
-            td.style.textAlign = self.align;
-            td.style.cursor = 'pointer';
-            td.className = self.class;
-            td.onmousedown = function(){return false};
-            // For Testing purpose
-            td.ondblclick = function(){
-               console.log(this.self.value);
-            };
-            return td;
-         };
-         /**
-          * Calculates cell using formula
-          */
-         this.calc = function(parent, pos) {
-            if (parent.col) {
-               parent.value = pos[parent.col];
-            }
-            if (parent.formula !== null) {
-               if (typeof parent.formula === 'function') {
-                  parent.formula(parent, pos);
-               }
-               else if (parent.formula.type === '*') {
-                  parent.value = pos.row[parent.formula.x].value * pos.row[parent.formula.y].value;
-               }
-            }
-         };
-         /**
-          * Formats a Cell Value to readable format
-          */
-         this.tValue = function(parent) {
-            var html = parent.value;
-            if (parent.round === -1) {
-               if (typeof html === 'number') {
-                  let digits = smartRound(html);
-                  html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
-                  parent.align = 'right';
-               }
-            }
-            else if (typeof html === 'number' && parent.round >= 0) {
-               var num = html;
-               html = html.toFixed(parent.round);
-               html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:parent.round});
-               if (parent.prefix === 'sign' && num > 0) html = '+' + html;
-            }
-            return html;
-         };
-         /**
-          * Updates Cell (only if value has changed)
-          */
-         this.update = function(pos, parent) {
-            let val1 = parent.value;
-            parent.calc(parent, pos);
-            // update html if value has changed
-            if (val1 == null || parent.value !== val1) {
-               parent.dom.innerHTML = parent.tValue(parent);
-               parent.dom.dataValue = val1;
-            }
-         };
-         this.calc(this, pos);
-         this.dom = this.render(this);
-      };
-      // *** END Cell
-
+      this.amount = data.amount;
+      this.open   = data.open;
+      this.aid    = data.aid;
+      this.last   = data.rates[0].last;
+      this.rates  = data.rates;
+      this.tot    = this.getTot(this.base, this.counter, this.last, this.amount);
       // create cell for each col and update
       this.row = {};
       for (let i in cols) {
          let c = new Cell(i, cols[i], this);  // i = colname, cols[i] = defaults, this = pos
-         c.update(this, c);
          this.row[i] = c;
+         c.update();
       }
-
-      /**
-       * Renders DOM of a row
-       * returns DOM-<tr>
-       */
-      this.dom = function(parent){
-         let cells = [];
-         for (let cell in parent.row) {
-            if (!parent.row[cell].hidden) {
-               cells.push(parent.row[cell].dom);
-            }
-         }
-         let tr = document.createElement('tr');
-         for (let i in cells) {
-            tr.appendChild(cells[i]);
-         }
-         return tr;
-      };
    };
+
+   Position.prototype.getTot = function(base, counter, last, amount){
+      let tot = {btc:0, usd:0};
+      tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * amount:amount;
+      if (base === 'LTC' && counter === 'OKEX') tot.btc = last*getLastRate(25,1);
+      tot.usd = tot.btc * btc;
+      return tot;
+   };
+
+   Position.prototype.update = function(){
+      this.last = getLastRate(this.aid, this.cid);
+      this.rates.unshift(getLatestRate(this.aid, this.cid));
+      if (this.rates.length > 3600) this.rates.pop();
+      this.tot = this.getTot(this.base, this.counter, this.last, this.amount);
+      for (let cell in this.row) {
+         this.row[cell].update();
+      }
+   };
+
+   /**
+    * Renders DOM of a row
+    * returns DOM-<tr>
+    */
+   Position.prototype.dom = function(){
+      let cells = [];
+      for (let cell in this.row) {
+         if (!this.row[cell].hidden) {
+            cells.push(this.row[cell].dom);
+         }
+      }
+      let tr = document.createElement('tr');
+      for (let i in cells) {
+         tr.appendChild(cells[i]);
+      }
+      return tr;
+   };
+
+   /**
+    * Cell Object
+    *
+    * @param {String} title
+    * @param {Array} defaults
+    * @param {Object} pos parent > position of which cell is part of
+    *
+    */
+   var Cell = function(title, defaults, pos){
+      this.position = pos;
+      this.title = title;
+      this.col = 0;
+      this.value = null;
+      this.align = 'left';
+      this.formula = null;
+      this.pos = 0;
+      this.hidden = false;
+      this.rw = false;
+      this.html = '';
+      this.class = '';
+      this.round = -1;
+      this.image = 0;
+      // Set defaults
+      for (let i in defaults) {
+         this[i] = defaults[i];
+      }
+      this.calc();
+      this.dom = this.render();
+   };
+
+
+   Cell.prototype.render =  function() {
+      var td = document.createElement('td');
+      // Image-Cells
+      if (this.value !== null && this.image) {
+         td.innerHTML = '';
+         let value = this.value.replace(/\s/g, '-').toLowerCase();
+         let path = 'images/' + this.image.folder + '/';
+         let src = path + value + '.' + this.image.filetype;
+         td.style.backgroundImage = 'url('+src+')';
+         td.style.backgroundRepeat = 'no-repeat';
+         td.style.backgroundSize = 'Auto 25px';
+         td.title = this.value;
+         td.style.backgroundPosition = this.align;
+         //img.title = self.tValue(this);
+      }
+      // Text-Cells
+      else {
+         td.innerHTML = this.tValue();
+      }
+      td.style.textAlign = this.align;
+      td.style.cursor = 'pointer';
+      td.className = this.class;
+      td.onmousedown = function(){return false};
+      // For Testing purpose
+      td.ondblclick = function(){
+         console.log(this.value);
+      };
+      return td;
+   };
+
+   /**
+    * Calculates cell using formula
+    */
+   Cell.prototype.calc = function() {
+      if (this.col) {
+         this.value = this.position[this.col];
+      }
+      if (this.formula !== null) {
+         if (typeof this.formula === 'function') {
+            this.formula(this, this.position);
+         }
+         else if (this.formula.type === '*') {
+            this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+         }
+      }
+   };
+
+   /**
+    * Formats a Cell Value to readable format
+    */
+   Cell.prototype.tValue = function() {
+      var html = this.value;
+      if (this.round === -1) {
+         if (typeof html === 'number') {
+            let digits = smartRound(html);
+            html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
+            this.align = 'right';
+         }
+      }
+      else if (typeof html === 'number' && this.round >= 0) {
+         var num = html;
+         html = html.toFixed(parent.round);
+         html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:this.round});
+         if (this.prefix === 'sign' && num > 0) html = '+' + html;
+      }
+      return html;
+   };
+
+   /**
+    * Updates Cell (only if value has changed)
+    */
+   Cell.prototype.update = function() {
+      let val1 = this.value;
+      this.calc();
+      // update html if value has changed
+      if (val1 == null || this.value !== val1) {
+         this.dom.innerHTML = this.tValue();
+         this.dom.dataValue = val1;
+      }
+   };
+
+   // *** END Cell
+
 
    /**
     * Positions-Table
