@@ -40,7 +40,7 @@
       'open': {
          formula: function(p, pp) {
             p.value = pp.stats.open.rate;
-         }
+         },
          class: 'hidden-xs hidden-sm'
       },
       'last': {
