@@ -494,7 +494,7 @@
       }
       else if (typeof html === 'number' && this.round >= 0) {
          var num = html;
-         html = html.toFixed(parent.round);
+         html = html.toFixed(this.round);
          html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:this.round});
          if (this.prefix === 'sign' && num > 0) html = '+' + html;
       }
