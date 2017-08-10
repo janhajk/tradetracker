@@ -155,6 +155,7 @@
                pieTotMarket = new TotMarketChart(chartsDom.col2);
             }
             catch (e) {
+               console.log(e);
                console.log(new Date().toLocaleString() + ': not logged in');
                document.getElementById('content').innerHTML = 'Not logged in.';
             }
