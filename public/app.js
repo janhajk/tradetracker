@@ -329,7 +329,7 @@
 
    Position.prototype.getTot = function(){
       let tot = {btc:0, usd:0};
-      tot.btc = (base === 'BTC' && (counter).substring(0,3) !== 'USD')?last * this.amount:this.amount;
+      tot.btc = (this.base === 'BTC' && (this.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
       if (this.base === 'LTC' && this.counter === 'OKEX') tot.btc = this.last * getLastRate(25,1);
       tot.usd = tot.btc * btc;
       return tot;
