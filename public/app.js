@@ -8,6 +8,7 @@
    var pieTotBtc = null;
    var pieTotMarket = null;
    var chartsDom = null;
+   var btnLogin;
 
    // Table Columns / Structure
    // p  = parent        = cell
@@ -83,6 +84,20 @@
    };
 
    var rInterval = 10; // Update interval of rates in seconds
+
+   var login = function() {
+      var div = document.createElement('div');
+      div.style.clear = 'both';
+      div.style.float = 'right';
+      div.className = 'btn btn-xs';
+      div.innerHTML = 'Login';
+      div.onclick = function() {
+         window.location = '/auth/google';
+      };
+      var dashline = document.getElementById('dashline');
+      dashline.appendChild(div);
+      this.button = div;
+   };
 
    /**
     * Countdown Progressbar
@@ -164,6 +179,7 @@
                console.log(e);
                console.log(new Date().toLocaleString() + ': not logged in');
                document.getElementById('content').innerHTML = 'Not logged in.';
+               btnLogin = new login();
             }
          } else {
             // Error
