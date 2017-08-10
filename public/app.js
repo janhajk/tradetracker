@@ -573,8 +573,8 @@
          if (!(assetname in tot)) {
             tot[assetname] = {btc:0,usd:0};
          }
-         tot[assetname].btc += positions[i].tot.btc;
-         tot[assetname].usd += positions[i].tot.usd;
+         tot[assetname].btc += positions[i].stats.totals.btc;
+         tot[assetname].usd += positions[i].stats.totals.usd;
       }
       var tottot = getTot();
       for (let i in tot) {
