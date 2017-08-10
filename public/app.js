@@ -269,6 +269,7 @@
          var table = btable();
          for (let i=0;i<positions.length;i++) {
             table[1].tBodies[0].appendChild(positions[i].dom(positions[i]));
+            positions[i].update();
          }
          return table[0];
       };

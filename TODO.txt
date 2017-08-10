@@ -10,7 +10,7 @@
  Next features
 -----------------------------------------------------------
 
-- new columns for change in past 24 h;  server-side
+- organize Cell and Position Objects (properties, values, styles etc.)
 - new columns for change in past 5 min; client-side
 - Save dayly portfolio value per position and total
 - give positions an assetgroup (client-side)
