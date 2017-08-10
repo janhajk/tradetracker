@@ -543,8 +543,8 @@
    var getTot = function() {
       let tot = {btc:0, usd:0};
       for (let i=0;i<positions.length;i++) {
-         tot.btc += positions[i].tot.btc;
-         tot.usd += positions[i].tot.usd;
+         tot.btc += positions[i].stats.totals.btc;
+         tot.usd += positions[i].stats.totals.usd;
       }
       return tot;
    };
@@ -567,9 +567,9 @@
       var tot = {};
       var BTC = ['USD', 'OKEX', '1B'];
       for (let i in positions) {
-         var assetname = positions[i].assetname;
-         if (positions[i].base === 'BTC' && inArray(positions[i].counter, BTC)) assetname = 'Bitcoin';
-         if (positions[i].base === 'LTC' && inArray(positions[i].counter, BTC)) assetname = 'Litecoin';
+         var assetname = positions[i].name.assetname;
+         if (positions[i].name.base === 'BTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Bitcoin';
+         if (positions[i].name.base === 'LTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Litecoin';
          if (!(assetname in tot)) {
             tot[assetname] = {btc:0,usd:0};
          }
@@ -594,8 +594,8 @@
          if (!(market in tot)) {
             tot[market] = {btc:0,usd:0};
          }
-         tot[market].btc += positions[i].tot.btc;
-         tot[market].usd += positions[i].tot.usd;
+         tot[market].btc += positions[i].stats.totals.btc;
+         tot[market].usd += positions[i].stats.totals.usd;
       }
       for (let i in tot) {
          if (tot[i].btc === 0) delete tot[i];
