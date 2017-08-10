@@ -20,12 +20,16 @@
          }
       },
       'market': {
-         col: 'name',
+         formula: function(p, pp) {
+            p.value = pp.name.title;
+         },
          image: {folder:'markets', filetype: 'png'},
          align: 'center'
       },
       'asset': {
-         col: 'assetname',
+         formula: function(p, pp) {
+            p.value = pp.name.assetname;
+         },
          image: {folder:'coins/32x32', filetype: 'png'},
          align: 'center'
       },
@@ -34,7 +38,9 @@
          class: 'hidden-xs'
       },
       'open': {
-         col: 'open',
+         formula: function(p, pp) {
+            p.value = pp.stats.open.rate;
+         }
          class: 'hidden-xs hidden-sm'
       },
       'last': {
@@ -308,11 +314,6 @@
     *
     */
    var Position = function(data) {
-      this.name   = data.name;
-      this.assetname = data.assetname;
-      this.base   = data.base;
-      this.counter= data.counter
-      this.pair   = this.base + '/' + this.counter;
       this.amount = data.amount;
       this.open   = data.open;
       this.aid    = data.aid;
