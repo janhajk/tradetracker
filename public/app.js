@@ -200,6 +200,7 @@
                   pieTotMarket.update();
                }
                catch (e) {
+                  console.log(e);
                   console.log(new Date().toLocaleString() + ': not logged in');
                }
             } else {
