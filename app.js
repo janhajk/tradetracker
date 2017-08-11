@@ -3,11 +3,10 @@ var config = require(__dirname + '/config.js');
 var utils  = require(__dirname + '/utils.js');
 
 var dev = process.argv[2];
-if (dev !== undefined) {
-   config.dev = dev;
-   console.log('running in dev mode');
+if (dev !== undefined && dev === 1) {
+   config.dev = true;
+   utils.log('running in dev mode');
 }
-console.log('argv: ' + process.argv[2]);
 
 
 // System
