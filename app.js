@@ -2,6 +2,13 @@
 var config = require(__dirname + '/config.js');
 var utils  = require(__dirname + '/utils.js');
 
+var dev = process.argv[2];
+if (dev !== undefined) {
+   config.dev = dev;
+   console.log('running in dev mode');
+}
+console.log('argv: ' + process.argv[2]);
+
 
 // System
 var path = require('path');
