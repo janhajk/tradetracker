@@ -1,5 +1,7 @@
 (function(){
 
+   var rInterval = 10; // Update interval of rates in seconds
+
    var data = {};
    var rates = [];
    var positions = [];
@@ -83,7 +85,6 @@
       usd: 0
    };
 
-   var rInterval = 10; // Update interval of rates in seconds
 
    var login = function() {
       var btn = document.createElement('button');
