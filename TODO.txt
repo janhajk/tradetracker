@@ -3,13 +3,14 @@
 -----------------------------------------------------------
 
 - replace all log() to new log engine
-- better log-in
+- Chagne 1h/24h not showing correct sometimes (async?)
 
 
 -----------------------------------------------------------
  Next features
 -----------------------------------------------------------
 
+- seperate differnt markets /rates and status for each
 - organize Cell and Position Objects (properties, values, styles etc.)
 - new columns for change in past 5 min; client-side
 - Save dayly portfolio value per position and total
