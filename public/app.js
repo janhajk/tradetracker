@@ -455,7 +455,7 @@
         td.style.textAlign = this.align;
         td.style.cursor = 'pointer';
         td.className = this.class;
-        td.onmousedown = function(){return false};
+        td.onmousedown = function(){return false;};
         // For Testing purpose
         td.ondblclick = function(){
             console.log(this.value);
@@ -791,7 +791,7 @@
 
     var cutTrailingZeros = function(number) {
         number = number.toString();
-        newNumber = number;
+        var newNumber = number;
         if (number.indexOf('.')) {
             while (newNumber.length > 2){
                 if (newNumber.slice(-1) != '0') break;
@@ -835,11 +835,11 @@
     */
     var stringToColour = function(str) {
         var hash = 0;
-        for (var i = 0; i < str.length; i++) {
+        for (let i = 0; i < str.length; i++) {
             hash = str.charCodeAt(i) + ((hash << 5) - hash);
         }
         var colour = '#';
-        for (var i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             var value = (hash >> (i * 8)) & 0xFF;
             colour += ('00' + value.toString(16)).substr(-2);
         }
