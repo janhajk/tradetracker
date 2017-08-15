@@ -81,8 +81,8 @@ passport.use(new GoogleStrategy({
     });
 }));
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req) {});
-app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req) {
+app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function() {});
+app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function() {
     res.redirect('/');
 });
 app.get('/logout', function(req, res) {
@@ -116,7 +116,7 @@ app.get('/position', ensureAuthenticated, function(req, res){
     });
 });
 
-app.get('/position/:pid/edit', ensureAuthenticated, function(req) {
+app.get('/position/:pid/edit', ensureAuthenticated, function() {
 
 });
 
