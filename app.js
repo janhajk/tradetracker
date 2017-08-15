@@ -4,9 +4,10 @@ var utils  = require(__dirname + '/utils.js');
 
 var dev = process.argv[2];
 if (dev !== undefined && dev) {
-   config.dev = true;
-   utils.log('running in dev mode');
+    config.dev = true;
+    utils.log('running in dev mode');
 }
+
 
 
 // System
@@ -20,10 +21,10 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 // Database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: config.sql.user,
-  password: config.sql.password,
-  database: config.sql.database
+    host: 'localhost',
+    user: config.sql.user,
+    password: config.sql.password,
+    database: config.sql.database
 });
 
 var rates = require(__dirname + '/lib/rates.js');
@@ -43,76 +44,76 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 app.use(session({
-   secret: config.cookiesecret,
-   proxy: true,
-   resave: true,
-   saveUninitialized: true
+    secret: config.cookiesecret,
+    proxy: true,
+    resave: true,
+    saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static((path.join(__dirname, 'public'))));
 app.listen(config.port, function () {
-  console.log('App runnung on port ' + config.port);
+    console.log('App runnung on port ' + config.port);
 });
 
 // Authentication
 passport.serializeUser(function(user, done) {
-   done(null, user);
+    done(null, user);
 });
 passport.deserializeUser(function(obj, done) {
-   done(null, obj);
+    done(null, obj);
 });
 passport.use(new GoogleStrategy({
-   clientID: config.google.GOOGLE_CLIENT_ID,
-   clientSecret: config.google.GOOGLE_CLIENT_SECRET,
-   callbackURL: config.baseurl + "/auth/google/callback"
+    clientID: config.google.GOOGLE_CLIENT_ID,
+    clientSecret: config.google.GOOGLE_CLIENT_SECRET,
+    callbackURL: config.baseurl + "/auth/google/callback"
 }, function(accessToken, refreshToken, profile, done) {
-   utils.log(profile);
-   process.nextTick(function() {
-      if (profile.id === config.google.user) {
-         utils.log('Login in user "' + profile.displayName + '"');
-         return done(null, profile);
-      }
-      else {
-         utils.log('User not authorised!');
-         return done('user not authorised!');
-      }
-   });
+    utils.log(profile);
+    process.nextTick(function() {
+        if (profile.id === config.google.user) {
+            utils.log('Login in user "' + profile.displayName + '"');
+            return done(null, profile);
+        }
+        else {
+            utils.log('User not authorised!');
+            return done('user not authorised!');
+        }
+    });
 }));
 
 app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {});
 app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
-   res.redirect('/');
+    res.redirect('/');
 });
 app.get('/logout', function(req, res) {
-   req.logout();
-   res.redirect('/');
+    req.logout();
+    res.redirect('/');
 });
 
 function ensureAuthenticated(req, res, next) {
-   if (req.isAuthenticated()) { return next(); }
-   res.redirect('/');
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/');
 }
 
 // Router
 
 app.get('/', function(req, res){
-   fs.readFile(__dirname + '/public/index.html', 'utf-8', function (err, data){
-      res.send(data);
-   });
+    fs.readFile(__dirname + '/public/index.html', 'utf-8', function (err, data){
+        res.send(data);
+    });
 });
 
 
 app.get('/position', ensureAuthenticated, function(req, res){
-   var positions = require(__dirname + '/lib/positions.js');
-   positions.get('all', connection, function(e, positions){
-      if (e) {
-         res.send(e);
-      }
-      else {
-         res.send(positions);
-      }
-   });
+    var positions = require(__dirname + '/lib/positions.js');
+    positions.get('all', connection, function(e, positions){
+        if (e) {
+            res.send(e);
+        }
+        else {
+            res.send(positions);
+        }
+    });
 });
 
 app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
@@ -121,22 +122,22 @@ app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
 
 
 app.get('/rates', ensureAuthenticated, function(req, res){
-   // Get all rates live (mode=null); don't udpate db
-   rates.all(null, connection, function(error, rates){
-      if (error) res.send(error);
-      else res.send(rates);
-   });
+    // Get all rates live (mode=null); don't udpate db
+    rates.all(null, connection, function(error, rates){
+        if (error) res.send(error);
+        else res.send(rates);
+    });
 });
 
 
 app.get('/cron/:secret', function(req, res) {
-   if (req.params.secret===config.cronSecret) {
-      rates.all('write', connection, function(e){
-         if (e) res.send(e);
-         else res.send('All rates successfully updated!');
-      });
-   }
-   else {
-      res.send('not authorized!');
-   }
+    if (req.params.secret===config.cronSecret) {
+        rates.all('write', connection, function(e){
+            if (e) res.send(e);
+            else res.send('All rates successfully updated!');
+        });
+    }
+    else {
+        res.send('not authorized!');
+    }
 });
