@@ -53,7 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static((path.join(__dirname, 'public'))));
 app.listen(config.port, function () {
-    console.log('App runnung on port ' + config.port);
+    utils.log('App runnung on port ' + config.port);
 });
 
 // Authentication
@@ -66,7 +66,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GoogleStrategy({
     clientID: config.google.GOOGLE_CLIENT_ID,
     clientSecret: config.google.GOOGLE_CLIENT_SECRET,
-    callbackURL: config.baseurl + "/auth/google/callback"
+    callbackURL: config.baseurl + '/auth/google/callback'
 }, function(accessToken, refreshToken, profile, done) {
     utils.log(profile);
     process.nextTick(function() {
@@ -81,8 +81,8 @@ passport.use(new GoogleStrategy({
     });
 }));
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req, res) {});
-app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
+app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function(req) {});
+app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req) {
     res.redirect('/');
 });
 app.get('/logout', function(req, res) {
@@ -116,7 +116,7 @@ app.get('/position', ensureAuthenticated, function(req, res){
     });
 });
 
-app.get('/position/:pid/edit', ensureAuthenticated, function(req, res) {
+app.get('/position/:pid/edit', ensureAuthenticated, function(req) {
 
 });
 
