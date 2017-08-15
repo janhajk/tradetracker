@@ -105,7 +105,7 @@
     */
     var Countdown = function() {
         var lastUpdate = 0;
-        var interval = 1 // in seconds
+        var interval = 1; // in seconds
         var dashline = document.getElementById('dashline');
         var bHeight = 5;  // in px
         var bWidth = 100; // in px
@@ -142,7 +142,7 @@
                 let step = (100-resetAt) / (rInterval/interval);
                 let newState = state - step;
                 if (newState <= min) newState = min;
-                bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger')
+                bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger');
                 bar.style.width = newState + '%';
             }, interval*1000);
         };
@@ -228,7 +228,7 @@
                     }
                 } else {
                     // Error
-                    console.log('There was an Error when updating rates;')
+                    console.log('There was an Error when updating rates;');
                 }
             };
             request.onerror = function() {
@@ -240,13 +240,12 @@
         setInterval(updateRates, rInterval*1000);
 
         // Keyboard Shortkeys
-        window.addEventListener("keypress", myEventHandler, false);
-        function myEventHandler(e){
+        window.addEventListener('keypress', function(e){
             var keyCode = e.keyCode;
             console.log(e.keyCode);
             // 43 = +
             // 45 = -
-        };
+        }, false);
     });
 
 
@@ -254,7 +253,7 @@
     * Browser notifications
     */
     document.addEventListener('DOMContentLoaded', function () {
-        if (Notification.permission !== "granted")
+        if (Notification.permission !== 'granted')
             Notification.requestPermission();
     });
     var notify = function(params) {
@@ -271,7 +270,7 @@
                 alert('!');
             };
         }
-    }
+    };
 
     /**
     * Change update interval
