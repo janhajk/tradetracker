@@ -82,7 +82,7 @@ passport.use(new GoogleStrategy({
 }));
 
 app.get('/auth/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}), function() {});
-app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function() {
+app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
     res.redirect('/');
 });
 app.get('/logout', function(req, res) {
