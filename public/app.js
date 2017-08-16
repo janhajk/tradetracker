@@ -560,7 +560,7 @@
                 setTimeout(function(){
                     dom.style.color = 'black';
                     dom.style.fontWeight = 'normal';
-                }, 1000);
+                }, 3000);
             }
         }
     };
