@@ -466,8 +466,9 @@
         for (let i in defaults) {
             this[i] = defaults[i];
         }
-        this.dom = this.render();
+        this.dom = document.createElement('td');
         this.calc();
+        this.render();
     };
 
     /**
@@ -475,7 +476,7 @@
      * only called once
      */
     Cell.prototype.render =  function() {
-        var td = document.createElement('td');
+        var td = this.dom;
         // Image-Cells
         if (this.value !== null && this.image) {
             td.innerHTML = '';
@@ -501,7 +502,6 @@
         td.ondblclick = function(){
             console.log(this.value);
         };
-        return td;
     };
 
     /**
