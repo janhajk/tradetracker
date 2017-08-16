@@ -342,12 +342,13 @@
     *
     */
     var Position = function(data) {
-        this.amount = data.amount;
-        this.open   = data.open;
-        this.cid    = data.cid;
-        this.aid    = data.aid;
+        this.amount = Number(data.amount);
+        this.open   = Number(data.open);
+        this.cid    = Nukber(data.cid);
+        this.aid    = Number(data.aid);
+        this.type   = Number(data.tid);
         this.rates  = data.rates;
-        this.last   = data.rates[0].last;
+        this.last   = Number(data.rates[0].last);
         this.name = {
             market: data.name,
             assetname: data.assetname,
@@ -362,11 +363,11 @@
             },
             open: {
                 timestamp: 0,
-                rate: data.open
+                rate: Number(data.open)
             },
             close: {
                 timestamp: 0,
-                rate: data.open
+                rate: Number(data.open)
             }
         };
         this.style = {}; // For future purposes
@@ -752,7 +753,7 @@
     */
     var getLatestRate = function(aid, cid) {
         var best = rates[aid + '_' + cid];
-        if (best !== undefined) {
+        if (best !== undefined || best.last !== undefined) {
             return best;
         }
         for(let i in rates) {
