@@ -47,6 +47,10 @@ var log = function l(log, type) {
    if (type === 'fatal') {
       console.log(log);
    }
+   if (type === 'mysql') {
+       console.log('There was an error in your mysql');
+       console.log(log);
+   }
    else if(config.dev) {
       console.log(log);
    }

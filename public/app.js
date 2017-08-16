@@ -24,7 +24,7 @@
         },
         'market': {
             formula: function(p, pp) {
-                p.value = pp.name.title;
+                p.value = pp.name.market;
             },
             image: {folder:'markets', filetype: 'png'},
             align: 'center'
@@ -162,7 +162,9 @@
                     data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
                     for (let i in data.positions) {
-                        positions.push(new Position(data.positions[i]));
+                        let position = new Position(data.positions[i]);
+                        position.load();
+                        positions.push(position);
                     }
                     var table = new Postable(positions);
                     var content = document.getElementById('content');
@@ -177,9 +179,11 @@
                 }
                 catch (e) {
                     console.log(e);
-                    console.log(new Date().toLocaleString() + ': not logged in');
-                    document.getElementById('content').innerHTML = 'Not logged in.';
-                    btnLogin = new login();
+                    if (request.status === 302) { // not logged in (302=Not Found)
+                        console.log(new Date().toLocaleString() + ': not logged in');
+                        document.getElementById('content').innerHTML = 'Not logged in.';
+                        btnLogin = new login();
+                    }
                 }
             } else {
                 // Error
@@ -241,8 +245,8 @@
 
         // Keyboard Shortkeys
         window.addEventListener('keypress', function(e){
-            var keyCode = e.keyCode;
-            console.log(e.keyCode);
+            var keyCode = e.key;
+            console.log(keyCode);
             // 43 = +
             // 45 = -
         }, false);
@@ -335,7 +339,7 @@
         this.rates  = data.rates;
         this.last   = data.rates[0].last;
         this.name = {
-            title: data.name,
+            market: data.name,
             assetname: data.assetname,
             pair: data.base + '/' + data.counter,
             base: data.base,
@@ -355,14 +359,17 @@
                 rate: data.open
             }
         };
-        this.updateTotal();
         this.style = {}; // For future purposes
         // create cell for each col and update
         this.row = {};
+    };
+
+    Position.prototype.load = function() {
         for (let i in cols) {
             let c = new Cell(i, cols[i], this);  // function Cell(title, defaults, pos)
             this.row[i] = c;
         }
+        this.updateTotal();
     };
 
     Position.prototype.updateTotal = function(){
