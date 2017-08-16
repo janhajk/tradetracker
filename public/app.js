@@ -759,7 +759,7 @@
         for(let i in rates) {
             // try to get any rate for aid
             // even not for same cid
-            if (rates[i].aid === aid) {
+            if (rates[i].aid === aid && rates[i].last !== undefined) {
                 return rates[i];
             }
         }
