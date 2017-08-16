@@ -241,6 +241,11 @@
                         bar.update();
                         pieTotBtc.update();
                         pieTotMarket.update();
+                        // set updateRates as interval
+                        if(firstRun) {
+                            setInterval(updateRates, rInterval * 1000);
+                            firstRun = false;
+                        }
                     }
                     catch (e) {
                         console.log(e);
@@ -255,11 +260,6 @@
                 console.log('There was an error in xmlHttpRequest!');
             };
             request.send();
-            // Update rates interval
-            if(firstRun) {
-                setInterval(updateRates, rInterval * 1000);
-                firstRun = false;
-            }
         };
 
         // Keyboard Shortkeys
