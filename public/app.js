@@ -752,9 +752,8 @@
         if (best !== undefined) {
             return best;
         }
-        for(let i=0;i<rates.length;i++) {
+        for(let i in rates) {
             // try to get any rate for aid
-            // on the first run
             // even not for same cid
             if (rates[i].aid === aid) {
                 return rates[i];
