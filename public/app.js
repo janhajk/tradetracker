@@ -556,12 +556,10 @@
                 this.dom.style.transition = 'color 1s';
                 if (this.value > val1) this.dom.style.color = 'green';
                 if (this.value < val1) this.dom.style.color = 'red';
-                this.dom.style.fontWeight = Math.abs(this.value/val1-1)>=0.01?'900':'700';
                 var dom = this.dom;
                 setTimeout(function(){
-                    dom.style.transition = 'color 2s, fontWeight 2s';
+                    dom.style.transition = 'color 3s';
                     dom.style.color = 'black';
-                    dom.style.fontWeight = '400';
                 }, 1500);
             }
         }
