@@ -386,6 +386,9 @@
         this.updateTotal();
     };
 
+    /**
+     * updates Total BTC & USD for Position
+     */
     Position.prototype.updateTotal = function(){
         // BTC
         this.stats.totals.btc = (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
@@ -394,6 +397,10 @@
         this.stats.totals.usd = this.stats.totals.btc * btc;
     };
 
+    /**
+     * Update position and all cells in position
+     * using latest rates
+     */
     Position.prototype.update = function(){
         var lRate = getLatestRate(this.aid, this.cid);
         if (lRate) {
