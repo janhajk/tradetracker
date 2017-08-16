@@ -12,6 +12,7 @@
     var pieTotMarket = null;
     var chartsDom = null;
     var btnLogin;
+    var firstRun = true;
 
     // Table Columns / Structure
     // p  = parent        = cell
@@ -69,7 +70,10 @@
                 p.value = (l===undefined)?0:(pp.last/l-1) * 100;
             },
             round: 1,
-            prefix: 'sign'
+            prefix: 'sign',
+            alert: function(p, pp) {
+                
+            }
         },
         '±B/24h': {
             formula : function(p, pp) {
@@ -252,7 +256,10 @@
             };
             request.send();
             // Update rates interval
-            setInterval(updateRates, rInterval*1000);
+            if(firstRun) {
+                setInterval(updateRates, rInterval * 1000);
+                firstRun = false;
+            }
         };
 
         // Keyboard Shortkeys
