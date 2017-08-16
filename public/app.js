@@ -344,7 +344,7 @@
     var Position = function(data) {
         this.amount = Number(data.amount);
         this.open   = Number(data.open);
-        this.cid    = Nukber(data.cid);
+        this.cid    = Number(data.cid);
         this.aid    = Number(data.aid);
         this.type   = Number(data.tid);
         this.rates  = data.rates;
