@@ -3,7 +3,7 @@
     var rInterval = 10; // Update interval of rates in seconds
 
     var data = {};
-    var rates = [];
+    var rates = {};
     var positions = [];
     var btc = 0;
     var ltc = 0;
@@ -55,7 +55,7 @@
         'totBtc': {
             formula : function(p, pp){
                 p.value = (pp.name.counter=='USD')?pp.amount:pp.last * pp.amount;
-                if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*getLastRate(25,1);
+                if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*getLatestRate(25,1).last;
             },
             round: 2
         },
@@ -165,6 +165,11 @@
                     ltc = data.LTC.poloniex.last;
                     for (let i in data.positions) {
                         let position = new Position(data.positions[i]);
+                        rates[data.positions[i].aid + '_' + data.positions[i].cid] = {
+                            aid: data.positions[i].aid,
+                            cid: data.positions[i].cid,
+                            last: data.positions[i].last
+                        };
                         position.load();
                         positions.push(position);
                     }
@@ -200,10 +205,13 @@
             request.onload = function() {
                 if(request.status >= 200 && request.status < 400) {
                     try {
-                        rates = JSON.parse(request.responseText);
+                        let r = JSON.parse(request.responseText);
+                        for (let i=0;i<r.length;i++) {
+                            rates[r[i].aid + '_' + r[i].cid] = r[i];
+                        }
                         // update Global BTC-Price
-                        btc = getLastRate(110,12);
-                        ltc = getLastRate(25,1);
+                        btc = getLatestRate(110,12).last;
+                        ltc = getLatestRate(25,1).last;
                         let tot = tGetTot();
                         document.title = tot.btc + '/' + tot.usd;
                         for (let i in positions) {
@@ -382,7 +390,7 @@
     };
 
     Position.prototype.update = function(){
-        var last = getLastRate(this.aid, this.cid);
+        var last = getLatestRate(this.aid, this.cid).last;
         if (last != -1) this.last = last;
         this.rates.unshift(getLatestRate(this.aid, this.cid));
         if (this.rates.length > 3600) this.rates.pop();
@@ -733,50 +741,28 @@
     };
 
     /**
-    * Get last Rate for Asset for specific connector
-    *
-    * @param  {Number} aid Asset-ID
-    * @param  {Number} cid Connector-ID
-    * @return {Number} The latest rate; 0 if no rate found
-    */
-    var getLastRate = function(aid, cid) {
-        var best = 0;
-        for(let i=0;i<rates.length;i++) {
-            if(rates[i].aid === aid && rates[i].cid === cid) {
-                return rates[i].last;
-            }
-            // try to get any rate for aid
-            // on the first run
-            // even not for same cid
-            else if (best === 0 && rates[i].aid === aid) {
-                best = rates[i].last;
-            }
-        }
-        return best;
-    };
-
-    /**
-    * Get latest Rate Object for Asset for specific connector
+    * Get latest Rate-Object for Asset for specific connector
     *
     * @param  {Number} aid Asset-ID
     * @param  {Number} cid Connector-ID
     * @return {Number} The latest rate; 0 if no rate found
     */
     var getLatestRate = function(aid, cid) {
-        var best = 0;
+        var best = rates[aid + '_' + cid];
+        if (best !== undefined) {
+            return best;
+        }
         for(let i=0;i<rates.length;i++) {
-            if(rates[i].aid === aid && rates[i].cid === cid) {
-                return rates[i];
-            }
             // try to get any rate for aid
             // on the first run
             // even not for same cid
-            else if (best === 0 && rates[i].aid === aid) {
-                best = rates[i];
+            if (rates[i].aid === aid) {
+                return rates[i];
             }
         }
-        return best;
+        return false;
     };
+
 
     /**
     * Rounds number in dependence of depth
