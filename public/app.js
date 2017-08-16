@@ -546,10 +546,10 @@
     * Updates Cell (only if value has changed)
     */
     Cell.prototype.update = function() {
-        let val1 = this.value;
+        var val1 = this.value;
         this.calc();
         // update html if value has changed
-        if (val1 == null || this.value !== val1) {
+        if (val1 === null || this.value !== val1) {
             this.dom.innerHTML = this.tValue();
             this.dom.dataValue = this.value;
             if (typeof this.value === 'number') {
