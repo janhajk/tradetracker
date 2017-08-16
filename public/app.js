@@ -470,7 +470,10 @@
         this.dom = this.render();
     };
 
-
+    /**
+     * Renders Cell the first time
+     * only called once
+     */
     Cell.prototype.render =  function() {
         var td = document.createElement('td');
         // Image-Cells
@@ -548,7 +551,13 @@
         // update html if value has changed
         if (val1 == null || this.value !== val1) {
             this.dom.innerHTML = this.tValue();
-            this.dom.dataValue = val1;
+            this.dom.dataValue = this.value;
+            if (typeof this.value === 'number') {
+                if (this.value > val1) this.dom.style.font.color = 'green';
+                if (this.value < val1) this.dom.style.font.color = 'red';
+                var selfcolor = this.dom.style.font.color;
+                setTimeout(function(){selfcolor = 'black';}, 500);
+            }
         }
     };
 

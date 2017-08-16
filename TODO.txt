@@ -3,8 +3,6 @@
 -----------------------------------------------------------
 
 - replace all log() to new log engine
-- Chagne 1h/24h not showing correct sometimes (false use of functions inside async?)
-
 
 -----------------------------------------------------------
  Next features
