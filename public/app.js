@@ -753,7 +753,7 @@
     */
     var getLatestRate = function(aid, cid) {
         var best = rates[aid + '_' + cid];
-        if (best !== undefined || best.last !== undefined) {
+        if (best !== undefined && best.last !== undefined) {
             return best;
         }
         for(let i in rates) {
