@@ -553,11 +553,13 @@
             this.dom.innerHTML = this.tValue();
             this.dom.dataValue = this.value;
             if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
+                this.dom.style.transition = 'color 1s';
                 if (this.value > val1) this.dom.style.color = 'green';
                 if (this.value < val1) this.dom.style.color = 'red';
                 this.dom.style.fontWeight = Math.abs(this.value/val1-1)>=0.01?'900':'bold';
                 var dom = this.dom;
                 setTimeout(function(){
+                    dom.style.transition = 'color 2s, fontWeight 2s';
                     dom.style.color = 'black';
                     dom.style.fontWeight = 'normal';
                 }, 1500);
