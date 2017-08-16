@@ -553,9 +553,9 @@
             this.dom.innerHTML = this.tValue();
             this.dom.dataValue = this.value;
             if (typeof this.value === 'number') {
-                if (this.value > val1) this.dom.style.font.color = 'green';
-                if (this.value < val1) this.dom.style.font.color = 'red';
-                var selfcolor = this.dom.style.font.color;
+                if (this.value > val1) this.dom.style.color = 'green';
+                if (this.value < val1) this.dom.style.color = 'red';
+                var selfcolor = this.dom.style.color;
                 setTimeout(function(){selfcolor = 'black';}, 500);
             }
         }
