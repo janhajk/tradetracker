@@ -183,6 +183,21 @@
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.col1);
                     pieTotMarket = new TotMarketChart(chartsDom.col2);
+                    if (!labels.btc) {
+                        let dashline = document.getElementById('dashline');
+                        labels.btc = document.createElement('span');
+                        labels.btc.className = 'label label-success';
+                        dashline.appendChild(labels.btc);
+                    }
+                    if (!labels.usd) {
+                        let dashline = document.getElementById('dashline');
+                        labels.usd = document.createElement('span');
+                        labels.usd.className = 'label label-primary';
+                        dashline.appendChild(labels.usd);
+                    }
+                    let tot = tGetTot();
+                    labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
+                    labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
                 }
                 catch (e) {
                     console.log(e);
@@ -217,19 +232,7 @@
                         for (let i in positions) {
                             positions[i].update();
                         }
-                        if (!labels.btc) {
-                            let dashline = document.getElementById('dashline');
-                            labels.btc = document.createElement('span');
-                            labels.btc.className = 'label label-success';
-                            dashline.appendChild(labels.btc);
-                        }
                         labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
-                        if (!labels.usd) {
-                            let dashline = document.getElementById('dashline');
-                            labels.usd = document.createElement('span');
-                            labels.usd.className = 'label label-primary';
-                            dashline.appendChild(labels.usd);
-                        }
                         labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
                         bar.update();
                         pieTotBtc.update();
@@ -757,6 +760,7 @@
             return best;
         }
         for(let i in rates) {
+            // if not exact rate found
             // try to get any rate for aid
             // even not for same cid
             if (rates[i].aid === aid && rates[i].last !== undefined) {
