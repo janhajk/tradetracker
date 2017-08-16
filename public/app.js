@@ -198,7 +198,6 @@
                     let tot = tGetTot();
                     labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
                     labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
-                    updateRates();
                 }
                 catch (e) {
                     console.log(e);
