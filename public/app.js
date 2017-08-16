@@ -466,8 +466,8 @@
         for (let i in defaults) {
             this[i] = defaults[i];
         }
-        this.calc();
         this.dom = this.render();
+        this.calc();
     };
 
     /**
