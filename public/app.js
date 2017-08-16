@@ -55,7 +55,7 @@
         'totBtc': {
             formula : function(p, pp){
                 p.value = (pp.name.counter=='USD')?pp.amount:pp.last * pp.amount;
-                if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*getLatestRate(25,1).last;
+                if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*ltc;
             },
             round: 2
         },
@@ -344,6 +344,7 @@
     var Position = function(data) {
         this.amount = data.amount;
         this.open   = data.open;
+        this.cid    = data.cid;
         this.aid    = data.aid;
         this.rates  = data.rates;
         this.last   = data.rates[0].last;
@@ -390,10 +391,12 @@
     };
 
     Position.prototype.update = function(){
-        var last = getLatestRate(this.aid, this.cid).last;
-        if (last != -1) this.last = last;
-        this.rates.unshift(getLatestRate(this.aid, this.cid));
-        if (this.rates.length > 3600) this.rates.pop();
+        var lRate = getLatestRate(this.aid, this.cid);
+        if (lRate) {
+            this.last = lRate.last;
+            this.rates.unshift(lRate);
+            if (this.rates.length > 3600) this.rates.pop();
+        }
         this.updateTotal();
         for (let cell in this.row) {
             this.row[cell].update();
