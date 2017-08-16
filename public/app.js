@@ -55,13 +55,14 @@
         },
         'totBtc': {
             formula : function(p, pp){
-                p.value = (pp.name.counter=='USD')?pp.amount:pp.last * pp.amount;
-                if (pp.name.base=='LTC' && pp.name.counter=='OKEX') p.value=pp.last*ltc;
+                p.value = pp.stats.totals.btc;
             },
             round: 2
         },
         'totUsd': {
-            formula : {type:'*', x:'totBtc', y:'btc'},
+            formula : function(p, pp){
+                p.value = pp.stats.totals.usd;
+            },
             round: 0
         },
         '±B/1h': {
