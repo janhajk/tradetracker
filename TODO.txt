@@ -12,7 +12,7 @@
 - organize Cell and Position Objects (properties, values, styles etc.)
 - new columns for change in past 5 min; client-side
 - Save dayly portfolio value per position and total
-- give positions an assetgroup (client-side)
+- give positions an assetgroup (client-side?)
 - activate browser notification show Tot BTC and USD on change of 1% in 5 min
 - Chart of porfolio value history
 - add/delete/edit position
@@ -28,7 +28,6 @@
 
 - SMS API for reciving price and changes via clxcommunications.com messaging
 - make table sortable on picture cols through hidden col
-- highlight changing values in table (green for up / red for down)
 - box with hottest currencies
 - Browser notifications on changes of interest (big drop/increase)
 - Turtle signals

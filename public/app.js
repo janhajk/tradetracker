@@ -555,7 +555,7 @@
             if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
                 if (this.value > val1) this.dom.style.color = 'green';
                 if (this.value < val1) this.dom.style.color = 'red';
-                this.dom.style.fontWeight = 'bold';
+                this.dom.style.fontWeight = Math.abs(this.value/val1-1)>=0.01?'900':'bold';
                 var dom = this.dom;
                 setTimeout(function(){
                     dom.style.color = 'black';
