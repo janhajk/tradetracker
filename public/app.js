@@ -198,6 +198,7 @@
                     let tot = tGetTot();
                     labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
                     labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
+                    updateRates();
                 }
                 catch (e) {
                     console.log(e);
@@ -251,9 +252,9 @@
                 console.log('There was an error in xmlHttpRequest!');
             };
             request.send();
+            // Update rates interval
+            setInterval(updateRates, rInterval*1000);
         };
-        // Update rates interval
-        setInterval(updateRates, rInterval*1000);
 
         // Keyboard Shortkeys
         window.addEventListener('keypress', function(e){
