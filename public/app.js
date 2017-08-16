@@ -526,14 +526,16 @@
     */
     Cell.prototype.tValue = function() {
         var html = this.value;
+        if (typeof html === 'number') {
+            this.style.textAlign = 'right';
+        }
         if (this.round === -1) {
             if (typeof html === 'number') {
                 let digits = smartRound(html);
                 html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
-                this.align = 'right';
             }
         }
-        else if (typeof html === 'number' && this.round >= 0) {
+        else if (typeof html === 'number' && this.round > -1) {
             var num = html;
             html = html.toFixed(this.round);
             html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:this.round});
@@ -548,10 +550,10 @@
     Cell.prototype.update = function() {
         var val1 = this.value;
         this.calc();
+        this.dom.dataValue = this.value;
         // update html if value has changed
         if (val1 === null || this.value !== val1) {
             this.dom.innerHTML = this.tValue();
-            this.dom.dataValue = this.value;
             if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
                 this.dom.style.transition = 'color 1s';
                 if (this.value > val1) this.dom.style.color = 'green';
