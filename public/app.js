@@ -527,7 +527,7 @@
     Cell.prototype.tValue = function() {
         var html = this.value;
         if (typeof html === 'number') {
-            this.style.textAlign = 'right';
+            this.dom.style.textAlign = 'right';
         }
         if (this.round === -1) {
             if (typeof html === 'number') {
