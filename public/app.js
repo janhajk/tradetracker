@@ -6,6 +6,7 @@
     var rates = [];
     var positions = [];
     var btc = 0;
+    var ltc = 0;
     var bar = null;
     var pieTotBtc = null;
     var pieTotMarket = null;
@@ -161,6 +162,7 @@
                 try {
                     data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
+                    ltc = data.BTC.poloniex.last;
                     for (let i in data.positions) {
                         let position = new Position(data.positions[i]);
                         position.load();
@@ -199,9 +201,10 @@
                 if(request.status >= 200 && request.status < 400) {
                     try {
                         rates = JSON.parse(request.responseText);
-                        let tot = tGetTot();
                         // update Global BTC-Price
                         btc = getLastRate(110,12);
+                        ltc = getLastRate(25,1);
+                        let tot = tGetTot();
                         document.title = tot.btc + '/' + tot.usd;
                         for (let i in positions) {
                             positions[i].update();
@@ -373,7 +376,7 @@
     Position.prototype.updateTotal = function(){
         // BTC
         this.stats.totals.btc = (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
-        if (this.name.base === 'LTC' && this.name.counter === 'OKEX') this.stats.totals.btc = this.last * getLastRate(25,1);
+        if (this.name.base === 'LTC' && this.name.counter === 'OKEX') this.stats.totals.btc = this.last * ltc;
         // USD
         this.stats.totals.usd = this.stats.totals.btc * btc;
     };
