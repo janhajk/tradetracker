@@ -552,7 +552,7 @@
         if (val1 === null || this.value !== val1) {
             this.dom.innerHTML = this.tValue();
             this.dom.dataValue = this.value;
-            if (typeof this.value === 'number') {
+            if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.001) {
                 if (this.value > val1) this.dom.style.color = 'green';
                 if (this.value < val1) this.dom.style.color = 'red';
                 this.dom.style.fontWeight = 'bold';
@@ -560,7 +560,7 @@
                 setTimeout(function(){
                     dom.style.color = 'black';
                     dom.style.fontWeight = 'normal';
-                }, 3000);
+                }, 1500);
             }
         }
     };
