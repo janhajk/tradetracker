@@ -179,11 +179,9 @@
                 }
                 catch (e) {
                     console.log(e);
-                    if (request.status === 302) { // not logged in (302=Not Found)
                         console.log(new Date().toLocaleString() + ': not logged in');
                         document.getElementById('content').innerHTML = 'Not logged in.';
                         btnLogin = new login();
-                    }
                 }
             } else {
                 // Error
