@@ -162,7 +162,7 @@
                 try {
                     data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
-                    ltc = data.BTC.poloniex.last;
+                    ltc = data.LTC.poloniex.last;
                     for (let i in data.positions) {
                         let position = new Position(data.positions[i]);
                         position.load();
