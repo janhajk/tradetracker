@@ -555,8 +555,12 @@
             if (typeof this.value === 'number') {
                 if (this.value > val1) this.dom.style.color = 'green';
                 if (this.value < val1) this.dom.style.color = 'red';
-                var selfcolor = this.dom.style.color;
-                setTimeout(function(){selfcolor = 'black';}, 500);
+                this.dom.style.fontWeight = 'bold';
+                var dom = this.dom;
+                setTimeout(function(){
+                    dom.style.color = 'black';
+                    dom.style.fontWeight = 'normal';
+                }, 1000);
             }
         }
     };
