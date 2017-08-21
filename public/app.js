@@ -596,10 +596,10 @@
             th.innerHTML       = c;
             th.className       = cols[c].class?cols[c].class:'';
             th.style.textAlign = cols[c].align?cols[c].align:'left';
-            tr.appendChild(th);
             if (cols[c].sort) {
                 th.dataDefaultsort=cols[c].sort;
             }
+            tr.appendChild(th);
         }
         thead.appendChild(tr);
         t.appendChild(thead);
