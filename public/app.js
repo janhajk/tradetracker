@@ -92,7 +92,7 @@
     };
 
 
-    var LLogin = function() {
+    var Login = function() {
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.style.clear = 'both';
