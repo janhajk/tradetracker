@@ -40,3 +40,12 @@
 - Show Percentage & USD on Charts
 - automatically read wallet balance from https://chainz.cryptoid.info/api.dws
   or for bitcoin via https://github.com/blockchain/api-v1-client-node/tree/master/blockexplorer
+
+
+
+-----------------------------------------------------------
+  Chart analysis
+-----------------------------------------------------------
+
+- http://techanjs.org/
+- Tulip Node https://github.com/TulipCharts/tulipnode

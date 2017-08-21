@@ -583,16 +583,14 @@
             if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
                 this.dom.style.transition = 'color 1s';
                 if (this.value > val1) {
-                    //this.dom.style.color = 'green';
-                    this.dom.style.backgroundColor = 'green';
+                    this.dom.style.backgroundColor = '#ccffcc';
                 }
                 else if (this.value < val1) {
-                    this.dom.style.backgroundColor = 'red';
+                    this.dom.style.backgroundColor = '#ff9999';
                 }
                 var dom = this.dom;
                 setTimeout(function(){
-                    dom.style.transition = 'color 3s, backgroundColor 3s';
-                    dom.style.color = 'black';
+                    dom.style.transition = 'backgroundColor 4s';
                     dom.style.backgroundColor = 'transparent';
                 }, 2500);
             }
