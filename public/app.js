@@ -598,7 +598,7 @@
             th.style.textAlign = cols[c].align?cols[c].align:'left';
             tr.appendChild(th);
             if (cols[c].sort) {
-                th['data-defaultsort']=cols[c].sort;
+                th.dataDefaultsort=cols[c].sort;
             }
         }
         thead.appendChild(tr);
