@@ -2,7 +2,6 @@
 
     var rInterval = 10; // Update interval of rates in seconds
 
-    var data = {};
     var rates = {};
     var positions = [];
     var btc = 0;
@@ -93,17 +92,33 @@
     };
 
 
-    var login = function() {
+    var LLogin = function() {
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.style.clear = 'both';
         btn.style.float = 'right';
         btn.className = 'btn btn-xs';
         btn.innerHTML = 'Login';
+        btn.style.display = 'none';
+        btn.style.display = 'none';
         btn.onclick = function() {
             window.location = '/auth/google';
         };
+        this.btn = btn;
+        this.btn = btn;
         document.getElementById('dashline').appendChild(btn);
+    };
+    Login.prototype.show = function() {
+        this.btn.style.display = 'block';
+    };
+    Login.prototype.hide = function() {
+        this.btn.style.display = 'none';
+    };
+    Login.prototype.show = function() {
+        this.btn.style.display = 'block';
+    };
+    Login.prototype.hide = function() {
+        this.btn.style.display = 'none';
     };
 
     /**
@@ -160,13 +175,15 @@
     */
     document.addEventListener('DOMContentLoaded', function() {
         bar = new Countdown();
+        btnLogin = new Login();
+        btnLogin = new Login();
         // Load Positions
         var request = new XMLHttpRequest();
         request.open('GET', '/position', true);
         request.onload = function() {
             if(request.status >= 200 && request.status < 400) {
                 try {
-                    data = JSON.parse(request.responseText);
+                    var var data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
                     ltc = data.LTC.poloniex.last;
                     for (let i in data.positions) {
@@ -207,9 +224,11 @@
                 }
                 catch (e) {
                     console.log(e);
-                        console.log(new Date().toLocaleString() + ': not logged in');
-                        document.getElementById('content').innerHTML = 'Not logged in.';
-                        btnLogin = new login();
+                                        console.log(new Date().toLocaleString() + ': not logged in');
+                    btnLogin.show();
+                    btnLogin.show();
+                                        document.getElementById('content').innerHTML = 'Not logged in.';
+
                 }
             } else {
                 // Error
@@ -231,6 +250,8 @@
                 if(request.status >= 200 && request.status < 400) {
                     try {
                         let r = JSON.parse(request.responseText);
+                        btnLogin.hide();
+                        btnLogin.hide();
                         for (let i=0;i<r.length;i++) {
                             rates[r[i].aid + '_' + r[i].cid] = r[i];
                         }
@@ -255,7 +276,7 @@
                     }
                     catch (e) {
                         console.log(e);
-                        console.log(new Date().toLocaleString() + ': not logged in');
+                        btnLogin.show();                        btnLogin.show();
                     }
                 } else {
                     // Error
@@ -561,12 +582,18 @@
             this.dom.innerHTML = this.tValue();
             if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
                 this.dom.style.transition = 'color 1s';
-                if (this.value > val1) this.dom.style.color = 'green';
-                if (this.value < val1) this.dom.style.color = 'red';
+                if (this.value > val1) {
+                    //this.dom.style.color = 'green';
+                    this.dom.style.backgroundColor = 'green';
+                }
+                else if (this.value < val1) {
+                    this.dom.style.backgroundColor = 'red';
+                }
                 var dom = this.dom;
                 setTimeout(function(){
-                    dom.style.transition = 'color 3s';
+                    dom.style.transition = 'color 3s, backgroundColor 3s';
                     dom.style.color = 'black';
+                    dom.style.backgroundColor = 'transparent';
                 }, 2500);
             }
         }
