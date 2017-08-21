@@ -57,7 +57,8 @@
             formula : function(p, pp){
                 p.value = pp.stats.totals.btc;
             },
-            round: 2
+            round: 2,
+            sort: 'desc'
         },
         'totUsd': {
             formula : function(p, pp){
@@ -219,6 +220,10 @@
         };
         request.send();
 
+        /**
+         * Update Rates
+         *
+         */
         var updateRates = function() {
             let request = new XMLHttpRequest();
             request.open('GET', '/rates', true);
@@ -592,6 +597,7 @@
             th.className       = cols[c].class?cols[c].class:'';
             th.style.textAlign = cols[c].align?cols[c].align:'left';
             tr.appendChild(th);
+            if (cols[c].sort) th.['data-defaultsort']=cols[c].sort;
         }
         thead.appendChild(tr);
         t.appendChild(thead);
