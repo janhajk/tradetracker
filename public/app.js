@@ -183,7 +183,7 @@
         request.onload = function() {
             if(request.status >= 200 && request.status < 400) {
                 try {
-                    var var data = JSON.parse(request.responseText);
+                    var data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
                     ltc = data.LTC.poloniex.last;
                     for (let i in data.positions) {
