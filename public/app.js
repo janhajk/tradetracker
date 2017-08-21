@@ -597,7 +597,7 @@
             th.className       = cols[c].class?cols[c].class:'';
             th.style.textAlign = cols[c].align?cols[c].align:'left';
             tr.appendChild(th);
-            if (cols[c].sort) th.['data-defaultsort']=cols[c].sort;
+            if (cols[c].sort) th['data-defaultsort']=cols[c].sort;
         }
         thead.appendChild(tr);
         t.appendChild(thead);
