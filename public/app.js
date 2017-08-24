@@ -861,6 +861,13 @@
     var History = function(parent) {
         this.data = [];
         this.chart = emptyLineChart(parent);
+        this.chart.options.scales = {
+            xAxes: [{
+                time: {
+                    unit: 'day'
+                }
+            }]
+        };
         this.update();
     };
 
