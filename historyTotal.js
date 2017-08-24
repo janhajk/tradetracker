@@ -79,7 +79,7 @@ require(__dirname + '/lib/positions.js').get('all', connection, function(e, data
     }
     var tot = getTot();
     var values = [];
-    values.push(new Date.getTime()/1000);
+    values.push((new Date).getTime()/1000);
     values.push(tot.btc);
     values.push(tot.usd);
     var query = 'INSERT INTO history (timestamp, btc, dollar) VALUES (' + values.join(',') + ')';
