@@ -912,7 +912,7 @@
     };
 
     var modal_history = function(){
-        var modal = BModal('History');
+        var modal = new BModal('History');
         var body = document.getElementsByTagName("BODY")[0];
         body.appendChild(modal.dom);
         var history = new History(modal.content);
