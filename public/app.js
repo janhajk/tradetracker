@@ -767,25 +767,30 @@
     *
     */
     var emptyLineChart = function(parent) {
-        var canvas = document.createElement('canvas');
-        canvas.width = '400';
-        canvas.height = '400';
-        canvas.style.width = '400px';
-        canvas.style.height = '400px';
-        parent.appendChild(canvas);
-        var ctx = canvas.getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [{
-                    data: []
-                }]
-            },
-            options: {
-            }
-        });
-        return chart;
-    };
+     var canvas = document.createElement('canvas');
+     canvas.width = '400';
+     canvas.height = '400';
+     canvas.style.width = '400px';
+     canvas.style.height = '400px';
+     parent.appendChild(canvas);
+     var ctx = canvas.getContext('2d');
+     var chart = new Chart(ctx, {
+         type: 'line',
+         data: {
+             datasets: [{
+                 data: []
+             }]
+         },
+         options: {
+             elements: {
+                 line: {
+                     tension: 0, // disables bezier curves
+                 }
+             }
+         }
+     });
+     return chart;
+ };
 
     /**
     * Create PieChart of Asset-Distribution
@@ -871,7 +876,7 @@
                     for (let i=0;i<d.length;i++) {
                         self.data.push({x: d[i].timestamp, y:d[i].dollar});
                     }
-                    self.chart.data.datasets[0] = self.data;
+                    self.chart.data.datasets[0].data = self.data;
                     self.chart.update();
                 }
                 catch (e) {
