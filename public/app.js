@@ -917,7 +917,7 @@
         body.appendChild(modal.dom);
         var history = new History(modal.content);
         history.update(function(e){
-            $(modal).modal();
+            $(modal.dom).modal();
         });
     };
 
