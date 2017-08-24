@@ -546,13 +546,6 @@ for (let i=0; i<values.length;i++) {
     insert.push('(' + timestamp + ',' + value +')');
 }
 
-for (let i in rates) {
-    let val = [];
-    for (let s in rates[i]) {
-        val.push("'" + rates[i][s] + "'");
-    }
-    insert.push('('+val.join(',')+')');
-}
 var query = 'INSERT INTO rates (timestamp, dollar) VALUES ' + insert.join(',');
 utils.log(query);
 mysqlconnection.query(query, function(e) {
