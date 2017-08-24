@@ -120,7 +120,7 @@ app.get('/history', ensureAuthenticated, function(req, res){
 
 app.get('/rates', ensureAuthenticated, function(req, res){
     // Get all rates live (mode=null); don't udpate db
-    rates.all(null, connection, function(error, data){
+    rates.all(null, connection, function(e, data){
         res.send(e?e:data);
     });
 });
