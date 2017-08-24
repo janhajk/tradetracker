@@ -886,6 +886,8 @@
                     }
                     self.chart.data.datasets[0].data = self.data;
                     self.chart.data.datasets[0].label = 'USD';
+                    self.chart.data.datasets[0].pointRadius = 0;
+                    self.chart.options.scales.xAxes.time.unit = 'week';
                     self.chart.resize();
                     self.chart.render();
                     self.chart.update();
