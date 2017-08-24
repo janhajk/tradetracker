@@ -8,6 +8,7 @@
  Next features
 -----------------------------------------------------------
 
+- Chart of porfolio value history
 - Alarms in database (aid, cid, side, )
 - new asset object
 - page for all rates with functions (exp. set alarm)
@@ -15,10 +16,8 @@
 - seperate different markets /rates and status for each
 - console.log with colors for fatal, info etc.
 - new columns for change in past 5 min; client-side
-- Save dayly portfolio value per position and total
 - give positions an assetgroup (client-side?)
 - activate browser notification show Tot BTC and USD on change of 1% in 5 min
-- Chart of porfolio value history
 - add/delete/edit position
 - Tabs for Dashboard, Charts
 - Create Alarm function

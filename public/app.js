@@ -12,6 +12,7 @@
     var chartsDom = null;
     var btnLogin;
     var firstRun = true;
+    var history = null;
 
     // Table Columns / Structure
     // p  = parent        = cell
@@ -200,6 +201,7 @@
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.col1);
                     pieTotMarket = new TotMarketChart(chartsDom.col2);
+                    history = new History(chartsDom.col3);
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
                         labels.btc = document.createElement('span');
@@ -218,11 +220,9 @@
                 }
                 catch (e) {
                     console.log(e);
-                                        console.log(new Date().toLocaleString() + ': not logged in');
+                    console.log(new Date().toLocaleString() + ': not logged in');
                     btnLogin.show();
-                    btnLogin.show();
-                                        document.getElementById('content').innerHTML = 'Not logged in.';
-
+                    document.getElementById('content').innerHTML = 'Not logged in.';
                 }
             } else {
                 // Error
@@ -762,6 +762,32 @@
     };
 
     /**
+    * Creates empty LineChart Object
+    * and appends to parent-DOM
+    *
+    */
+    var emptyLineChart = function(parent) {
+        var canvas = document.createElement('canvas');
+        canvas.width = '400';
+        canvas.height = '400';
+        canvas.style.width = '400px';
+        canvas.style.height = '400px';
+        parent.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    data: []
+                }]
+            },
+            options: {
+            }
+        });
+        return chart;
+    };
+
+    /**
     * Create PieChart of Asset-Distribution
     * @param  {String} parent DOM-parent of Chart
     * @return {String} The reversed string
@@ -826,6 +852,54 @@
         }
         return false;
     };
+
+    var History = function(parent) {
+        this.data = [];
+        this.chart = emptyLineChart(parent);
+        this.update();
+    };
+
+    History.prototype.update() {
+        var self = this;
+        var request = new XMLHttpRequest();
+        request.open('GET', '/history', true);
+        request.onload = function() {
+            if(request.status >= 200 && request.status < 400) {
+                try {
+                    var d = JSON.parse(request.responseText);
+                    self.data = [];
+                    for (let i=0;i<d.length;i++) {
+                        self.data.push({x: d[i].timestamp, y:d[i].dollar});
+                    }
+                    self.chart.data.datasets[0] = self.data;
+                    self.chart.update();
+                }
+                catch (e) {
+                    console.log(e);
+                    console.log(new Date().toLocaleString() + ': not logged in');
+                    btnLogin.show();
+                }
+            } else {
+                // Error
+            }
+        };
+        request.onerror = function() {
+            console.log('There was an error in xmlHttpRequest!');
+        };
+        request.send();
+    };
+
+
+
+
+
+    //
+    // Helper Functions
+    //
+    //
+    //
+    //
+    //
 
 
     /**

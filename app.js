@@ -106,27 +106,27 @@ app.get('/', function(req, res){
 
 app.get('/position', ensureAuthenticated, function(req, res){
     var positions = require(__dirname + '/lib/positions.js');
-    positions.get('all', connection, function(e, positions){
-        if (e) {
-            res.send(e);
-        }
-        else {
-            res.send(positions);
-        }
+    positions.get('all', connection, function(e, data){
+        res.send(e?e:data);
+    });
+});
+
+app.get('/history', ensureAuthenticated, function(req, res){
+    var history = require(__dirname + '/lib/history.js');
+    history.get(function(e, data){
+        res.send(e?e:data);
+    });
+});
+
+app.get('/rates', ensureAuthenticated, function(req, res){
+    // Get all rates live (mode=null); don't udpate db
+    rates.all(null, connection, function(error, data){
+        res.send(e?e:data);
     });
 });
 
 app.get('/position/:pid/edit', ensureAuthenticated, function() {
 
-});
-
-
-app.get('/rates', ensureAuthenticated, function(req, res){
-    // Get all rates live (mode=null); don't udpate db
-    rates.all(null, connection, function(error, rates){
-        if (error) res.send(error);
-        else res.send(rates);
-    });
 });
 
 
