@@ -877,6 +877,7 @@
                         self.data.push({x: d[i].timestamp, y:d[i].dollar});
                     }
                     self.chart.data.datasets[0].data = self.data;
+                    self.chart.render();
                     self.chart.update();
                 }
                 catch (e) {
