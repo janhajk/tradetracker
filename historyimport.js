@@ -546,7 +546,7 @@ for (let i=0; i<values.length;i++) {
     insert.push('(' + timestamp + ',' + value +')');
 }
 
-var query = 'INSERT INTO rates (timestamp, dollar) VALUES ' + insert.join(',');
+var query = 'INSERT INTO history (timestamp, dollar) VALUES ' + insert.join(',');
 utils.log(query);
 connection.query(query, function(e) {
     utils.log('Erorr:');
