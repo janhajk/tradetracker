@@ -928,7 +928,7 @@
         var dialog = document.createElement('div');
         dialog.className = 'modal-dialog';
         dialog.style.width = '100%';
-        dialog.style.height = '100%';
+        dialog.style.height = '80%';
         dialog.style.margin = '0';
         dialog.style.padding = '0';
         var content = document.createElement('div');
