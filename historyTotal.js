@@ -5,7 +5,7 @@ var utils  = require(__dirname + '/utils.js');
 
 var pos = require(__dirname + '/lib/positions.js');
 
-var dev = process.argv[2];
+var dev = Number(process.argv[2]); // 0=Normal, 1=devmode, 2=dev&non-write-mode
 if (dev !== undefined && dev) {
     config.dev = true;
     utils.log('running in dev mode');
@@ -84,7 +84,7 @@ require(__dirname + '/lib/positions.js').get('all', connection, function(e, data
     values.push(tot.usd);
     var query = 'INSERT INTO history (timestamp, btc, dollar) VALUES (' + values.join(',') + ')';
     utils.log(query);
-    if (dev != 2) {
+    if (dev !== 2) {
         connection.query(query, function(e) {
             utils.log('Erorr:');
             utils.log(e);
