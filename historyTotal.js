@@ -84,7 +84,7 @@ require(__dirname + '/lib/positions.js').get('all', connection, function(e, data
     values.push(tot.usd);
     var query = 'INSERT INTO history (timestamp, btc, dollar) VALUES (' + values.join(',') + ')';
     utils.log(query);
-    if (dev !== 2) {
+    if (dev != 2) {
         connection.query(query, function(e) {
             utils.log('Erorr:');
             utils.log(e);
