@@ -955,7 +955,6 @@
         close2.innerHTML = 'Close';
         header.appendChild(close);
         header.appendChild(dTitle);
-        body.appendChild(mainContent);
         footer.appendChild(close2);
         content.appendChild(header);
         content.appendChild(body);
@@ -963,7 +962,7 @@
         dialog.appendChild(content);
         modal.appendChild(dialog);
         this.dom = modal;
-        this.content = content;
+        this.content = body;
     };
 
 
