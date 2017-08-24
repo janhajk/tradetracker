@@ -859,7 +859,7 @@
         this.update();
     };
 
-    History.prototype.update() {
+    History.prototype.update = function() {
         var self = this;
         var request = new XMLHttpRequest();
         request.open('GET', '/history', true);
