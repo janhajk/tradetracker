@@ -114,12 +114,6 @@
     Login.prototype.hide = function() {
         this.btn.style.display = 'none';
     };
-    Login.prototype.show = function() {
-        this.btn.style.display = 'block';
-    };
-    Login.prototype.hide = function() {
-        this.btn.style.display = 'none';
-    };
 
     /**
     * Countdown Progressbar
