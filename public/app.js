@@ -199,9 +199,10 @@
                     bar.start();
                     updateRates();
                     chartsDom = new ChartsDom(content);
-                    pieTotBtc = new TotAssetChart(chartsDom.col1);
-                    pieTotMarket = new TotMarketChart(chartsDom.col2);
-                    history = new History(chartsDom.col3);
+                    pieTotBtc = new TotAssetChart(chartsDom.row[0]);
+                    pieTotMarket = new TotMarketChart(chartsDom.row[1]);
+                    history = new History(chartsDom.row[2]);
+                    history.update(function(){});
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
                         labels.btc = document.createElement('span');
@@ -287,6 +288,9 @@
         window.addEventListener('keypress', function(e){
             var keyCode = e.key;
             console.log(keyCode);
+            if (keyCode === 'h') {
+                modal_history();
+            }
             // 43 = +
             // 45 = -
         }, false);
@@ -359,10 +363,7 @@
         row.appendChild(col2);
         row.appendChild(col3);
         parent.appendChild(row);
-        this.row = row;
-        this.col1 = col1;
-        this.col2 = col2;
-        this.col3 = col3;
+        this.row = [col1, col2, col3];
     };
 
 
@@ -869,10 +870,9 @@
     var History = function(parent) {
         this.data = [];
         this.chart = emptyLineChart(parent);
-        this.update();
     };
 
-    History.prototype.update = function() {
+    History.prototype.update = function(callback) {
         var self = this;
         var request = new XMLHttpRequest();
         request.open('GET', '/history', true);
@@ -891,20 +891,79 @@
                     self.chart.resize();
                     self.chart.render();
                     self.chart.update();
+                    callback(null);
                 }
                 catch (e) {
                     console.log(e);
                     console.log(new Date().toLocaleString() + ': not logged in');
                     btnLogin.show();
+                    callback(e);
                 }
             } else {
                 // Error
+                callback(e);
             }
         };
-        request.onerror = function() {
+        request.onerror = function(e) {
             console.log('There was an error in xmlHttpRequest!');
+            callback(e);
         };
         request.send();
+    };
+
+    var modal_history = function(){
+        var modal = BModal('History');
+        var body = document.getElementsByTagName("BODY")[0];
+        body.appendChild(modal.dom);
+        var history = new History(modal.content);
+        history.update(function(e){
+            $(modal).modal();
+        });
+    };
+
+    var BModal = function(title) {
+        var modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.role = 'dialog';
+        var dialog = document.createElement('div');
+        dialog.className = 'modal-dialog';
+        dialog.style.width = '100%';
+        dialog.style.height = '100%';
+        dialog.style.margin = '0':
+        dialog.style.padding = '0';
+        var content = document.createElement('div');
+        content.className = 'modal-content';
+        content.style.height = 'auto';
+        content.style.minHeight = '100%';
+        content.style.borderRadius = '0';
+        var header = document.createElement('div');
+        header.className = 'modal-header';
+        var close = document.createElement('button');
+        close.className = 'close';
+        close.dataDismiss = 'modal';
+        close.innerHTML = '&times;';
+        var dTitle = document.createElement('h4');
+        dTitle.className = 'modal-title';
+        dTitle.innerHTML = title;
+        var body = document.createElement('div');
+        body.className = 'modal-body';
+        var footer = document.createElement('div');
+        footer.className = 'modal-footer';
+        var close2 = document.createElement('button');
+        close2.className = 'btn btn-default';
+        close2.dataDismiss = 'modal';
+        close2.innerHTML = 'Close';
+        header.appendChild(close);
+        header.appendChild(dTitle);
+        body.appendChild(mainContent);
+        footer.appendChild(close2);
+        content.appendChild(header);
+        content.appendChild(body);
+        content.appendChild(footer);
+        dialog.appendChild(content);
+        modal.appendChild(dialog);
+        this.dom = modal;
+        this.content = content;
     };
 
 
