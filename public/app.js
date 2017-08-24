@@ -881,7 +881,7 @@
                     var d = JSON.parse(request.responseText);
                     self.data = [];
                     for (let i=0;i<d.length;i++) {
-                        self.data.push({x: d[i].timestamp, y:d[i].dollar});
+                        self.data.push({x: (new Date(d[i].timestamp*1000)), y:d[i].dollar});
                     }
                     self.chart.data.datasets[0].data = self.data;
                     self.chart.render();
