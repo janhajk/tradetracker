@@ -784,6 +784,7 @@
          options: {
              scales: {
                  xAxes: [{
+                     type: 'time',
                      time: {
                          unit: 'day'
                      }
@@ -884,6 +885,8 @@
                         self.data.push({x: (new Date(d[i].timestamp*1000)), y:d[i].dollar});
                     }
                     self.chart.data.datasets[0].data = self.data;
+                    self.chart.data.datasets[0].label = 'USD';
+                    self.chart.resize();
                     self.chart.render();
                     self.chart.update();
                 }
