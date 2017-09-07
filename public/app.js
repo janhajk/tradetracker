@@ -884,7 +884,7 @@
         parent.appendChild(div);
         Highcharts.setOptions({
             global: {
-                timezone: 'Europe/Zurich'
+                timezone: 'Europe/Berlin'
             }
         });
         var c = Highcharts.stockChart(div, {
