@@ -884,7 +884,7 @@
                     var d = JSON.parse(request.responseText);
                     self.data = [];
                     for (let i=0;i<d.length;i++) {
-                        self.data.push([(new Date(d[i].timestamp*1000)), d[i].dollar]);
+                        self.data.push([d[i].timestamp, d[i].dollar]);
                     }
                     Highcharts.stockChart(this.chart, {
                         rangeSelector: {
