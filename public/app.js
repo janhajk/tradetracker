@@ -899,9 +899,10 @@
     History.prototype.update = function(newData) {
         this.data.usd.push(newData.usd);
         this.data.btc.push(newData.btc);
+        var timestamp = Date.now();
         for (let i in this.charts) {
             if (this.charts[i] != undefined) {
-                this.charts[i].series[0].addPoint([Date.now(), newData.usd], false);
+                this.charts[i].series[0].addPoint([timestamp, newData.usd], false, false, false);
                 //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
                 this.charts[i].redraw();
             }
