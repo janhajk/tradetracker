@@ -4,7 +4,7 @@
 
     Highcharts.setOptions({
         global: {
-            timezone: 'Europe/Zurich'
+            timezone: 'Europe/Oslo'
         }
     });
 
