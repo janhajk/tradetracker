@@ -2,6 +2,12 @@
 
     var rInterval = 10; // Update interval of rates in seconds
 
+    Highcharts.setOptions({
+        global: {
+            timezone: 'Europe/Zurich'
+        }
+    });
+
     var rates = {};
     var positions = [];
     var btc = 0;
