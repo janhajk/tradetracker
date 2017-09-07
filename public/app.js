@@ -884,7 +884,30 @@
         parent.appendChild(div);
         var c = Highcharts.stockChart(div, {
             rangeSelector: {
-                selected: 1
+                buttons: [{
+                    type: 'hour',
+                    count: 1,
+                    text: '1h'
+                }, {
+                    type: 'day',
+                    count: 1,
+                    text: '24h'
+                }, {
+                    type: 'month',
+                    count: 6,
+                    text: '6m'
+                }, {
+                    type: 'ytd',
+                    text: 'YTD'
+                }, {
+                    type: 'year',
+                    count: 1,
+                    text: '1y'
+                }, {
+                    type: 'all',
+                    text: 'All'
+                }],
+                selected: 2
             },
             title: {
                 text: 'History'
