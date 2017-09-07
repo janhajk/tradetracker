@@ -886,7 +886,7 @@
                     for (let i=0;i<d.length;i++) {
                         self.data.push([d[i].timestamp*1000, d[i].dollar]);
                     }
-                    Highcharts.stockChart(this.chart, {
+                    Highcharts.stockChart(self.chart, {
                         rangeSelector: {
                             selected: 1
                         },
