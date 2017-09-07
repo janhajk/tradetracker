@@ -201,8 +201,9 @@
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
-                    history = new History(chartsDom.row[2]);
-                    history.update(function(){});
+                    history = new History(function(e){
+                        this.appendChart(chartsDom.row[2]);
+                    });
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
                         labels.btc = document.createElement('span');
@@ -867,14 +868,38 @@
         return false;
     };
 
-    var History = function(parent) {
-        this.data = [];
-        //this.chart = emptyLineChart(parent);
-        this.chart = document.createElement('div');
-        parent.appendChild(this.chart);
+    var History = function(callback) {
+        this.data = {
+            usd: [],
+            btc: []
+        };
+        this.request(callback);
     };
 
-    History.prototype.update = function(callback) {
+    History.prototype.appendChart = function(parent) {
+        var div = document.createElement('div');
+        parent.appendChild(div);
+        Highcharts.stockChart(div, {
+            rangeSelector: {
+                selected: 1
+            },
+            title: {
+                text: 'History'
+            },
+            series: [{
+                name: 'Total USD',
+                data: this.data.usd
+            }]
+        });
+    };
+
+    History.prototype.update = function(newData) {
+        this.data.usd.push(newData.usd);
+        this.data.btc.push(newData.dollar);
+        
+    };
+
+    History.prototype.request = function(callback) {
         var self = this;
         var request = new XMLHttpRequest();
         request.open('GET', '/history', true);
@@ -882,33 +907,10 @@
             if(request.status >= 200 && request.status < 400) {
                 try {
                     var d = JSON.parse(request.responseText);
-                    self.data = [];
                     for (let i=0;i<d.length;i++) {
-                        self.data.push([d[i].timestamp*1000, d[i].dollar]);
+                        self.data.usd.push([d[i].timestamp*1000, d[i].dollar]);
+                        self.data.btc.push([d[i].timestamp*1000, d[i].btc]);
                     }
-                    Highcharts.stockChart(self.chart, {
-                        rangeSelector: {
-                            selected: 1
-                        },
-                        title: {
-                            text: 'History'
-                        },
-                        series: [{
-                            name: 'Total USD',
-                            data: self.data,
-                            tooltip: {
-                                valueDecimals: 2
-                            }
-                        }]
-                    });
-                    /*
-                    self.chart.data.datasets[0].data = self.data;
-                    self.chart.data.datasets[0].label = 'USD';
-                    self.chart.data.datasets[0].pointRadius = 0;
-                    self.chart.options.scales.xAxes[0].time.unit = 'week';
-                    self.chart.resize();
-                    self.chart.render();
-                    self.chart.update();*/
                     callback(null);
                 }
                 catch (e) {
