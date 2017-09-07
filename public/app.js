@@ -264,7 +264,8 @@
                         bar.update();
                         pieTotBtc.update();
                         pieTotMarket.update();
-                        history.update({usd:tot.usd, btc:tot.btc});
+                        let t = getTot();
+                        history.update({usd:t.usd, btc:t.btc});
                         // set updateRates as interval
                         if(firstRun) {
                             setInterval(updateRates, rInterval * 1000);
