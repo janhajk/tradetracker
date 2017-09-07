@@ -201,8 +201,8 @@
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
-                    history = new History(function(e){
-                        this.appendChart(chartsDom.row[2]);
+                    history = new History(function(e, self){
+                        self.appendChart(chartsDom.row[2]);
                     });
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
@@ -911,7 +911,7 @@
                         self.data.usd.push([d[i].timestamp*1000, d[i].dollar]);
                         self.data.btc.push([d[i].timestamp*1000, d[i].btc]);
                     }
-                    callback(null);
+                    callback(null, self);
                 }
                 catch (e) {
                     console.log(e);
