@@ -202,7 +202,7 @@
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
                     history = new History(function(e, self){
-                        self.appendChart(chartsDom.row[2]);
+                        self.appendChart('main', chartsDom.row[2]);
                     });
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
@@ -264,6 +264,7 @@
                         bar.update();
                         pieTotBtc.update();
                         pieTotMarket.update();
+                        history.update({usd:tot.usd, btc:tot.btc});
                         // set updateRates as interval
                         if(firstRun) {
                             setInterval(updateRates, rInterval * 1000);
@@ -272,7 +273,7 @@
                     }
                     catch (e) {
                         console.log(e);
-                        btnLogin.show();                        btnLogin.show();
+                        btnLogin.show();
                     }
                 } else {
                     // Error
@@ -874,12 +875,13 @@
             btc: []
         };
         this.request(callback);
+        this.charts = {};
     };
 
-    History.prototype.appendChart = function(parent) {
+    History.prototype.appendChart = function(name, parent) {
         var div = document.createElement('div');
         parent.appendChild(div);
-        Highcharts.stockChart(div, {
+        var c = Highcharts.stockChart(div, {
             rangeSelector: {
                 selected: 1
             },
@@ -891,12 +893,19 @@
                 data: this.data.usd
             }]
         });
+        this.charts[name] = c;
     };
 
     History.prototype.update = function(newData) {
         this.data.usd.push(newData.usd);
-        this.data.btc.push(newData.dollar);
-        
+        this.data.btc.push(newData.btc);
+        for (let i in this.charts) {
+            if (this.charts[i] != undefined) {
+                this.charts[i].series[0].addPoint([Date.now(), newData.usd], false);
+                //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
+                this.charts[i].redraw();
+            }
+        }
     };
 
     History.prototype.request = function(callback) {
@@ -935,10 +944,8 @@
         var modal = new BModal('History');
         var body = document.getElementsByTagName("BODY")[0];
         body.appendChild(modal.dom);
-        var history = new History(modal.content);
-        history.update(function(e){
-            $(modal.dom).modal();
-        });
+        history.appendChart('modal', modal.content);
+        $(modal.dom).modal();
     };
 
     var BModal = function(title) {
