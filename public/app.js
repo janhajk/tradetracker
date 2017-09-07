@@ -942,12 +942,19 @@
         request.send();
     };
 
+    History.prototype.remove = function(name) {
+        delete this.charts[name];
+    };
+
     var modal_history = function(){
         var modal = new BModal('History');
         var body = document.getElementsByTagName("BODY")[0];
         body.appendChild(modal.dom);
         history.appendChart('modal', modal.content);
         $(modal.dom).modal();
+        $(modal.dom).on('hidden.bs.modal', function () {
+            history.remove('modal');
+        });
     };
 
     var BModal = function(title) {
