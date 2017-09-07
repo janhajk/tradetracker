@@ -882,6 +882,11 @@
     History.prototype.appendChart = function(name, parent) {
         var div = document.createElement('div');
         parent.appendChild(div);
+        Highcharts.setOptions({
+            global: {
+                timezone: 'Europe/Zurich'
+            }
+        });
         var c = Highcharts.stockChart(div, {
             rangeSelector: {
                 buttons: [{
