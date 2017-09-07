@@ -882,7 +882,10 @@
             if(request.status >= 200 && request.status < 400) {
                 try {
                     var d = JSON.parse(request.responseText);
-                    self.data = d;
+                    self.data = [];
+                    for (let i=0;i<d.length;i++) {
+                        self.data.push([(new Date(d[i].timestamp*1000)), d[i].dollar]);
+                    }
                     Highcharts.stockChart(this.chart, {
                         rangeSelector: {
                             selected: 1
@@ -898,10 +901,7 @@
                             }
                         }]
                     });
-                    /*self.data = [];
-                    for (let i=0;i<d.length;i++) {
-                        self.data.push({x: (new Date(d[i].timestamp*1000)), y:d[i].dollar});
-                    }
+                    /*
                     self.chart.data.datasets[0].data = self.data;
                     self.chart.data.datasets[0].label = 'USD';
                     self.chart.data.datasets[0].pointRadius = 0;
