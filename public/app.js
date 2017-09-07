@@ -869,7 +869,9 @@
 
     var History = function(parent) {
         this.data = [];
-        this.chart = emptyLineChart(parent);
+        //this.chart = emptyLineChart(parent);
+        this.chart = document.createElement('div');
+        parent.appendChild(this.chart);
     };
 
     History.prototype.update = function(callback) {
@@ -880,7 +882,23 @@
             if(request.status >= 200 && request.status < 400) {
                 try {
                     var d = JSON.parse(request.responseText);
-                    self.data = [];
+                    self.data = d;
+                    Highcharts.stockChart(this.chart, {
+                        rangeSelector: {
+                            selected: 1
+                        },
+                        title: {
+                            text: 'History'
+                        },
+                        series: [{
+                            name: 'Total USD',
+                            data: d,
+                            tooltip: {
+                                valueDecimals: 2
+                            }
+                        }]
+                    });
+                    /*self.data = [];
                     for (let i=0;i<d.length;i++) {
                         self.data.push({x: (new Date(d[i].timestamp*1000)), y:d[i].dollar});
                     }
@@ -890,7 +908,7 @@
                     self.chart.options.scales.xAxes[0].time.unit = 'week';
                     self.chart.resize();
                     self.chart.render();
-                    self.chart.update();
+                    self.chart.update();*/
                     callback(null);
                 }
                 catch (e) {
