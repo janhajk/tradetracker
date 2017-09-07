@@ -895,7 +895,7 @@
                         },
                         series: [{
                             name: 'Total USD',
-                            data: this.data,
+                            data: self.data,
                             tooltip: {
                                 valueDecimals: 2
                             }
