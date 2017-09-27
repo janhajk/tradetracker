@@ -900,6 +900,10 @@
                     count: 1,
                     text: '24h'
                 }, {
+                    type: 'day',
+                    count: 7,
+                    text: '1w'
+                }, {
                     type: 'month',
                     count: 6,
                     text: '6m'
