@@ -22,7 +22,10 @@ var getContentFromMultipleUrls = function(urls, callback) {
 };
 exports.getContentFromMultipleUrls = getContentFromMultipleUrls;
 
-
+var date2timestamp = function(y,m,d,h,m,s) {
+    return (new Date(y,m,d,h,m,s).getTime() / 1000);
+};
+exports.date2timestamp = date2timestamp;
 
 var getFilesizeInBytes = function(filename) {
     return (fs.statSync(filename)).size;
