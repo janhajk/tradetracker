@@ -1,7 +1,9 @@
 // User Config File
 var config = require(__dirname + '/config.js');
+// Utils
 var utils  = require(__dirname + '/utils.js');
 
+// DEV-Mode
 var dev = process.argv[2];
 if (dev !== undefined && dev) {
     config.dev = true;
@@ -49,6 +51,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+
+// Public directory
 app.use(express.static((path.join(__dirname, 'public'))));
 
 
