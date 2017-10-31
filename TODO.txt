@@ -28,6 +28,7 @@
  Feature Requests
 -----------------------------------------------------------
 
+- Use http://techanjs.org/ for charting candlestick charts
 - SMS API for reciving price and changes via clxcommunications.com messaging
 - make table sortable on picture cols through hidden col
 - box with hottest currencies
