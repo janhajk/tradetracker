@@ -11,7 +11,7 @@ var path = require('path');
 var fs = require('fs');
 
 
-var basic = function(app) {
+var basic = function(app, connection) {
     app.get('/', function(req, res) {
         fs.readFile(__dirname + '/public/index.html', 'utf-8', function(err, data) {
             res.send(data);

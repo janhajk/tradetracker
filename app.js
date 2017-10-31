@@ -56,7 +56,7 @@ app.use(express.static((path.join(__dirname, 'public'))));
 auth.routing(app);
 
 // Routing
-routing.basic(app);
+routing.basic(app, connection);
 
 
 app.listen(config.port, function () {
