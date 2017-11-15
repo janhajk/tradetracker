@@ -8,6 +8,16 @@
  Next features
 -----------------------------------------------------------
 
+- Aset-Details
+	- Click on asset opens asset details (attach new empty row for content)
+    - Load Asset-details
+    	- history
+        - change since open
+        - ???
+    - Create Graph of 
+
+
+
 - Chart of porfolio value history
 - Alarms in database (aid, cid, side, )
 - new asset object
