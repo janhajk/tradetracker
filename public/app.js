@@ -562,7 +562,8 @@
         if (this.round === -1) {
             if (typeof html === 'number') {
                 let digits = smartRound(html);
-                html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
+                //html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
+                html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
             }
         }
         else if (typeof html === 'number' && this.round > -1) {
