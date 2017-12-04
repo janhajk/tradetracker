@@ -901,6 +901,9 @@
         parent.appendChild(div);
 
         var c = Highcharts.stockChart(div, {
+            yAxis: {
+                crosshair: true
+            },
             rangeSelector: {
                 buttons: [{
                     type: 'hour',
