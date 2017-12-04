@@ -59,7 +59,8 @@
         'last': {
             formula: function(p, pp) {
                 p.value = pp.last;
-            }
+            },
+            align: 'right'
         },
         'totBtc': {
             formula : function(p, pp){
