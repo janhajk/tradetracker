@@ -18,7 +18,7 @@
 
 
 
-- Chart of porfolio value history
+- Chart of porfolio value history in BTC
 - Alarms in database (aid, cid, side, )
 - new asset object
 - page for all rates with functions (exp. set alarm)

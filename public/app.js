@@ -46,7 +46,8 @@
         },
         'amount': {
             col: 'amount',
-            class: 'hidden-xs'
+            class: 'hidden-xs',
+            align: 'right'
         },
         'open': {
             formula: function(p, pp) {
