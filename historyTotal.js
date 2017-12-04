@@ -48,10 +48,20 @@ var Position = function(data) {
 /**
  * updates Total BTC & USD for Position
  */
-Position.prototype.updateTotal = function(){
+Position.prototype.updateTotal = function() {
     // BTC
-    this.stats.totals.btc = (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD')?this.last * this.amount:this.amount;
-    if (this.name.base === 'LTC' && this.name.counter === 'OKEX') this.stats.totals.btc = this.last * ltc;
+    if(this.name.base === 'BTC' && (this.name.counter).substring(0, 3) !== 'USD') {
+        this.stats.totals.btc = this.last * this.amount;
+    }
+    else if(this.name.base === 'USD' && this.name.counter === 'USD') {
+        this.stats.totals.btc = 1 / btc * this.amount;
+    }
+    else if(this.name.base === 'LTC' && this.name.counter === 'OKEX') {
+        this.stats.totals.btc = this.last * ltc;
+    }
+    else {
+        this.stats.totals.btc = this.amount;
+    }
     // USD
     this.stats.totals.usd = this.stats.totals.btc * btc;
 };
