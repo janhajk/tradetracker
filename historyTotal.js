@@ -56,6 +56,9 @@ Position.prototype.updateTotal = function() {
     else if(this.name.base === 'USD' && this.name.counter === 'USD') {
         this.stats.totals.btc = 1 / btc * this.amount;
     }
+   else if ((this.name.counter).substring(0,3) == 'USD') {
+      this.stats.totals.btc = this.amount * this.last / btc;
+   }
     else if(this.name.base === 'LTC' && this.name.counter === 'OKEX') {
         this.stats.totals.btc = this.last * ltc;
     }
