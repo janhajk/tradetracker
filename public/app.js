@@ -76,9 +76,26 @@
             round: 0
         },
         '±B/1h': {
-            formula : function(p, pp) {
-                var l = pp.rates[0].last_1h;
-                p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+            formula: function(p, pp) {
+                var request = new XMLHttpRequest();
+                request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/3600', true);
+                request.onload = function() {
+                    if(request.status >= 200 && request.status < 400) {
+                        try {
+                            var l = JSON.parse(request.responseText);
+                            pp.rates[0].last_1h = l;
+                            p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    }
+                    else { // different status than 200-400
+                    }
+                };
+                request.onerror = function() {
+                    console.log('There was an error in xmlHttpRequest!');
+                };
+                request.send();
             },
             round: 1,
             prefix: 'sign',
@@ -87,9 +104,26 @@
             }
         },
         '±B/24h': {
-            formula : function(p, pp) {
-                var l = pp.rates[0].last_24h;
-                p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+            formula: function(p, pp) {
+                var request = new XMLHttpRequest();
+                request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/86400', true);
+                request.onload = function() {
+                    if(request.status >= 200 && request.status < 400) {
+                        try {
+                            var l = JSON.parse(request.responseText);
+                            pp.rates[0].last_24h = l;
+                            p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    }
+                    else { // different status than 200-400
+                    }
+                };
+                request.onerror = function() {
+                    console.log('There was an error in xmlHttpRequest!');
+                };
+                request.send();
             },
             round: 1,
             prefix: 'sign'

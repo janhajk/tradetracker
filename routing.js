@@ -47,6 +47,18 @@ var basic = function(app, connection) {
         });
     });
 
+    app.get('/asset/:aid/historical/:cid/:timeago', auth.ensureAuthenticated, function(req, res){
+        var aid = req.params.aid;
+        var cid = req.params.cid;
+        var timeago = req.params.timeago;
+        var rates = require(__dirname + '/lib/rates.js');
+            historical(aid, cid, timeago, connection, function(e, hist) {
+                utils.log('retrieved' + parseInt(s/3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
+                res.send(e ? e : Number(hist));
+        });
+    });
+
+
     app.get('/position/:pid/edit', auth.ensureAuthenticated, function() {
 
     });
