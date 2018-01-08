@@ -10,6 +10,8 @@
 
     var rates = {};
     var positions = [];
+    var assetDetail;
+    var postable;
     var btc = 0;
     var ltc = 0;
     var bar = null;
@@ -65,7 +67,12 @@
                 p.value = pp.last;
                 cb();
             },
-            align: 'right'
+            align: 'right',
+            onclick: function(){
+                postable.style.display = 'none';
+                assetDetail.innerHTML = '';
+                pp.details(assetDetail);
+            }
         },
         'totBtc': {
             formula : function(p, pp, cb){
@@ -246,10 +253,15 @@
                         position.load();
                         positions.push(position);
                     }
-                    var table = new Postable(positions);
+                    postable = new Postable(positions);
                     var content = document.getElementById('content');
                     content.innerHTML = '';
-                    content.appendChild(table.render());
+                    content.appendChild(postable.render());
+                    // Area to show details of an asset
+                    assetDetail = document.createElement('div');
+                    assetDetail.style.display = 'none';
+                    content.appendChild(assetDetail);
+
                     $.bootstrapSortable({ applyLast: true });
                     bar.start();
                     updateRates();
@@ -532,6 +544,23 @@
             tr.appendChild(cells[i]);
         }
         return tr;
+    };
+
+    /*
+     * Loads Details of asset into target
+     */
+    Position.prototype.details = function(target) {
+        var div = document.createElement('div');
+        var btnClose = document.createElement('div');
+        btnClose.innerHTML = 'close';
+        btnClose.onclick = function() {
+            target.style.display = 'none';
+            postable.style.display = 'block';
+        };
+        div.appendChild(btnClose);
+        target.appendChild(div);
+        postable.style.display = 'none';
+        target.style.display = 'block';
     };
 
     /**
