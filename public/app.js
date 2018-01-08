@@ -358,7 +358,7 @@
 
     /**
     * Browser notifications
-    */
+    
     document.addEventListener('DOMContentLoaded', function () {
         if (Notification.permission !== 'granted')
             Notification.requestPermission();
@@ -377,7 +377,7 @@
                 alert('!');
             };
         }
-    };
+    };*/
 
     /**
     * Change update interval
