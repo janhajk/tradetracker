@@ -214,7 +214,7 @@
                 state = Number(state.replace(/[^0-9]/gi,''));
                 let step = (100-resetAt) / (rInterval/interval);
                 let newState = state - step;
-                if (newState <= min) newState = min;
+                if (newState <= min) { newState = min; }
                 bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger');
                 bar.style.width = newState + '%';
             }, interval*1000);
@@ -561,8 +561,9 @@
             this[i] = defaults[i];
         }
         this.dom = document.createElement('td');
-        this.calc();
-        this.render();
+        this.calc(function(){}
+            this.render();
+        );
     };
 
     /**
