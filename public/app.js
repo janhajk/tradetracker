@@ -26,20 +26,23 @@
     var cols = {
         'btc': {
             hidden:true,
-            formula: function(p,pp){
+            formula: function(p,pp,cb){
                 p.value = btc;
+                cb();
             }
         },
         'market': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb) {
                 p.value = pp.name.market;
+                cb();
             },
             image: {folder:'markets', filetype: 'png'},
             align: 'center'
         },
         'asset': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb) {
                 p.value = pp.name.assetname;
+                cb();
             },
             image: {folder:'coins/32x32', filetype: 'png'},
             align: 'center'
@@ -50,33 +53,37 @@
             align: 'right'
         },
         'open': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb) {
                 p.value = pp.stats.open.rate;
+                cb();
             },
             class: 'hidden-xs hidden-sm',
             align: 'right'
         },
         'last': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb) {
                 p.value = pp.last;
+                cb();
             },
             align: 'right'
         },
         'totBtc': {
-            formula : function(p, pp){
+            formula : function(p, pp, cb){
                 p.value = pp.stats.totals.btc;
+                cb();
             },
             round: 2,
             sort: 'desc'
         },
         'totUsd': {
-            formula : function(p, pp){
+            formula : function(p, pp, cb){
                 p.value = pp.stats.totals.usd;
+                cb();
             },
             round: 0
         },
         '±B/1h': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb {
                 var request = new XMLHttpRequest();
                 request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/3600', true);
                 request.onload = function() {
@@ -85,11 +92,14 @@
                             var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_1h = l;
                             p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                            cb();
                         } catch(e) {
                             console.log(e);
+                            cb();
                         }
                     }
                     else { // different status than 200-400
+                        cb();
                     }
                 };
                 request.onerror = function() {
@@ -100,11 +110,11 @@
             round: 1,
             prefix: 'sign',
             alert: function(p, pp) {
-                
+
             }
         },
         '±B/24h': {
-            formula: function(p, pp) {
+            formula: function(p, pp, cb) {
                 var request = new XMLHttpRequest();
                 request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/86400', true);
                 request.onload = function() {
@@ -113,11 +123,14 @@
                             var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_24h = l;
                             p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                            cb();
                         } catch(e) {
                             console.log(e);
+                            cb();
                         }
                     }
                     else { // different status than 200-400
+                        cb();
                     }
                 };
                 request.onerror = function() {
@@ -587,16 +600,18 @@
     /**
     * Calculates cell using formula
     */
-    Cell.prototype.calc = function() {
+    Cell.prototype.calc = function(cb) {
         if (this.col) {
             this.value = this.position[this.col];
+            cb();
         }
         if (this.formula !== null) {
             if (typeof this.formula === 'function') {
-                this.formula(this, this.position);
+                this.formula(this, this.position, cb);
             }
             else if (this.formula.type === '*') {
                 this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+                cb();
             }
         }
     };
@@ -630,26 +645,27 @@
     */
     Cell.prototype.update = function() {
         var val1 = this.value;
-        this.calc();
-        this.dom.dataValue = this.value;
-        // update html if value has changed
-        if (val1 === null || this.value !== val1) {
-            this.dom.innerHTML = this.tValue();
-            if (typeof this.value === 'number' && Math.abs(this.value/val1-1)>0.003) {
-                this.dom.style.transition = 'color 1s';
-                if (this.value > val1) {
-                    this.dom.style.backgroundColor = '#ccffcc';
+        self = this;
+        this.calc(function() {
+            self.dom.dataValue = self.value;
+            // update html if value has changed
+            if(val1 === null || self.value !== val1) {
+                self.dom.innerHTML = self.tValue();
+                if(typeof self.value === 'number' && Math.abs(self.value / val1 - 1) > 0.003) {
+                    self.dom.style.transition = 'color 1s';
+                    if(self.value > val1) {
+                        self.dom.style.backgroundColor = '#ccffcc';
+                    } else if(self.value < val1) {
+                        self.dom.style.backgroundColor = '#ff9999';
+                    }
+                    var dom = self.dom;
+                    setTimeout(function() {
+                        dom.style.transition = 'backgroundColor 4s';
+                        dom.style.backgroundColor = 'transparent';
+                    }, 2500);
                 }
-                else if (this.value < val1) {
-                    this.dom.style.backgroundColor = '#ff9999';
-                }
-                var dom = this.dom;
-                setTimeout(function(){
-                    dom.style.transition = 'backgroundColor 4s';
-                    dom.style.backgroundColor = 'transparent';
-                }, 2500);
             }
-        }
+        });
     };
 
     // *** END Cell
