@@ -561,9 +561,9 @@
             this[i] = defaults[i];
         }
         this.dom = document.createElement('td');
-        this.calc(function(){}
+        this.calc(function(){
             this.render();
-        );
+        });
     };
 
     /**
