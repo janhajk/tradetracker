@@ -52,9 +52,9 @@ var basic = function(app, connection) {
         var cid = req.params.cid;
         var timeago = req.params.timeago;
         var rates = require(__dirname + '/lib/rates.js');
-            rates.historical(aid, cid, timeago, connection, function(e, hist) {
-                utils.log('retrieved' + parseInt(timeago/3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
-                res.send(e ? e : Number(hist));
+        rates.historical(aid, cid, timeago, connection, function(e, hist) {
+            utils.log('retrieved ' + parseInt(timeago/3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
+            res.send(e ? e : hist);
         });
     });
 
