@@ -83,7 +83,7 @@
             round: 0
         },
         '±B/1h': {
-            formula: function(p, pp, cb {
+            formula: function(p, pp, cb) {
                 var request = new XMLHttpRequest();
                 request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/3600', true);
                 request.onload = function() {
