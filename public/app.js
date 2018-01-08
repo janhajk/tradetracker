@@ -586,6 +586,7 @@
         this.class = '';
         this.round = -1;
         this.image = 0;
+        this.onclick = null;
         // Set defaults
         for (let i in defaults) {
             this[i] = defaults[i];
@@ -627,6 +628,7 @@
         td.ondblclick = function(){
             console.log(this.value);
         };
+        td.onclick = this.onclick
     };
 
     /**
