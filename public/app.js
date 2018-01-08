@@ -140,7 +140,7 @@
             },
             round: 1,
             prefix: 'sign'
-        },
+        }
     };
 
     var labels = {
@@ -226,7 +226,6 @@
     */
     document.addEventListener('DOMContentLoaded', function() {
         bar = new Countdown();
-        btnLogin = new Login();
         btnLogin = new Login();
         // Load Positions
         var request = new XMLHttpRequest();
