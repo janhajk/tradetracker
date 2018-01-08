@@ -82,7 +82,7 @@
                 request.onload = function() {
                     if(request.status >= 200 && request.status < 400) {
                         try {
-                            var l = JSON.parse(request.responseText);
+                            var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_1h = l;
                             p.value = (l===undefined)?0:(pp.last/l-1) * 100;
                         } catch(e) {
@@ -110,7 +110,7 @@
                 request.onload = function() {
                     if(request.status >= 200 && request.status < 400) {
                         try {
-                            var l = JSON.parse(request.responseText);
+                            var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_24h = l;
                             p.value = (l===undefined)?0:(pp.last/l-1) * 100;
                         } catch(e) {
