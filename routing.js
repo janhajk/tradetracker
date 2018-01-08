@@ -54,7 +54,7 @@ var basic = function(app, connection) {
         var rates = require(__dirname + '/lib/rates.js');
         rates.historical(aid, cid, timeago, connection, function(e, hist) {
             utils.log('retrieved ' + parseInt(timeago/3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
-            res.send(e ? e : hist);
+            res.send(e ? e : {v: Number(hist)});
         });
     });
 
