@@ -543,6 +543,7 @@
     *
     */
     var Cell = function(title, defaults, pos){
+        var self = this;
         this.position = pos;
         this.title = title;
         this.col = 0;
@@ -562,7 +563,7 @@
         }
         this.dom = document.createElement('td');
         this.calc(function(){
-            this.render();
+            self.render();
         });
     };
 
