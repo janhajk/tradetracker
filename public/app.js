@@ -2,6 +2,8 @@
 
     var rInterval = 10; // Update interval of rates in seconds
 
+   $.bootstrapSortable({ applyLast: true }); // keeps sorting on dynamic tables
+
     Highcharts.setOptions({
         global: {
             timezone: 'Europe/Oslo'
@@ -9,6 +11,7 @@
     });
 
     var rates = {};
+    var positionSet = null;
     var positions = [];
     var assetDetail;
     var postable;
@@ -156,6 +159,9 @@
     };
 
 
+    /*
+     * Login Button
+     */
     var Login = function() {
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -177,7 +183,7 @@
     };
     Login.prototype.hide = function() {
         this.btn.style.display = 'none';
-    };
+    }; // END LOGIN BUTTON
 
     /**
     * Countdown Progressbar
@@ -226,10 +232,11 @@
                 bar.style.width = newState + '%';
             }, interval*1000);
         };
-    };
+    }; // END COUNTDOWN PROGRESSBAR
 
-    /**
+   /**
     * document Loaded listener
+    * get's called once on startup
     */
     document.addEventListener('DOMContentLoaded', function() {
         bar = new Countdown();
@@ -241,8 +248,10 @@
             if(request.status >= 200 && request.status < 400) {
                 try {
                     var data = JSON.parse(request.responseText);
+                    // Global rates
                     btc = data.BTC.bitstamp.last;
                     ltc = data.LTC.poloniex.last;
+                    positionSet = new PostitionSet();
                     for (let i in data.positions) {
                         let position = new Position(data.positions[i]);
                         rates[data.positions[i].aid + '_' + data.positions[i].cid] = {
@@ -250,19 +259,20 @@
                             cid: data.positions[i].cid,
                             last: data.positions[i].last
                         };
-                        position.load();
+                        position.load(); // create cells and update
                         positions.push(position);
                     }
-                    postable = new Postable(positions);
+                    positionSet.add(positions);
+                    let tot = tGetTot();
+                    //postable = new Postable(positions);
                     var content = document.getElementById('content');
                     content.innerHTML = '';
-                    content.appendChild(postable.render());
+                    positionSet.tableAdd(content);
                     // Area to show details of an asset
                     assetDetail = document.createElement('div');
                     assetDetail.style.display = 'none';
                     content.appendChild(assetDetail);
 
-                    $.bootstrapSortable({ applyLast: true });
                     bar.start();
                     updateRates();
                     chartsDom = new ChartsDom(content);
@@ -271,6 +281,7 @@
                     history = new History(function(e, self){
                         self.appendChart('main', chartsDom.row[2]);
                     });
+                    // Create Price-Labels "TOT BTC XXX" "TOT USD XXXX"
                     if (!labels.btc) {
                         let dashline = document.getElementById('dashline');
                         labels.btc = document.createElement('span');
@@ -283,7 +294,6 @@
                         labels.usd.className = 'label label-primary';
                         dashline.appendChild(labels.usd);
                     }
-                    let tot = tGetTot();
                     labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
                     labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
                 }
@@ -364,7 +374,8 @@
             // 43 = +
             // 45 = -
         }, false);
-    });
+    }); // END DOMContentLoaded
+
 
 
     /**
@@ -403,40 +414,132 @@
     };
 
 
-    /**
-    * Position Table Object
-    */
-    var Postable = function(positions) {
+    /*
+     * A set of Positions
+     */
+    var PostitionSet = function() {
+        this.positions = [];
+        this.table = null;
+        this.tableContainer = null;
+        this.tableDom();
+        this.tot = {};
+    };
+
+    PositionSet.prototype.add = function(positions) {
         this.positions = positions;
-        this.render = function(){
             var table = btable();
             for (let i=0;i<positions.length;i++) {
                 table[1].tBodies[0].appendChild(positions[i].dom());
                 positions[i].update();
             }
             return table[0];
+    };
+
+    PositionSet.prototype.tableAdd = function(target) {
+        target.appendChild(this.tableContainer);
+    };
+
+    /**
+    * Positions-Table
+    * Creates empty positions table
+    * Data-rows are added asynchronously
+    */
+    PositionsSet.tableDom = function() {
+        this.table = document.createElement('table');
+        table.className      = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
+        table.style.width    = '100%';
+        table.style.maxWidth = '1000px';
+
+        // table header
+        var thead   = document.createElement('thead');
+        thead.class = 'thead-inverse';
+        var tr = document.createElement('tr');
+        for (let c in cols) {
+            if (cols[c].hidden) continue;
+            let th = document.createElement('th');
+            th.innerHTML       = c;
+            th.className       = cols[c].class?cols[c].class:'';
+            th.style.textAlign = cols[c].align?cols[c].align:'left';
+            if (cols[c].sort) {
+                th.dataDefaultsort=cols[c].sort;
+            }
+            tr.appendChild(th);
+        }
+        thead.appendChild(tr);
+        t.appendChild(thead);
+
+        // Positions
+        var tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+
+        this.tableContainer = document.createElement('div');
+        this.tableContainer.className = 'table-responsive';
+        this.tableContainer.appendChild(table);
+    };
+
+    /*
+     * Updates Total of Position Set in USD and BTC
+     */
+    positionSet.prototype.totUpdate = function() {
+        var BTC = ['USD', 'OKEX', '1B'];
+        // Total USD/BTC raw
+        var tot = {
+            btc: 0,
+            usd: 0
+        };
+        for(let i = 0; i < this.positions.length; i++) {
+            tot.btc += this.positions[i].stats.totals.btc;
+            tot.usd += this.positions[i].stats.totals.usd;
+        }
+        // Total USD/BTC Formated
+        var totNice = {
+            btc: tot.btc.toLocaleString('de-CH-1996', {
+                minimumFractionDigits: 2
+            }),
+            usd: Math.round(tot.usd).toLocaleString('de-CH-1996', {
+                minimumFractionDigits: 0
+            })
+        };
+        // Total per asset
+        var aTot = {};
+        for (let i in this.positions) {
+            var assetname = this.positions[i].name.assetname;
+            if (this.positions[i].name.base === 'BTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Bitcoin';
+            if (this.positions[i].name.base === 'LTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Litecoin';
+            if (!(assetname in tot)) {
+                aTot[assetname] = {btc:0,usd:0};
+            }
+            aTot[assetname].btc += this.positions[i].stats.totals.btc;
+            aTot[assetname].usd += this.positions[i].stats.totals.usd;
+        }
+        for (let i in aTot) {
+            aTot[i]['%'] = Math.round(aTot[i]/tot.btc);
+        }
+        var mTot = {};
+        for (let i in this.positions) {
+            var market = this.positions[i].row.market.value;
+            if (!(market in mTot)) {
+                mTot[market] = {btc:0,usd:0};
+            }
+            mTot[market].btc += this.positions[i].stats.totals.btc;
+            mTot[market].usd += this.positions[i].stats.totals.usd;
+        }
+        for (let i in mTot) {
+            if (mTot[i].btc === 0) delete mTot[i];
+        }
+        for (let i in mTot) {
+            mTot[i]['%'] = Math.round(mTot[i]/tot.btc);
+        }
+        this.tot = {
+            raw: tot,
+            nice: totNice,
+            asset: aTot,
+            markets: mTot
         };
     };
 
+    /* END PostitionSet */
 
-    /**
-    * Charts DOM
-    */
-    var ChartsDom = function(parent) {
-        var row = document.createElement('div');
-        row.className = 'row';
-        var col1 = document.createElement('div');
-        col1.className = 'col-sm-4';
-        var col2 = document.createElement('div');
-        col2.className = 'col-sm-4';
-        var col3 = document.createElement('div');
-        col3.className = 'col-sm-4';
-        row.appendChild(col1);
-        row.appendChild(col2);
-        row.appendChild(col3);
-        parent.appendChild(row);
-        this.row = [col1, col2, col3];
-    };
 
 
     /**
@@ -706,114 +809,24 @@
 
 
     /**
-    * Positions-Table
-    * Creates empty positions table
-    * Data-rows are added asynchronously
+    * Charts DOM
     */
-    var btable = function() {
-        var t = document.createElement('table');
-        t.className      = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
-        t.style.width    = '100%';
-        t.style.maxWidth = '1000px';
-
-        // table header
-        var thead   = document.createElement('thead');
-        thead.class = 'thead-inverse';
-        var tr = document.createElement('tr');
-        for (let c in cols) {
-            if (cols[c].hidden) continue;
-            let th = document.createElement('th');
-            th.innerHTML       = c;
-            th.className       = cols[c].class?cols[c].class:'';
-            th.style.textAlign = cols[c].align?cols[c].align:'left';
-            if (cols[c].sort) {
-                th.dataDefaultsort=cols[c].sort;
-            }
-            tr.appendChild(th);
-        }
-        thead.appendChild(tr);
-        t.appendChild(thead);
-
-        // Positions
-        var tbody = document.createElement('tbody');
-
-        t.appendChild(tbody);
-        var div = document.createElement('div');
-        div.className = 'table-responsive';
-        div.appendChild(t);
-        return [div, t];
+    var ChartsDom = function(parent) {
+        var row = document.createElement('div');
+        row.className = 'row';
+        var col1 = document.createElement('div');
+        col1.className = 'col-sm-4';
+        var col2 = document.createElement('div');
+        col2.className = 'col-sm-4';
+        var col3 = document.createElement('div');
+        col3.className = 'col-sm-4';
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+        parent.appendChild(row);
+        this.row = [col1, col2, col3];
     };
 
-
-    /**
-    * Get Total of all positions
-    */
-    var getTot = function() {
-        let tot = {btc:0, usd:0};
-        for (let i=0;i<positions.length;i++) {
-            tot.btc += positions[i].stats.totals.btc;
-            tot.usd += positions[i].stats.totals.usd;
-        }
-        return tot;
-    };
-
-    /**
-    * Get Total of all positions formated
-    */
-    var tGetTot = function() {
-        let tot = getTot();
-        tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
-        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', {minimumFractionDigits:0});
-        return tot;
-    };
-
-
-    /**
-    * Get Total of each asset
-    */
-    var getTotAsset = function() {
-        var tot = {};
-        var BTC = ['USD', 'OKEX', '1B'];
-        for (let i in positions) {
-            var assetname = positions[i].name.assetname;
-            if (positions[i].name.base === 'BTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Bitcoin';
-            if (positions[i].name.base === 'LTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Litecoin';
-            if (!(assetname in tot)) {
-                tot[assetname] = {btc:0,usd:0};
-            }
-            tot[assetname].btc += positions[i].stats.totals.btc;
-            tot[assetname].usd += positions[i].stats.totals.usd;
-        }
-        var tottot = getTot();
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i]/tottot.btc);
-        }
-        return tot;
-    };
-
-
-    /**
-    * Get Total for every market
-    */
-    var getTotMarket = function() {
-        var tot = {};
-        for (let i in positions) {
-            var market = positions[i].row.market.value;
-            if (!(market in tot)) {
-                tot[market] = {btc:0,usd:0};
-            }
-            tot[market].btc += positions[i].stats.totals.btc;
-            tot[market].usd += positions[i].stats.totals.usd;
-        }
-        for (let i in tot) {
-            if (tot[i].btc === 0) delete tot[i];
-        }
-        var tottot = getTot();
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i]/tottot.btc);
-        }
-        return tot;
-    };
 
     /**
     * 
