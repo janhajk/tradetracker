@@ -14,10 +14,11 @@ if (dev !== undefined && dev) {
 // Database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host: 'localhost',
+    host: config.sql.host,
+    port: config.sql.port,
     user: config.sql.user,
     password: config.sql.password,
-    database: config.sql.database
+    database: config.sql.database 
 });
 
 var positions = [];
