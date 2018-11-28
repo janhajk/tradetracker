@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
     var rInterval = 10; // Update interval of rates in seconds
 
@@ -27,8 +27,8 @@
     // pp = parent-parent = position
     var cols = {
         'btc': {
-            hidden:true,
-            formula: function(p,pp,cb){
+            hidden: true,
+            formula: function(p, pp, cb) {
                 p.value = btc;
                 cb();
             }
@@ -38,7 +38,7 @@
                 p.value = pp.name.market;
                 cb();
             },
-            image: {folder:'markets', filetype: 'png'},
+            image: { folder: 'markets', filetype: 'png' },
             align: 'center'
         },
         'asset': {
@@ -46,7 +46,7 @@
                 p.value = pp.name.assetname;
                 cb();
             },
-            image: {folder:'coins/32x32', filetype: 'png'},
+            image: { folder: 'coins/32x32', filetype: 'png' },
             align: 'center'
         },
         'amount': {
@@ -68,14 +68,14 @@
                 cb();
             },
             align: 'right',
-            onclick: function(){
+            onclick: function() {
                 postable.style.display = 'none';
                 assetDetail.innerHTML = '';
                 pp.details(assetDetail);
             }
         },
         'totBtc': {
-            formula : function(p, pp, cb){
+            formula: function(p, pp, cb) {
                 p.value = pp.stats.totals.btc;
                 cb();
             },
@@ -83,7 +83,7 @@
             sort: 'desc'
         },
         'totUsd': {
-            formula : function(p, pp, cb){
+            formula: function(p, pp, cb) {
                 p.value = pp.stats.totals.usd;
                 cb();
             },
@@ -92,15 +92,16 @@
         '±B/1h': {
             formula: function(p, pp, cb) {
                 var request = new XMLHttpRequest();
-                request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/3600', true);
+                request.open('GET', '/asset/' + pp.aid + '/historical/' + pp.cid + '/3600', true);
                 request.onload = function() {
-                    if(request.status >= 200 && request.status < 400) {
+                    if (request.status >= 200 && request.status < 400) {
                         try {
                             var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_1h = l;
-                            p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                            p.value = (l === undefined) ? 0 : (pp.last / l - 1) * 100;
                             cb();
-                        } catch(e) {
+                        }
+                        catch (e) {
                             console.log(e);
                             cb();
                         }
@@ -123,15 +124,16 @@
         '±B/24h': {
             formula: function(p, pp, cb) {
                 var request = new XMLHttpRequest();
-                request.open('GET', '/asset/'+pp.aid+'/historical/'+pp.cid+'/86400', true);
+                request.open('GET', '/asset/' + pp.aid + '/historical/' + pp.cid + '/86400', true);
                 request.onload = function() {
-                    if(request.status >= 200 && request.status < 400) {
+                    if (request.status >= 200 && request.status < 400) {
                         try {
                             var l = (JSON.parse(request.responseText)).v;
                             pp.rates[0].last_24h = l;
-                            p.value = (l===undefined)?0:(pp.last/l-1) * 100;
+                            p.value = (l === undefined) ? 0 : (pp.last / l - 1) * 100;
                             cb();
-                        } catch(e) {
+                        }
+                        catch (e) {
                             console.log(e);
                             cb();
                         }
@@ -180,14 +182,14 @@
     };
 
     /**
-    * Countdown Progressbar
-    * displays time since last update
-    */
+     * Countdown Progressbar
+     * displays time since last update
+     */
     var Countdown = function() {
         var lastUpdate = 0;
         var interval = 1; // in seconds
         var dashline = document.getElementById('dashline');
-        var bHeight = 5;  // in px
+        var bHeight = 5; // in px
         var bWidth = 100; // in px
 
         var container = document.createElement('div');
@@ -195,7 +197,7 @@
         container.style.float = 'right';
         container.style.marginTop = '2px';
         container.style.height = bHeight + 'px';
-        container.style.width  = bWidth  + 'px';
+        container.style.width = bWidth + 'px';
 
         var bar = document.createElement('div');
         bar.className = 'progress-bar progress-bar-danger';
@@ -206,31 +208,31 @@
         dashline.appendChild(container);
 
         // Resets the progress bar to 100%
-        this.update = function(){
+        this.update = function() {
             lastUpdate = Date.now();
             bar.style.width = '100%';
         };
 
         // starts the progressbar
-        this.start = function(){
-            setInterval(function(){
-                let level = [40,20];
+        this.start = function() {
+            setInterval(function() {
+                let level = [40, 20];
                 let resetAt = 40;
                 let min = 10;
                 let state = bar.style.width;
-                state = Number(state.replace(/[^0-9]/gi,''));
-                let step = (100-resetAt) / (rInterval/interval);
+                state = Number(state.replace(/[^0-9]/gi, ''));
+                let step = (100 - resetAt) / (rInterval / interval);
                 let newState = state - step;
                 if (newState <= min) { newState = min; }
-                bar.className = 'progress-bar progress-bar-'+((newState > level[0])?'success':(newState > level[1])?'warning':'danger');
+                bar.className = 'progress-bar progress-bar-' + ((newState > level[0]) ? 'success' : (newState > level[1]) ? 'warning' : 'danger');
                 bar.style.width = newState + '%';
-            }, interval*1000);
+            }, interval * 1000);
         };
     };
 
     /**
-    * document Loaded listener
-    */
+     * document Loaded listener
+     */
     document.addEventListener('DOMContentLoaded', function() {
         bar = new Countdown();
         btnLogin = new Login();
@@ -238,7 +240,7 @@
         var request = new XMLHttpRequest();
         request.open('GET', '/position', true);
         request.onload = function() {
-            if(request.status >= 200 && request.status < 400) {
+            if (request.status >= 200 && request.status < 400) {
                 try {
                     var data = JSON.parse(request.responseText);
                     btc = data.BTC.bitstamp.last;
@@ -268,7 +270,7 @@
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
-                    history = new History(function(e, self){
+                    history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                     });
                     if (!labels.btc) {
@@ -293,7 +295,8 @@
                     btnLogin.show();
                     document.getElementById('content').innerHTML = 'Not logged in.';
                 }
-            } else {
+            }
+            else {
                 // Error
             }
         };
@@ -310,17 +313,17 @@
             let request = new XMLHttpRequest();
             request.open('GET', '/rates', true);
             request.onload = function() {
-                if(request.status >= 200 && request.status < 400) {
+                if (request.status >= 200 && request.status < 400) {
                     try {
                         let r = JSON.parse(request.responseText);
                         btnLogin.hide();
                         btnLogin.hide();
-                        for (let i=0;i<r.length;i++) {
+                        for (let i = 0; i < r.length; i++) {
                             rates[r[i].aid + '_' + r[i].cid] = r[i];
                         }
                         // update Global BTC-Price
-                        btc = getLatestRate(110,12).last;
-                        ltc = getLatestRate(25,1).last;
+                        btc = getLatestRate(110, 12).last;
+                        ltc = getLatestRate(25, 1).last;
                         let tot = tGetTot();
                         document.title = tot.btc + '/' + tot.usd;
                         for (let i in positions) {
@@ -332,9 +335,9 @@
                         pieTotBtc.update();
                         pieTotMarket.update();
                         let t = getTot();
-                        history.update({usd:t.usd, btc:t.btc});
+                        history.update({ usd: t.usd, btc: t.btc });
                         // set updateRates as interval
-                        if(firstRun) {
+                        if (firstRun) {
                             setInterval(updateRates, rInterval * 1000);
                             firstRun = false;
                         }
@@ -343,7 +346,8 @@
                         console.log(e);
                         btnLogin.show();
                     }
-                } else {
+                }
+                else {
                     // Error
                     console.log('There was an Error when updating rates;');
                 }
@@ -355,7 +359,7 @@
         };
 
         // Keyboard Shortkeys
-        window.addEventListener('keypress', function(e){
+        window.addEventListener('keypress', function(e) {
             var keyCode = e.key;
             console.log(keyCode);
             if (keyCode === 'h') {
@@ -368,8 +372,8 @@
 
 
     /**
-    * Browser notifications
-    */
+     * Browser notifications
+     */
     /*
     document.addEventListener('DOMContentLoaded', function () {
         if (Notification.permission !== 'granted')
@@ -385,7 +389,7 @@
                 icon: 'images/logo/logo512.png',
                 body: body,
             });
-            notification.onclick = function () {
+            notification.onclick = function() {
                 alert('!');
             };
         }
@@ -393,8 +397,8 @@
 
 
     /**
-    * Change update interval
-    */
+     * Change update interval
+     */
     var changeUpdateInterval = function() {
         var navbar = document.getElementById('navbarul');
         // <li><a href="#">add position</a></li>
@@ -404,13 +408,13 @@
 
 
     /**
-    * Position Table Object
-    */
+     * Position Table Object
+     */
     var Postable = function(positions) {
         this.positions = positions;
-        this.render = function(){
+        this.render = function() {
             var table = btable();
-            for (let i=0;i<positions.length;i++) {
+            for (let i = 0; i < positions.length; i++) {
                 table[1].tBodies[0].appendChild(positions[i].dom());
                 positions[i].update();
             }
@@ -420,8 +424,8 @@
 
 
     /**
-    * Charts DOM
-    */
+     * Charts DOM
+     */
     var ChartsDom = function(parent) {
         var row = document.createElement('div');
         row.className = 'row';
@@ -440,19 +444,19 @@
 
 
     /**
-    * Position Object
-    *
-    * @param {Object} data position-data from Database JSON
-    *
-    */
+     * Position Object
+     *
+     * @param {Object} data position-data from Database JSON
+     *
+     */
     var Position = function(data) {
         this.amount = Number(data.amount);
-        this.open   = Number(data.open);
-        this.cid    = Number(data.cid);
-        this.aid    = Number(data.aid);
-        this.type   = Number(data.tid);
-        this.rates  = data.rates;
-        this.last   = Number(data.rates[0].last);
+        this.open = Number(data.open);
+        this.cid = Number(data.cid);
+        this.aid = Number(data.aid);
+        this.type = Number(data.tid);
+        this.rates = data.rates;
+        this.last = Number(data.rates[0].last);
         this.name = {
             market: data.name,
             assetname: data.assetname,
@@ -481,7 +485,7 @@
 
     Position.prototype.load = function() {
         for (let i in cols) {
-            let c = new Cell(i, cols[i], this);  // function Cell(title, defaults, pos)
+            let c = new Cell(i, cols[i], this); // function Cell(title, defaults, pos)
             this.row[i] = c;
         }
         this.updateTotal();
@@ -490,23 +494,23 @@
     /**
      * updates Total BTC & USD for Position
      */
-    Position.prototype.updateTotal = function(){
+    Position.prototype.updateTotal = function() {
         // BTC
-        if (this.name.base === 'BTC' && (this.name.counter).substring(0,3) !== 'USD') {
-           this.stats.totals.btc = this.last * this.amount;
+        if (this.name.base === 'BTC' && (this.name.counter).substring(0, 3) !== 'USD') {
+            this.stats.totals.btc = this.last * this.amount;
         }
-       else if (this.name.base === 'USD' && this.name.counter === 'USD') {
-          this.stats.totals.btc = 1 / btc * this.amount;
-       }
-       else if ((this.name.counter).substring(0,3) == 'USD') {
-          this.stats.totals.btc = this.amount * this.last / btc;
-       }
-       else if (this.name.base === 'LTC' && this.name.counter === 'OKEX') {
-          this.stats.totals.btc = this.last * ltc;
-       }
-       else {
-          this.stats.totals.btc = this.amount;
-       }
+        else if (this.name.base === 'USD' && this.name.counter === 'USD') {
+            this.stats.totals.btc = 1 / btc * this.amount;
+        }
+        else if ((this.name.counter).substring(0, 3) == 'USD') {
+            this.stats.totals.btc = this.amount * this.last / btc;
+        }
+        else if (this.name.base === 'LTC' && this.name.counter === 'OKEX') {
+            this.stats.totals.btc = this.last * ltc;
+        }
+        else {
+            this.stats.totals.btc = this.amount;
+        }
         // USD
         this.stats.totals.usd = this.stats.totals.btc * btc;
     };
@@ -515,7 +519,7 @@
      * Update position and all cells in position
      * using latest rates
      */
-    Position.prototype.update = function(){
+    Position.prototype.update = function() {
         var lRate = getLatestRate(this.aid, this.cid);
         if (lRate) {
             this.last = lRate.last;
@@ -529,10 +533,10 @@
     };
 
     /**
-    * Renders DOM of a row
-    * returns DOM-<tr>
-    */
-    Position.prototype.dom = function(){
+     * Renders DOM of a row
+     * returns DOM-<tr>
+     */
+    Position.prototype.dom = function() {
         let cells = [];
         for (let cell in this.row) {
             if (!this.row[cell].hidden) {
@@ -564,14 +568,14 @@
     };
 
     /**
-    * Cell Object
-    *
-    * @param {String} title
-    * @param {Array} defaults
-    * @param {Object} pos parent > position of which cell is part of
-    *
-    */
-    var Cell = function(title, defaults, pos){
+     * Cell Object
+     *
+     * @param {String} title
+     * @param {Array} defaults
+     * @param {Object} pos parent > position of which cell is part of
+     *
+     */
+    var Cell = function(title, defaults, pos) {
         var self = this;
         this.position = pos;
         this.title = title;
@@ -592,7 +596,7 @@
             this[i] = defaults[i];
         }
         this.dom = document.createElement('td');
-        this.calc(function(){
+        this.calc(function() {
             self.render();
         });
     };
@@ -601,7 +605,7 @@
      * Renders Cell the first time
      * only called once
      */
-    Cell.prototype.render =  function() {
+    Cell.prototype.render = function() {
         var td = this.dom;
         // Image-Cells
         if (this.value !== null && this.image) {
@@ -609,7 +613,7 @@
             let value = this.value.replace(/\s/g, '-').toLowerCase();
             let path = 'images/' + this.image.folder + '/';
             let src = path + value + '.' + this.image.filetype;
-            td.style.backgroundImage = 'url('+src+')';
+            td.style.backgroundImage = 'url(' + src + ')';
             td.style.backgroundRepeat = 'no-repeat';
             td.style.backgroundSize = 'Auto 25px';
             td.title = this.value;
@@ -623,17 +627,17 @@
         td.style.textAlign = this.align;
         td.style.cursor = 'pointer';
         td.className = this.class;
-        td.onmousedown = function(){return false;};
+        td.onmousedown = function() { return false; };
         // For Testing purpose
-        td.ondblclick = function(){
+        td.ondblclick = function() {
             console.log(this.value);
         };
         td.onclick = this.onclick
     };
 
     /**
-    * Calculates cell using formula
-    */
+     * Calculates cell using formula
+     */
     Cell.prototype.calc = function(cb) {
         if (this.col) {
             this.value = this.position[this.col];
@@ -651,8 +655,8 @@
     };
 
     /**
-    * Formats a Cell Value to readable format
-    */
+     * Formats a Cell Value to readable format
+     */
     Cell.prototype.tValue = function() {
         var html = this.value;
         if (typeof html === 'number') {
@@ -662,34 +666,35 @@
             if (typeof html === 'number') {
                 let digits = smartRound(html);
                 //html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
-                html = html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits});
+                html = html.toLocaleString('de-CH-1996', { minimumFractionDigits: digits });
             }
         }
         else if (typeof html === 'number' && this.round > -1) {
             var num = html;
             html = html.toFixed(this.round);
-            html = Number(html).toLocaleString('de-CH-1996', {minimumFractionDigits:this.round});
+            html = Number(html).toLocaleString('de-CH-1996', { minimumFractionDigits: this.round });
             if (this.prefix === 'sign' && num > 0) html = '+' + html;
         }
         return html;
     };
 
     /**
-    * Updates Cell (only if value has changed)
-    */
+     * Updates Cell (only if value has changed)
+     */
     Cell.prototype.update = function() {
         var val1 = this.value;
         self = this;
         this.calc(function() {
             self.dom.dataValue = self.value;
             // update html if value has changed
-            if(val1 === null || self.value !== val1) {
+            if (val1 === null || self.value !== val1) {
                 self.dom.innerHTML = self.tValue();
-                if(typeof self.value === 'number' && Math.abs(self.value / val1 - 1) > 0.003) {
+                if (typeof self.value === 'number' && Math.abs(self.value / val1 - 1) > 0.003) {
                     self.dom.style.transition = 'color 1s';
-                    if(self.value > val1) {
+                    if (self.value > val1) {
                         self.dom.style.backgroundColor = '#ccffcc';
-                    } else if(self.value < val1) {
+                    }
+                    else if (self.value < val1) {
                         self.dom.style.backgroundColor = '#ff9999';
                     }
                     var dom = self.dom;
@@ -706,28 +711,28 @@
 
 
     /**
-    * Positions-Table
-    * Creates empty positions table
-    * Data-rows are added asynchronously
-    */
+     * Positions-Table
+     * Creates empty positions table
+     * Data-rows are added asynchronously
+     */
     var btable = function() {
         var t = document.createElement('table');
-        t.className      = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
-        t.style.width    = '100%';
+        t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
+        t.style.width = '100%';
         t.style.maxWidth = '1000px';
 
         // table header
-        var thead   = document.createElement('thead');
+        var thead = document.createElement('thead');
         thead.class = 'thead-inverse';
         var tr = document.createElement('tr');
         for (let c in cols) {
             if (cols[c].hidden) continue;
             let th = document.createElement('th');
-            th.innerHTML       = c;
-            th.className       = cols[c].class?cols[c].class:'';
-            th.style.textAlign = cols[c].align?cols[c].align:'left';
+            th.innerHTML = c;
+            th.className = cols[c].class ? cols[c].class : '';
+            th.style.textAlign = cols[c].align ? cols[c].align : 'left';
             if (cols[c].sort) {
-                th.dataDefaultsort=cols[c].sort;
+                th.dataDefaultsort = cols[c].sort;
             }
             tr.appendChild(th);
         }
@@ -746,11 +751,11 @@
 
 
     /**
-    * Get Total of all positions
-    */
+     * Get Total of all positions
+     */
     var getTot = function() {
-        let tot = {btc:0, usd:0};
-        for (let i=0;i<positions.length;i++) {
+        let tot = { btc: 0, usd: 0 };
+        for (let i = 0; i < positions.length; i++) {
             tot.btc += positions[i].stats.totals.btc;
             tot.usd += positions[i].stats.totals.usd;
         }
@@ -758,19 +763,19 @@
     };
 
     /**
-    * Get Total of all positions formated
-    */
+     * Get Total of all positions formated
+     */
     var tGetTot = function() {
         let tot = getTot();
-        tot.btc = tot.btc.toLocaleString('de-CH-1996', {minimumFractionDigits:2});
-        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', {minimumFractionDigits:0});
+        tot.btc = tot.btc.toLocaleString('de-CH-1996', { minimumFractionDigits: 2 });
+        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', { minimumFractionDigits: 0 });
         return tot;
     };
 
 
     /**
-    * Get Total of each asset
-    */
+     * Get Total of each asset
+     */
     var getTotAsset = function() {
         var tot = {};
         var BTC = ['USD', 'OKEX', '1B'];
@@ -779,28 +784,28 @@
             if (positions[i].name.base === 'BTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Bitcoin';
             if (positions[i].name.base === 'LTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Litecoin';
             if (!(assetname in tot)) {
-                tot[assetname] = {btc:0,usd:0};
+                tot[assetname] = { btc: 0, usd: 0 };
             }
             tot[assetname].btc += positions[i].stats.totals.btc;
             tot[assetname].usd += positions[i].stats.totals.usd;
         }
         var tottot = getTot();
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i]/tottot.btc);
+            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
         }
         return tot;
     };
 
 
     /**
-    * Get Total for every market
-    */
+     * Get Total for every market
+     */
     var getTotMarket = function() {
         var tot = {};
         for (let i in positions) {
             var market = positions[i].row.market.value;
             if (!(market in tot)) {
-                tot[market] = {btc:0,usd:0};
+                tot[market] = { btc: 0, usd: 0 };
             }
             tot[market].btc += positions[i].stats.totals.btc;
             tot[market].usd += positions[i].stats.totals.usd;
@@ -810,14 +815,14 @@
         }
         var tottot = getTot();
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i]/tottot.btc);
+            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
         }
         return tot;
     };
 
     /**
-    * 
-    */
+     * 
+     */
     var chartData = function(tot, colors, self) {
         var labels = self.chart.data.labels;
         var data = self.chart.data.datasets[0];
@@ -835,7 +840,7 @@
                 labels.push(i);
                 data.data.push(tot[i].btc);
                 let r = i;
-                data.backgroundColor.push((r in colors)?colors[i]:stringToColour(i));
+                data.backgroundColor.push((r in colors) ? colors[i] : stringToColour(i));
             }
             else {
                 data.data[pos] = tot[i].btc;
@@ -844,10 +849,10 @@
     };
 
     /**
-    * Creates empty PieChart Object
-    * and appends to parent-DOM
-    *
-    */
+     * Creates empty PieChart Object
+     * and appends to parent-DOM
+     *
+     */
     var emptyPieChart = function(parent) {
         var canvas = document.createElement('canvas');
         canvas.width = '400';
@@ -873,56 +878,56 @@
     };
 
     /**
-    * Creates empty LineChart Object
-    * and appends to parent-DOM
-    *
-    */
+     * Creates empty LineChart Object
+     * and appends to parent-DOM
+     *
+     */
     var emptyLineChart = function(parent) {
-     var canvas = document.createElement('canvas');
-     canvas.width = '400';
-     canvas.height = '400';
-     canvas.style.width = '400px';
-     canvas.style.height = '400px';
-     parent.appendChild(canvas);
-     var ctx = canvas.getContext('2d');
-     var chart = new Chart(ctx, {
-         type: 'line',
-         data: {
-             datasets: [{
-                 data: []
-             }]
-         },
-         options: {
-             scales: {
-                 xAxes: [{
-                     type: 'time',
-                     time: {
-                         unit: 'day'
-                     }
-                 }]
-             },
-             elements: {
-                 line: {
-                     tension: 0, // disables bezier curves
-                 }
-             }
-         }
-     });
-     return chart;
- };
+        var canvas = document.createElement('canvas');
+        canvas.width = '400';
+        canvas.height = '400';
+        canvas.style.width = '400px';
+        canvas.style.height = '400px';
+        parent.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    data: []
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0, // disables bezier curves
+                    }
+                }
+            }
+        });
+        return chart;
+    };
 
     /**
-    * Create PieChart of Asset-Distribution
-    * @param  {String} parent DOM-parent of Chart
-    * @return {String} The reversed string
-    */
+     * Create PieChart of Asset-Distribution
+     * @param  {String} parent DOM-parent of Chart
+     * @return {String} The reversed string
+     */
     var TotAssetChart = function(parent) {
         // Colors that are preset
         // those with no preset color will get
         // an unique color from stringToColor()
         var colors = {
-            'Bitcoin'    : '#f7931a',
-            'Litecoin'   : '#8b8b8b',
+            'Bitcoin': '#f7931a',
+            'Litecoin': '#8b8b8b',
             'Storjcoin X': '#2581fc'
         };
         var self = this;
@@ -941,8 +946,8 @@
 
     var TotMarketChart = function(parent) {
         var colors = {
-            'Poloniex'     : '#01636f',
-            'OKEX'         : '#2581fc',
+            'Poloniex': '#01636f',
+            'OKEX': '#2581fc',
             'ledger wallet': '#8b8b8b'
         };
         var self = this;
@@ -955,18 +960,18 @@
     };
 
     /**
-    * Get latest Rate-Object for Asset for specific connector
-    *
-    * @param  {Number} aid Asset-ID
-    * @param  {Number} cid Connector-ID
-    * @return {Number} The latest rate; 0 if no rate found
-    */
+     * Get latest Rate-Object for Asset for specific connector
+     *
+     * @param  {Number} aid Asset-ID
+     * @param  {Number} cid Connector-ID
+     * @return {Number} The latest rate; 0 if no rate found
+     */
     var getLatestRate = function(aid, cid) {
         var best = rates[aid + '_' + cid];
         if (best !== undefined && best.last !== undefined) {
             return best;
         }
-        for(let i in rates) {
+        for (let i in rates) {
             // if not exact rate found
             // try to get any rate for aid
             // even not for same cid
@@ -1053,12 +1058,12 @@
         var request = new XMLHttpRequest();
         request.open('GET', '/history', true);
         request.onload = function() {
-            if(request.status >= 200 && request.status < 400) {
+            if (request.status >= 200 && request.status < 400) {
                 try {
                     var d = JSON.parse(request.responseText);
-                    for (let i=0;i<d.length;i++) {
-                        self.data.usd.push([d[i].timestamp*1000, d[i].dollar]);
-                        self.data.btc.push([d[i].timestamp*1000, d[i].btc]);
+                    for (let i = 0; i < d.length; i++) {
+                        self.data.usd.push([d[i].timestamp * 1000, d[i].dollar]);
+                        self.data.btc.push([d[i].timestamp * 1000, d[i].btc]);
                     }
                     callback(null, self);
                 }
@@ -1068,7 +1073,8 @@
                     btnLogin.show();
                     callback(e);
                 }
-            } else {
+            }
+            else {
                 // Error
                 callback(e);
             }
@@ -1084,13 +1090,13 @@
         delete this.charts[name];
     };
 
-    var modal_history = function(){
+    var modal_history = function() {
         var modal = new BModal('History');
         var body = document.getElementsByTagName("BODY")[0];
         body.appendChild(modal.dom);
         history.appendChart('modal', modal.content);
         $(modal.dom).modal();
-        $(modal.dom).on('hidden.bs.modal', function () {
+        $(modal.dom).on('hidden.bs.modal', function() {
             history.remove('modal');
         });
     };
@@ -1153,21 +1159,21 @@
 
 
     /**
-    * Rounds number in dependence of depth
-    * @param {Number} number Value to smart-round
-    * @return {Number} smart-rounded number; 0 for default/error
-    */
+     * Rounds number in dependence of depth
+     * @param {Number} number Value to smart-round
+     * @return {Number} smart-rounded number; 0 for default/error
+     */
     var smartRound = function(number) {
         number = Math.abs(number);
-        if (number == 0)     return 0;
+        if (number == 0) return 0;
         if (number < 0.0001) return 8;
-        if (number < 0.001)  return 7;
-        if (number < 0.01)   return 6;
-        if (number < 0.1)    return 5;
-        if (number < 1)      return 4;
-        if (number < 10)     return 3;
-        if (number < 100)    return 2;
-        if (number < 1000)   return 1;
+        if (number < 0.001) return 7;
+        if (number < 0.01) return 6;
+        if (number < 0.1) return 5;
+        if (number < 1) return 4;
+        if (number < 10) return 3;
+        if (number < 100) return 2;
+        if (number < 1000) return 1;
         return 0;
     };
 
@@ -1175,7 +1181,7 @@
         number = number.toString();
         var newNumber = number;
         if (number.indexOf('.')) {
-            while (newNumber.length > 2){
+            while (newNumber.length > 2) {
                 if (newNumber.slice(-1) != '0') break;
                 newNumber = newNumber.slice(0, -1);
             }
@@ -1188,11 +1194,11 @@
     };
 
     /**
-    * Check if an image exists
-    * @param {String} image_uri
-    * @param {Function} cb callback()
-    */
-    var imageExists = function (image_uri, td, cb){
+     * Check if an image exists
+     * @param {String} image_uri
+     * @param {Function} cb callback()
+     */
+    var imageExists = function(image_uri, td, cb) {
         var http = new XMLHttpRequest();
         http.open('HEAD', image_uri, false);
         http.onload = function() {
@@ -1202,19 +1208,19 @@
     };
 
     /**
-    * PHP in_array() equivalent
-    */
-    var inArray = function (needle, haystack) {
+     * PHP in_array() equivalent
+     */
+    var inArray = function(needle, haystack) {
         var length = haystack.length;
-        for(let i = 0; i < length; i++) {
-            if(haystack[i] == needle) return true;
+        for (let i = 0; i < length; i++) {
+            if (haystack[i] == needle) return true;
         }
         return false;
     };
 
     /**
-    * Unique color for string
-    */
+     * Unique color for string
+     */
     var stringToColour = function(str) {
         var hash = 0;
         for (let i = 0; i < str.length; i++) {
