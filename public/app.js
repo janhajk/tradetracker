@@ -178,7 +178,6 @@
             window.location = '/auth/google';
         };
         this.btn = btn;
-        this.btn = btn; // Reason?
         document.getElementById('dashline').appendChild(btn);
     };
     Login.prototype.show = function() {
@@ -313,6 +312,8 @@
          * 
          * Load initial Data
          * 
+         * This function only gets called once
+         * 
          * 
          */
         var request = new XMLHttpRequest();
@@ -333,21 +334,26 @@
                         position.load();
                         positions.push(position);
                     }
+                    
+                    // Create Postition Table
                     postable = new Postable(positions);
                     var content = document.getElementById('content');
                     content.innerHTML = '';
                     content.appendChild(postable.render());
+                    $.bootstrapSortable({ applyLast: true });
+                    
                     // Area to show details of an asset
                     assetDetail = document.createElement('div');
                     assetDetail.style.display = 'none';
                     content.appendChild(assetDetail);
-
-                    $.bootstrapSortable({ applyLast: true });
                     bar.start();
-                    updateRates();
+                    
+                    // Create Charts
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
+                    
+                    // Create Historical Chart
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                     });
@@ -357,8 +363,8 @@
                     labels.btc.update(tot.btc);
                     labels.usd.update(tot.usd);
                     
-                    // Init Interval
-                    setTimeout(updateRates, rInterval * 1000);
+                    // Start new Update Process
+                    updateRates();
                 }
                 catch (e) {
                     console.log(e);
@@ -378,7 +384,7 @@
 
         /**
          * 
-         * Update Rates after every interval
+         * Update Rates after every rInterval
          * 
          * 
          *
@@ -391,7 +397,6 @@
                     try {
                         var r = JSON.parse(request.responseText);
                         btnLogin.hide();
-                        btnLogin.hide(); // why twice?
                         for (let i = 0; i < r.length; i++) {
                             rates[r[i].aid + '_' + r[i].cid] = r[i];
                         }
@@ -401,18 +406,25 @@
                         for (let i in positions) {
                             positions[i].update();
                         }
+                        // Update Page Title and NavBubbles, Countdown
                         let tot = tGetTot();
                         document.title = tot.btc + '/' + tot.usd;
                         labels.btc.update(tot.btc);
                         labels.usd.update(tot.usd);
                         bar.reset();
+                        
+                        // Update Charts
                         pieTotBtc.update();
                         pieTotMarket.update();
+                        
+                        // Update History-Chart
                         let t = getTot();
                         history.update({ usd: t.usd, btc: t.btc });
+                        
+                        // Start new Update Process
                         setTimeout(updateRates, rInterval * 1000);
                     }
-                    // If not logged in, then JSON.parse returns error
+                    // JSON.parse returns error if not logged in
                     catch (e) {
                         console.log(e);
                         btnLogin.show();
