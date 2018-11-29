@@ -273,21 +273,22 @@
             black: '-inverse'
         };
         var label = document.createElement('span');
-        label.className = 'label label' + colors.color;
+        label.className = 'label label' + colors[color];
         label.innerHTML = title;
         parent.appendChild(label);
         
         this.type = type;
         this.title = title;
+        this.element = label;
         this.parent = parent;
         
         this.update = function(value) {
             if (this.type === 'number') {
                 this.number = value;
-                this.innerHTML = this.title + ' ' + value;
+                this.label.innerHTML = this.title + ' ' + value;
             }
             else {
-                this.innerHTML = value;
+                this.label.innerHTML = value;
             }
         };
     };
