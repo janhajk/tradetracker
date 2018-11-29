@@ -179,12 +179,13 @@
         };
         this.btn = btn;
         document.getElementById('dashline').appendChild(btn);
-    };
-    Login.prototype.show = function() {
-        this.btn.style.display = 'block';
-    };
-    Login.prototype.hide = function() {
-        this.btn.style.display = 'none';
+        
+        this.show = function() {
+            this.btn.style.display = 'block';
+        };
+        this.hide = function() {
+            this.btn.style.display = 'none';
+        };
     };
 
     /**
@@ -360,9 +361,8 @@
                     });
 
                     // Update Labels
-                    let tot = positionCollection.tGetTot();
-                    labels.btc.update(tot.btc);
-                    labels.usd.update(tot.usd);
+                    labels.btc.update(positionCollection.getTot('btc', true));
+                    labels.usd.update(positionCollection.getTot('usd', true));
 
                     // Start new Update Process
                     updateRates();
@@ -411,10 +411,9 @@
                         }
 
                         // Update Page Title and NavBubbles, Countdown
-                        let tot = positionCollection.tGetTot();
-                        document.title = tot.btc + '/' + tot.usd;
-                        labels.btc.update(tot.btc);
-                        labels.usd.update(tot.usd);
+                        document.title = positionCollection.getTot('btc', true) + '/' + positionCollection.getTot('usd', true);
+                        labels.btc.update(positionCollection.getTot('btc', true));
+                        labels.usd.update(positionCollection.getTot('usd', true));
                         bar.reset();
 
                         // Update Charts
@@ -422,8 +421,10 @@
                         pieTotMarket.update();
 
                         // Update History-Chart
-                        let t = positionCollection.getTot();
-                        history.update({ usd: t.usd, btc: t.btc });
+                        history.update({
+                            usd: positionCollection.getTot('usd'),
+                            btc: positionCollection.getTot('btc')
+                        });
 
                         // Start new Update Process
                         setTimeout(updateRates, rInterval * 1000);
@@ -587,23 +588,20 @@
 
     /**
      * Get Total of all positions
+     * 
+     * @param [string] type The type: 'btc' or 'usd'
+     * 
      */
-    PositionCollection.prototype.getTot = function() {
-        let tot = { btc: 0, usd: 0 };
+    PositionCollection.prototype.getTot = function(type, formated) {
+        var tot = 0;
         for (let i = 0; i < this.positions.length; i++) {
-            tot.btc += this.positions[i].stats.totals.btc;
-            tot.usd += this.positions[i].stats.totals.usd;
+            tot += this.positions[i].stats.total[type];
         }
-        return tot;
-    };
-
-    /**
-     * Get Total of all positions formated
-     */
-    PositionCollection.prototype.tGetTot = function() {
-        let tot = this.getTot();
-        tot.btc = tot.btc.toLocaleString('de-CH-1996', { minimumFractionDigits: 2 });
-        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', { minimumFractionDigits: 0 });
+        formated = formated || false;
+        if (formated) {
+            var fractionDigits = type === 'btc' ? 2 : 0;
+            tot = tot.toLocaleString('de-CH-1996', { minimumFractionDigits: fractionDigits });
+        }
         return tot;
     };
 
@@ -624,9 +622,9 @@
             tot[assetname].btc += this.positions[i].stats.totals.btc;
             tot[assetname].usd += this.positions[i].stats.totals.usd;
         }
-        var tottot = this.getTot();
+        var tottot = this.getTot('btc');
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
+            tot[i]['%'] = Math.round(tot[i] / tottot);
         }
         return tot;
     };
@@ -648,9 +646,9 @@
         for (let i in tot) {
             if (tot[i].btc === 0) delete tot[i];
         }
-        var tottot = this.getTot();
+        var tottot = this.getTot('btc');
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
+            tot[i]['%'] = Math.round(tot[i] / tottot);
         }
         return tot;
     };
@@ -792,6 +790,13 @@
         postable.style.display = 'none';
         target.style.display = 'block';
     };
+    
+    // -------------------------
+    // END OF Position
+    // -------------------------
+    
+    
+    
 
     /**
      * Cell Object
@@ -933,7 +938,9 @@
         });
     };
 
-    // *** END Cell
+    // -------------------------
+    // END OF Cell
+    // -------------------------
 
 
     /**
@@ -1219,7 +1226,7 @@
             }
             else {
                 // Error
-                callback(e);
+                callback('Request returned Error status ' + request.status);
             }
         };
         request.onerror = function(e) {
