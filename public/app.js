@@ -179,7 +179,7 @@
         };
         this.btn = btn;
         document.getElementById('dashline').appendChild(btn);
-        
+
         this.show = function() {
             this.btn.style.display = 'block';
         };
@@ -655,9 +655,9 @@
     // -------------------------
     // END OF PositionCollection
     // -------------------------
-    
-    
-    
+
+
+
     /**
      * Position Object
      *
@@ -790,13 +790,13 @@
         postable.style.display = 'none';
         target.style.display = 'block';
     };
-    
+
     // -------------------------
     // END OF Position
     // -------------------------
-    
-    
-    
+
+
+
 
     /**
      * Cell Object
