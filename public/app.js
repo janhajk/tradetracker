@@ -593,17 +593,17 @@
     /**
      * Get Total of all positions
      * 
-     * @param [string] type The type: 'btc' or 'usd'
+     * @param [string] currency The currency: 'btc' or 'usd'
      * 
      */
-    PositionCollection.prototype.getTot = function(type, formated) {
+    PositionCollection.prototype.getTot = function(currency, formated) {
         var tot = 0;
         for (let i = 0; i < this.positions.length; i++) {
-            tot += this.positions[i].stats.total[type];
+            tot += this.positions[i].stats.total[currency];
         }
         formated = formated || false;
         if (formated) {
-            return tot.toLocaleString('de-CH-1996', { minimumFractionDigits: (type === 'btc' ? 2 : 0) });
+            return tot.toLocaleString('de-CH-1996', { minimumFractionDigits: (currency === 'btc' ? 2 : 0) });
         }
         return tot;
     };
