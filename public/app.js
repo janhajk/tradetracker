@@ -308,9 +308,11 @@
         btnLogin = new Login();
         labels['btc'] = new NavBubble('Tot BTC:', 'number', document.getElementById('dashline'), 'green');
         labels['usd'] = new NavBubble('Tot USD:', 'number', document.getElementById('dashline'), 'blue');
+        
+        var content = document.getElementById('content');
 
         // Init positions collection
-        positionCollection = new PositionCollection(document.getElementById('content'));
+        positionCollection = new PositionCollection(content);
 
         /**
          * 
@@ -348,6 +350,8 @@
                     assetDetail = document.createElement('div');
                     assetDetail.style.display = 'none';
                     content.appendChild(assetDetail);
+                    
+                    // Start Progressbar
                     bar.start();
 
                     // Create Charts
@@ -599,8 +603,7 @@
         }
         formated = formated || false;
         if (formated) {
-            var fractionDigits = type === 'btc' ? 2 : 0;
-            tot = tot.toLocaleString('de-CH-1996', { minimumFractionDigits: fractionDigits });
+            return tot.toLocaleString('de-CH-1996', { minimumFractionDigits: (type === 'btc' ? 2 : 0) });
         }
         return tot;
     };
