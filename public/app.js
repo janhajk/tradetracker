@@ -627,7 +627,7 @@
         }
         var tottot = this.getTot('btc');
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot);
+            tot[i]['%'] = Math.round(tot[i].btc / tottot);
         }
         return tot;
     };
@@ -651,7 +651,7 @@
         }
         var tottot = this.getTot('btc');
         for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot);
+            tot[i]['%'] = Math.round(tot[i].btc / tottot);
         }
         return tot;
     };
