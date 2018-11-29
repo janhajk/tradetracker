@@ -356,6 +356,9 @@
                     let tot = tGetTot();
                     labels.btc.update(tot.btc);
                     labels.usd.update(tot.usd);
+                    
+                    // Init Interval
+                    setTimeout(updateRates, rInterval * 1000);
                 }
                 catch (e) {
                     console.log(e);
@@ -407,12 +410,7 @@
                         pieTotMarket.update();
                         let t = getTot();
                         history.update({ usd: t.usd, btc: t.btc });
-                        
-                        // setup updateRates as interval
-                        if (firstRun) {
-                            setInterval(updateRates, rInterval * 1000);
-                            firstRun = false;
-                        }
+                        setTimeout(updateRates, rInterval * 1000);
                     }
                     // If not logged in, then JSON.parse returns error
                     catch (e) {
