@@ -279,7 +279,7 @@
         
         this.type = type;
         this.title = title;
-        this.element = label;
+        this.label = label;
         this.parent = parent;
         
         this.update = function(value) {
@@ -351,6 +351,8 @@
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                     });
+                    
+                    // Update Labels
                     let tot = tGetTot();
                     labels.btc.update(tot.btc);
                     labels.usd.update(tot.usd);
