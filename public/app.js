@@ -2,12 +2,14 @@
 
     var rInterval = 10; // Update interval of rates in seconds
 
+    // Set global options for highchart
     Highcharts.setOptions({
         global: {
             timezone: 'Europe/Oslo'
         }
     });
 
+    // Variables
     var rates = {};
     var positions = [];
     var assetDetail;
@@ -22,6 +24,8 @@
     var firstRun = true;
     var history = null;
 
+    /////////////////////////////////////////
+    // Main Table
     // Table Columns / Structure
     // p  = parent        = cell
     // pp = parent-parent = position
@@ -117,9 +121,7 @@
             },
             round: 1,
             prefix: 'sign',
-            alert: function(p, pp) {
-
-            }
+            alert: function(p, pp) {}
         },
         '±B/24h': {
             formula: function(p, pp, cb) {
@@ -152,12 +154,17 @@
         }
     };
 
-    var labels = {
-        btc: 0,
-        usd: 0
-    };
+    // Bubble Labels on top Navbar
+    var labels = {};
 
 
+    /**
+     * 
+     * Login Button in Navbar
+     * 
+     * 
+     * 
+     */
     var Login = function() {
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -171,7 +178,7 @@
             window.location = '/auth/google';
         };
         this.btn = btn;
-        this.btn = btn;
+        this.btn = btn; // Reason?
         document.getElementById('dashline').appendChild(btn);
     };
     Login.prototype.show = function() {
@@ -182,16 +189,29 @@
     };
 
     /**
-     * Countdown Progressbar
-     * displays time since last update
+     * 
+     * Countdown Progressbar Object
+     * 
+     * Displays time since last update
+     * 
+     * uses Bootstrap progress
+     * see: https://getbootstrap.com/docs/4.0/components/progress/
+     * 
      */
     var Countdown = function() {
-        var lastUpdate = 0;
+        // Settings
         var interval = 1; // in seconds
         var dashline = document.getElementById('dashline');
-        var bHeight = 5; // in px
-        var bWidth = 100; // in px
+        var bHeight = 5; // Height of Progressbar in px
+        var bWidth = 100; // Width of Progressbar in px
+        var types = {
+            green: 'success',
+            yellow: 'warning',
+            blue: 'info',
+            red: 'danger'
+        };
 
+        // Progressbar Cointainer
         var container = document.createElement('div');
         container.className = 'progress';
         container.style.float = 'right';
@@ -199,21 +219,25 @@
         container.style.height = bHeight + 'px';
         container.style.width = bWidth + 'px';
 
+        // Progressbar Progressline
         var bar = document.createElement('div');
-        bar.className = 'progress-bar progress-bar-danger';
+        bar.className = 'progress-bar progress-bar-'+ types['red']; // initial value
         bar.role = 'progressbar';
         bar.style.width = '10%';
-
+        
         container.appendChild(bar);
         dashline.appendChild(container);
+        
+        this.bar = bar;
 
         // Resets the progress bar to 100%
-        this.update = function() {
-            lastUpdate = Date.now();
-            bar.style.width = '100%';
+        this.reset = function() {
+            this.bar.style.width = '100%';
         };
 
-        // starts the progressbar
+        // Starts the progressbar countdown
+        // Progressbar goes to 0
+        // it is reset via reset() from external trigger
         this.start = function() {
             setInterval(function() {
                 let level = [40, 20];
@@ -224,19 +248,72 @@
                 let step = (100 - resetAt) / (rInterval / interval);
                 let newState = state - step;
                 if (newState <= min) { newState = min; }
-                bar.className = 'progress-bar progress-bar-' + ((newState > level[0]) ? 'success' : (newState > level[1]) ? 'warning' : 'danger');
+                bar.className = 'progress-bar progress-bar-' + ((newState > level[0]) ? types['green'] : (newState > level[1]) ? types['yellow'] : types['red']);
                 bar.style.width = newState + '%';
             }, interval * 1000);
         };
     };
+    
+    /**
+     * 
+     * Bubble-Labels in Navbar
+     * 
+     * see: http://getbootstrap.com/2.3.2/components.html#labels-badges
+     * 
+     * 
+     */
+    
+    var NavBubble = function(title, type, parent, color) {
+        var colors = {
+            gray: '',
+            green: '-success',
+            orange: '-warning',
+            red: '-important',
+            blue: '-info',
+            black: '-inverse'
+        };
+        var label = document.createElement('span');
+        label.className = 'label label' + colors.color;
+        label.innerHTML = title;
+        parent.appendChild(label);
+        
+        this.type = type;
+        this.title = title;
+        this.parent = parent;
+        
+        this.update = function(value) {
+            if (this.type === 'number') {
+                this.number = value;
+                this.innerHTML = this.title + ' ' + value;
+            }
+            else {
+                this.innerHTML = value;
+            }
+        };
+    };
 
     /**
+     * 
      * document Loaded listener
+     * 
+     * this executes on DocumentLoaded
+     * 
+     * 
      */
     document.addEventListener('DOMContentLoaded', function() {
+        
+        // Create Navigation Objects
         bar = new Countdown();
         btnLogin = new Login();
-        // Load Positions
+        labels['btc'] = new NavBubble('Tot BTC:', 'number', document.getElementById('dashline'), 'green');
+        labels['usd'] = new NavBubble('Tot USD:', 'number', document.getElementById('dashline'), 'blue');
+        
+        /**
+         * 
+         * Load initial Data
+         * 
+         * 
+         */
         var request = new XMLHttpRequest();
         request.open('GET', '/position', true);
         request.onload = function() {
@@ -273,21 +350,9 @@
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                     });
-                    if (!labels.btc) {
-                        let dashline = document.getElementById('dashline');
-                        labels.btc = document.createElement('span');
-                        labels.btc.className = 'label label-success';
-                        dashline.appendChild(labels.btc);
-                    }
-                    if (!labels.usd) {
-                        let dashline = document.getElementById('dashline');
-                        labels.usd = document.createElement('span');
-                        labels.usd.className = 'label label-primary';
-                        dashline.appendChild(labels.usd);
-                    }
                     let tot = tGetTot();
-                    labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
-                    labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
+                    labels.btc.update(tot.btc);
+                    labels.usd.update(tot.usd);
                 }
                 catch (e) {
                     console.log(e);
@@ -306,7 +371,10 @@
         request.send();
 
         /**
-         * Update Rates
+         * 
+         * Update Rates after every interval
+         * 
+         * 
          *
          */
         var updateRates = function() {
@@ -315,41 +383,43 @@
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
                     try {
-                        let r = JSON.parse(request.responseText);
+                        var r = JSON.parse(request.responseText);
                         btnLogin.hide();
-                        btnLogin.hide();
+                        btnLogin.hide(); // why twice?
                         for (let i = 0; i < r.length; i++) {
                             rates[r[i].aid + '_' + r[i].cid] = r[i];
                         }
                         // update Global BTC-Price
                         btc = getLatestRate(110, 12).last;
                         ltc = getLatestRate(25, 1).last;
-                        let tot = tGetTot();
-                        document.title = tot.btc + '/' + tot.usd;
                         for (let i in positions) {
                             positions[i].update();
                         }
-                        labels.btc.innerHTML = 'Tot BTC: ' + tot.btc;
-                        labels.usd.innerHTML = 'Tot USD: ' + tot.usd;
-                        bar.update();
+                        let tot = tGetTot();
+                        document.title = tot.btc + '/' + tot.usd;
+                        labels.btc.update(tot.btc);
+                        labels.usd.update(tot.usd);
+                        bar.reset();
                         pieTotBtc.update();
                         pieTotMarket.update();
                         let t = getTot();
                         history.update({ usd: t.usd, btc: t.btc });
-                        // set updateRates as interval
+                        
+                        // setup updateRates as interval
                         if (firstRun) {
                             setInterval(updateRates, rInterval * 1000);
                             firstRun = false;
                         }
                     }
+                    // If not logged in, then JSON.parse returns error
                     catch (e) {
                         console.log(e);
                         btnLogin.show();
                     }
                 }
                 else {
-                    // Error
-                    console.log('There was an Error when updating rates;');
+                    // Status Error
+                    console.log('There was an Status-Error when updating rates;');
                 }
             };
             request.onerror = function() {
@@ -981,15 +1051,36 @@
         }
         return false;
     };
+    
+    
+    
+    /**
+     * Historical Data Object
+     * contains historical data and chart objects
+     */
 
     var History = function(callback) {
+        // Arrays that holds historical data
         this.data = {
             usd: [],
             btc: []
         };
+        
+        // Call prototype-function request
+        // which requests new live data from server
         this.request(callback);
+        
+        // Variable that holds all historical chart objects
         this.charts = {};
     };
+    
+    /**
+     * Creates a HighChart.StockChart to display Historical
+     * Data. This Chart gets updated in realtime by adding
+     * new data to the series[].data array
+     * @param {string} name Name of the chart ex. main/modal
+     * @param {DOM} parent The DOM element of the parant
+     */
 
     History.prototype.appendChart = function(name, parent) {
         var div = document.createElement('div');
@@ -1046,8 +1137,14 @@
         var timestamp = Date.now();
         for (let i in this.charts) {
             if (this.charts[i] != undefined) {
+                
+                // new point to dataset (see: https://api.highcharts.com/class-reference/Highcharts.Series%23addPoint)
+                // method addPoint(options [, redraw] [, shift] [, animation])
                 this.charts[i].series[0].addPoint([timestamp, newData.usd], false, false, false);
                 //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
+                
+                // Redraw chart
+                // see: https://api.highcharts.com/class-reference/Highcharts.Chart.html#redraw
                 this.charts[i].redraw();
             }
         }
