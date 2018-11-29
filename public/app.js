@@ -599,7 +599,7 @@
     PositionCollection.prototype.getTot = function(currency, formated) {
         var tot = 0;
         for (let i = 0; i < this.positions.length; i++) {
-            tot += this.positions[i].stats.total[currency];
+            tot += this.positions[i].stats.totals[currency];
         }
         formated = formated || false;
         if (formated) {
