@@ -11,7 +11,6 @@
 
     // Variables
     var rates = {};
-    var positions = [];
     var assetDetail;
     var postable;
     var btc = 0;
@@ -23,6 +22,7 @@
     var btnLogin;
     var firstRun = true;
     var history = null;
+    var positionCollection = {};
 
     /////////////////////////////////////////
     // Main Table
@@ -220,13 +220,13 @@
 
         // Progressbar Progressline
         var bar = document.createElement('div');
-        bar.className = 'progress-bar progress-bar-'+ types['red']; // initial value
+        bar.className = 'progress-bar progress-bar-' + types['red']; // initial value
         bar.role = 'progressbar';
         bar.style.width = '10%';
-        
+
         container.appendChild(bar);
         dashline.appendChild(container);
-        
+
         this.bar = bar;
 
         // Resets the progress bar to 100%
@@ -252,7 +252,7 @@
             }, interval * 1000);
         };
     };
-    
+
     /**
      * 
      * Bubble-Labels in Navbar
@@ -261,7 +261,7 @@
      * 
      * 
      */
-    
+
     var NavBubble = function(title, type, parent, color) {
         var colors = {
             gray: '',
@@ -275,12 +275,12 @@
         label.className = 'label label' + colors[color];
         label.innerHTML = title;
         parent.appendChild(label);
-        
+
         this.type = type;
         this.title = title;
         this.label = label;
         this.parent = parent;
-        
+
         this.update = function(value) {
             if (this.type === 'number') {
                 this.number = value;
@@ -301,13 +301,16 @@
      * 
      */
     document.addEventListener('DOMContentLoaded', function() {
-        
+
         // Create Navigation Objects
         bar = new Countdown();
         btnLogin = new Login();
         labels['btc'] = new NavBubble('Tot BTC:', 'number', document.getElementById('dashline'), 'green');
         labels['usd'] = new NavBubble('Tot USD:', 'number', document.getElementById('dashline'), 'blue');
-        
+
+        // Init positions collection
+        positionCollection = new PositionCollection(document.getElementById('content'));
+
         /**
          * 
          * Load initial Data
@@ -332,37 +335,35 @@
                             last: data.positions[i].last
                         };
                         position.load();
-                        positions.push(position);
+
+                        // Add postition to collection
+                        positionCollection.add(position);
                     }
-                    
-                    // Create Postition Table
-                    postable = new Postable(positions);
-                    var content = document.getElementById('content');
-                    content.innerHTML = '';
-                    content.appendChild(postable.render());
-                    $.bootstrapSortable({ applyLast: true });
-                    
+
+                    // Render Postition Table
+                    positionCollection.tableRender();
+
                     // Area to show details of an asset
                     assetDetail = document.createElement('div');
                     assetDetail.style.display = 'none';
                     content.appendChild(assetDetail);
                     bar.start();
-                    
+
                     // Create Charts
                     chartsDom = new ChartsDom(content);
                     pieTotBtc = new TotAssetChart(chartsDom.row[0]);
                     pieTotMarket = new TotMarketChart(chartsDom.row[1]);
-                    
+
                     // Create Historical Chart
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                     });
-                    
+
                     // Update Labels
-                    let tot = tGetTot();
+                    let tot = positionCollection.tGetTot();
                     labels.btc.update(tot.btc);
                     labels.usd.update(tot.usd);
-                    
+
                     // Start new Update Process
                     updateRates();
                 }
@@ -403,24 +404,27 @@
                         // update Global BTC-Price
                         btc = getLatestRate(110, 12).last;
                         ltc = getLatestRate(25, 1).last;
-                        for (let i in positions) {
-                            positions[i].update();
+
+                        // go through all positions and update to latest rate
+                        for (let i in positionCollection.positions) {
+                            positionCollection.positions[i].update();
                         }
+
                         // Update Page Title and NavBubbles, Countdown
-                        let tot = tGetTot();
+                        let tot = positionCollection.tGetTot();
                         document.title = tot.btc + '/' + tot.usd;
                         labels.btc.update(tot.btc);
                         labels.usd.update(tot.usd);
                         bar.reset();
-                        
+
                         // Update Charts
                         pieTotBtc.update();
                         pieTotMarket.update();
-                        
+
                         // Update History-Chart
-                        let t = getTot();
+                        let t = positionCollection.getTot();
                         history.update({ usd: t.usd, btc: t.btc });
-                        
+
                         // Start new Update Process
                         setTimeout(updateRates, rInterval * 1000);
                     }
@@ -490,21 +494,6 @@
     };
 
 
-    /**
-     * Position Table Object
-     */
-    var Postable = function(positions) {
-        this.positions = positions;
-        this.render = function() {
-            var table = btable();
-            for (let i = 0; i < positions.length; i++) {
-                table[1].tBodies[0].appendChild(positions[i].dom());
-                positions[i].update();
-            }
-            return table[0];
-        };
-    };
-
 
     /**
      * Charts DOM
@@ -525,7 +514,152 @@
         this.row = [col1, col2, col3];
     };
 
+    /**
+     * 
+     * Positions - Collection of Position
+     * 
+     * 
+     */
+    var PositionCollection = function(parent) {
 
+        // var that holds all positions
+        this.positions = [];
+
+        this.parent = parent;
+
+        // Adds a Position to the collecton
+        this.add = function(position) {
+            this.positions.push(position);
+        };
+
+        // Renders a Position table
+        this.tableRender = function() {
+            var table = this.table();
+            this.parent.appendChild(table[0]);
+            for (let i = 0; i < this.positions.length; i++) {
+                table[1].tBodies[0].appendChild(this.positions[i].dom());
+                this.positions[i].update();
+            }
+            $.bootstrapSortable({ applyLast: true });
+        };
+    };
+
+    /**
+     * Positions-Table
+     * Creates empty positions table
+     * Data-rows are added asynchronously
+     */
+    PositionCollection.prototype.table = function() {
+        var t = document.createElement('table');
+        t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
+        t.style.width = '100%';
+        t.style.maxWidth = '1000px';
+
+        // table header
+        var thead = document.createElement('thead');
+        thead.class = 'thead-inverse';
+        var tr = document.createElement('tr');
+        for (let c in cols) {
+            if (cols[c].hidden) continue;
+            let th = document.createElement('th');
+            th.innerHTML = c;
+            th.className = cols[c].class ? cols[c].class : '';
+            th.style.textAlign = cols[c].align ? cols[c].align : 'left';
+            if (cols[c].sort) {
+                th.dataDefaultsort = cols[c].sort;
+            }
+            tr.appendChild(th);
+        }
+        thead.appendChild(tr);
+        t.appendChild(thead);
+
+        // Positions Body
+        var tbody = document.createElement('tbody');
+        t.appendChild(tbody);
+
+        // Table Wrapper
+        var div = document.createElement('div');
+        div.className = 'table-responsive';
+        div.appendChild(t);
+        return [div, t];
+    };
+
+
+    /**
+     * Get Total of all positions
+     */
+    PositionCollection.prototype.getTot = function() {
+        let tot = { btc: 0, usd: 0 };
+        for (let i = 0; i < this.positions.length; i++) {
+            tot.btc += this.positions[i].stats.totals.btc;
+            tot.usd += this.positions[i].stats.totals.usd;
+        }
+        return tot;
+    };
+
+    /**
+     * Get Total of all positions formated
+     */
+    PositionCollection.prototype.tGetTot = function() {
+        let tot = this.getTot();
+        tot.btc = tot.btc.toLocaleString('de-CH-1996', { minimumFractionDigits: 2 });
+        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', { minimumFractionDigits: 0 });
+        return tot;
+    };
+
+
+    /**
+     * Get Total of each asset
+     */
+    PositionCollection.prototype.getTotAsset = function() {
+        var tot = {};
+        var BTC = ['USD', 'OKEX', '1B'];
+        for (let i in this.positions) {
+            var assetname = this.positions[i].name.assetname;
+            if (this.positions[i].name.base === 'BTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Bitcoin';
+            if (this.positions[i].name.base === 'LTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Litecoin';
+            if (!(assetname in tot)) {
+                tot[assetname] = { btc: 0, usd: 0 };
+            }
+            tot[assetname].btc += this.positions[i].stats.totals.btc;
+            tot[assetname].usd += this.positions[i].stats.totals.usd;
+        }
+        var tottot = this.getTot();
+        for (let i in tot) {
+            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
+        }
+        return tot;
+    };
+
+
+    /**
+     * Get Total for every market
+     */
+    PositionCollection.prototype.getTotMarket = function() {
+        var tot = {};
+        for (let i in this.positions) {
+            var market = this.positions[i].row.market.value;
+            if (!(market in tot)) {
+                tot[market] = { btc: 0, usd: 0 };
+            }
+            tot[market].btc += this.positions[i].stats.totals.btc;
+            tot[market].usd += this.positions[i].stats.totals.usd;
+        }
+        for (let i in tot) {
+            if (tot[i].btc === 0) delete tot[i];
+        }
+        var tottot = this.getTot();
+        for (let i in tot) {
+            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
+        }
+        return tot;
+    };
+    // -------------------------
+    // END OF PositionCollection
+    // -------------------------
+    
+    
+    
     /**
      * Position Object
      *
@@ -566,6 +700,12 @@
         this.row = {};
     };
 
+
+    /**
+     * 
+     * 
+     * 
+     */
     Position.prototype.load = function() {
         for (let i in cols) {
             let c = new Cell(i, cols[i], this); // function Cell(title, defaults, pos)
@@ -575,7 +715,10 @@
     };
 
     /**
+     * 
      * updates Total BTC & USD for Position
+     * 
+     * 
      */
     Position.prototype.updateTotal = function() {
         // BTC
@@ -794,116 +937,6 @@
 
 
     /**
-     * Positions-Table
-     * Creates empty positions table
-     * Data-rows are added asynchronously
-     */
-    var btable = function() {
-        var t = document.createElement('table');
-        t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
-        t.style.width = '100%';
-        t.style.maxWidth = '1000px';
-
-        // table header
-        var thead = document.createElement('thead');
-        thead.class = 'thead-inverse';
-        var tr = document.createElement('tr');
-        for (let c in cols) {
-            if (cols[c].hidden) continue;
-            let th = document.createElement('th');
-            th.innerHTML = c;
-            th.className = cols[c].class ? cols[c].class : '';
-            th.style.textAlign = cols[c].align ? cols[c].align : 'left';
-            if (cols[c].sort) {
-                th.dataDefaultsort = cols[c].sort;
-            }
-            tr.appendChild(th);
-        }
-        thead.appendChild(tr);
-        t.appendChild(thead);
-
-        // Positions
-        var tbody = document.createElement('tbody');
-
-        t.appendChild(tbody);
-        var div = document.createElement('div');
-        div.className = 'table-responsive';
-        div.appendChild(t);
-        return [div, t];
-    };
-
-
-    /**
-     * Get Total of all positions
-     */
-    var getTot = function() {
-        let tot = { btc: 0, usd: 0 };
-        for (let i = 0; i < positions.length; i++) {
-            tot.btc += positions[i].stats.totals.btc;
-            tot.usd += positions[i].stats.totals.usd;
-        }
-        return tot;
-    };
-
-    /**
-     * Get Total of all positions formated
-     */
-    var tGetTot = function() {
-        let tot = getTot();
-        tot.btc = tot.btc.toLocaleString('de-CH-1996', { minimumFractionDigits: 2 });
-        tot.usd = Math.round(tot.usd).toLocaleString('de-CH-1996', { minimumFractionDigits: 0 });
-        return tot;
-    };
-
-
-    /**
-     * Get Total of each asset
-     */
-    var getTotAsset = function() {
-        var tot = {};
-        var BTC = ['USD', 'OKEX', '1B'];
-        for (let i in positions) {
-            var assetname = positions[i].name.assetname;
-            if (positions[i].name.base === 'BTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Bitcoin';
-            if (positions[i].name.base === 'LTC' && inArray(positions[i].name.counter, BTC)) assetname = 'Litecoin';
-            if (!(assetname in tot)) {
-                tot[assetname] = { btc: 0, usd: 0 };
-            }
-            tot[assetname].btc += positions[i].stats.totals.btc;
-            tot[assetname].usd += positions[i].stats.totals.usd;
-        }
-        var tottot = getTot();
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
-        }
-        return tot;
-    };
-
-
-    /**
-     * Get Total for every market
-     */
-    var getTotMarket = function() {
-        var tot = {};
-        for (let i in positions) {
-            var market = positions[i].row.market.value;
-            if (!(market in tot)) {
-                tot[market] = { btc: 0, usd: 0 };
-            }
-            tot[market].btc += positions[i].stats.totals.btc;
-            tot[market].usd += positions[i].stats.totals.usd;
-        }
-        for (let i in tot) {
-            if (tot[i].btc === 0) delete tot[i];
-        }
-        var tottot = getTot();
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i] / tottot.btc);
-        }
-        return tot;
-    };
-
-    /**
      * 
      */
     var chartData = function(tot, colors, self) {
@@ -1019,12 +1052,12 @@
         this.chart = emptyPieChart(parent);
         // Handler to update Chart data
         this.update = function() {
-            chartData(getTotAsset(), colors, self);
+            chartData(positionCollection.getTotAsset(), colors, self);
             self.chart.update(); // updates chartjs object (animated stlye)
         };
         // Call chartData() once on object-creation
         // to set initial data-values
-        chartData(getTotAsset(), colors, self);
+        chartData(positionCollection.getTotAsset(), colors, self);
     };
 
     var TotMarketChart = function(parent) {
@@ -1036,10 +1069,10 @@
         var self = this;
         this.chart = emptyPieChart(parent);
         this.update = function() {
-            chartData(getTotMarket(), colors, self);
+            chartData(positionCollection.getTotMarket(), colors, self);
             self.chart.update(); // updates chartjs object (animated stlye)
         };
-        chartData(getTotMarket(), colors, self);
+        chartData(positionCollection.getTotMarket(), colors, self);
     };
 
     /**
@@ -1064,9 +1097,9 @@
         }
         return false;
     };
-    
-    
-    
+
+
+
     /**
      * Historical Data Object
      * contains historical data and chart objects
@@ -1078,15 +1111,15 @@
             usd: [],
             btc: []
         };
-        
+
         // Call prototype-function request
         // which requests new live data from server
         this.request(callback);
-        
+
         // Variable that holds all historical chart objects
         this.charts = {};
     };
-    
+
     /**
      * Creates a HighChart.StockChart to display Historical
      * Data. This Chart gets updated in realtime by adding
@@ -1150,12 +1183,12 @@
         var timestamp = Date.now();
         for (let i in this.charts) {
             if (this.charts[i] != undefined) {
-                
+
                 // new point to dataset (see: https://api.highcharts.com/class-reference/Highcharts.Series%23addPoint)
                 // method addPoint(options [, redraw] [, shift] [, animation])
                 this.charts[i].series[0].addPoint([timestamp, newData.usd], false, false, false);
                 //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
-                
+
                 // Redraw chart
                 // see: https://api.highcharts.com/class-reference/Highcharts.Chart.html#redraw
                 this.charts[i].redraw();
