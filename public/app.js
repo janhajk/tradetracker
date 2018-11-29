@@ -594,6 +594,7 @@
      * Get Total of all positions
      * 
      * @param [string] currency The currency: 'btc' or 'usd'
+     * returns 
      * 
      */
     PositionCollection.prototype.getTot = function(currency, formated) {
