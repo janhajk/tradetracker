@@ -308,7 +308,7 @@
         btnLogin = new Login();
         labels['btc'] = new NavBubble('Tot BTC:', 'number', document.getElementById('dashline'), 'green');
         labels['usd'] = new NavBubble('Tot USD:', 'number', document.getElementById('dashline'), 'blue');
-        
+
         var content = document.getElementById('content');
 
         // Init positions collection
@@ -350,7 +350,7 @@
                     assetDetail = document.createElement('div');
                     assetDetail.style.display = 'none';
                     content.appendChild(assetDetail);
-                    
+
                     // Start Progressbar
                     bar.start();
 
@@ -362,14 +362,15 @@
                     // Create Historical Chart
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
+                        
+                        // Start new Update Process
+                        updateRates();
                     });
 
                     // Update Labels
                     labels.btc.update(positionCollection.getTot('btc', true));
                     labels.usd.update(positionCollection.getTot('usd', true));
 
-                    // Start new Update Process
-                    updateRates();
                 }
                 catch (e) {
                     console.log(e);
@@ -1246,10 +1247,9 @@
 
     var modal_history = function() {
         var modal = new BModal('History');
-        var body = document.getElementsByTagName("BODY")[0];
-        body.appendChild(modal.dom);
+        modal.appendTo(document.getElementsByTagName("BODY")[0]);
         history.appendChart('modal', modal.content);
-        $(modal.dom).modal();
+        $(modal.dom).modal(true, true);
         $(modal.dom).on('hidden.bs.modal', function() {
             history.remove('modal');
         });
@@ -1259,44 +1259,67 @@
         var modal = document.createElement('div');
         modal.className = 'modal';
         modal.role = 'dialog';
+
+        // Dialog
         var dialog = document.createElement('div');
         dialog.className = 'modal-dialog';
         dialog.style.width = '100%';
         //dialog.style.height = '80%';
         //dialog.style.margin = '0';
         //dialog.style.padding = '0';
+
+        // Content Area
         var content = document.createElement('div');
         content.className = 'modal-content';
         //content.style.height = 'auto';
         //content.style.minHeight = '100%';
         //content.style.borderRadius = '0';
+
+        // Header
         var header = document.createElement('div');
         header.className = 'modal-header';
+
+        // Close Button at bottom
         var close = document.createElement('button');
         close.className = 'close';
         close.dataDismiss = 'modal';
         close.innerHTML = '&times;';
+
+        // Title of Modal
         var dTitle = document.createElement('h4');
         dTitle.className = 'modal-title';
         dTitle.innerHTML = title;
+
+        // Body
         var body = document.createElement('div');
         body.className = 'modal-body';
+
+        // Footer
         var footer = document.createElement('div');
         footer.className = 'modal-footer';
+
+        // Close Button upper right corner
         var close2 = document.createElement('button');
         close2.className = 'btn btn-default';
         close2.dataDismiss = 'modal';
         close2.innerHTML = 'Close';
+
+        // Throw everything together
+        footer.appendChild(close2);
         header.appendChild(close);
         header.appendChild(dTitle);
-        footer.appendChild(close2);
         content.appendChild(header);
         content.appendChild(body);
         content.appendChild(footer);
         dialog.appendChild(content);
         modal.appendChild(dialog);
+
+        // save modal tree
         this.dom = modal;
         this.content = body;
+        this.appendTo = function(parent) {
+            parent.appendChild(this.dom);
+        };
     };
 
 
