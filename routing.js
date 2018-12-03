@@ -47,6 +47,32 @@ var basic = function(app, connection) {
         });
     });
 
+
+    /**
+     * 
+     * Load all historical rates of an asset
+     * between range from/to
+     * 
+     * 
+     */
+    app.get('/asset/:aid/historical/:cid/:from/:to', auth.ensureAuthenticated, function(req, res){
+        var aid = req.params.aid;
+        var cid = req.params.cid;
+        var from = req.params.from;
+        var to = req.params.to;
+        var rates = require(__dirname + '/lib/rates.js');
+        rates.historicalRange(aid, cid, from, to, connection, function(e, hist) {
+            utils.log('retrieved historical value for range' + from + ' to ' + to);
+            res.send(e ? e : hist);
+        });
+    });
+    
+    /**
+     * 
+     * Load historical rate from timeago
+     * 
+     * 
+     */
     app.get('/asset/:aid/historical/:cid/:timeago', auth.ensureAuthenticated, function(req, res){
         var aid = req.params.aid;
         var cid = req.params.cid;
