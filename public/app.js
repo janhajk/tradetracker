@@ -875,7 +875,7 @@
             console.log(this.value);
         };
         if (typeof(this.onclick) === 'function') {
-            td.onclick = this.onclick(this.pos);
+            td.onclick = this.onclick(this.position);
         }
     };
 
