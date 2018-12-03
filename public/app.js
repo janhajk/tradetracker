@@ -874,7 +874,9 @@
         td.ondblclick = function() {
             console.log(this.value);
         };
-        td.onclick = this.onclick(this.pos);
+        if (typeof(this.onclick) === 'function') {
+            td.onclick = this.onclick(this.pos);
+        }
     };
 
     /**
