@@ -785,7 +785,7 @@
      * Loads Details of asset into target
      */
     Position.prototype.details = function() {
-        var tr = document.createAttribute('tr');
+        var tr = document.createElement('tr');
         var td = document.createElement('td');
         td.rowSpan = '9';
         tr.appendChild(td);
