@@ -787,7 +787,7 @@
     Position.prototype.details = function() {
         var tr = document.createElement('tr');
         var td = document.createElement('td');
-        td.rowSpan = '9';
+        td.colSpan = '9';
         tr.appendChild(td);
         this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
         // var div = document.createElement('div');
