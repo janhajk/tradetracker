@@ -72,12 +72,12 @@
                 cb();
             },
             align: 'right',
-            onclick: function() {
-                postable.style.display = 'none';
-                assetDetail.innerHTML = '';
-                pp.details(assetDetail);
+            onclick: function(pp) {
+                return function() {
+                    pp.details();
+                };
             }
-        },
+            },
         'totBtc': {
             formula: function(p, pp, cb) {
                 p.value = pp.stats.totals.btc;
@@ -363,7 +363,7 @@
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
                         
-                        // Start new Update Process
+                        // Start new Update Process once everything is loaded
                         updateRates();
                     });
 
@@ -543,7 +543,7 @@
             var table = this.table();
             this.parent.appendChild(table[0]);
             for (let i = 0; i < this.positions.length; i++) {
-                table[1].tBodies[0].appendChild(this.positions[i].dom());
+                this.positions[i].domRow(table[1].tBodies[0]);
                 this.positions[i].update();
             }
             $.bootstrapSortable({ applyLast: true });
@@ -684,6 +684,7 @@
             base: data.base,
             counter: data.counter
         };
+        this.tr = {};
         this.stats = {
             totals: {
                 btc: 0,
@@ -765,7 +766,7 @@
      * Renders DOM of a row
      * returns DOM-<tr>
      */
-    Position.prototype.dom = function() {
+    Position.prototype.domRow = function(parent) {
         let cells = [];
         for (let cell in this.row) {
             if (!this.row[cell].hidden) {
@@ -776,24 +777,29 @@
         for (let i in cells) {
             tr.appendChild(cells[i]);
         }
-        return tr;
+        this.tr = tr;
+        parent.appendChild(tr);
     };
 
     /*
      * Loads Details of asset into target
      */
-    Position.prototype.details = function(target) {
-        var div = document.createElement('div');
-        var btnClose = document.createElement('div');
-        btnClose.innerHTML = 'close';
-        btnClose.onclick = function() {
-            target.style.display = 'none';
-            postable.style.display = 'block';
-        };
-        div.appendChild(btnClose);
-        target.appendChild(div);
-        postable.style.display = 'none';
-        target.style.display = 'block';
+    Position.prototype.details = function() {
+        var tr = document.createAttribute('tr');
+        var td = document.createElement('td');
+        td.rowSpan = '9';
+        tr.appendChild(td);
+        this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
+        // var div = document.createElement('div');
+        // var btnClose = document.createElement('div');
+        // btnClose.innerHTML = 'close';
+        // btnClose.onclick = function() {
+        //     //
+        // };
+        // div.appendChild(btnClose);
+        // target.appendChild(div);
+        // postable.style.display = 'none';
+        // target.style.display = 'block';
     };
 
     // -------------------------
@@ -868,7 +874,7 @@
         td.ondblclick = function() {
             console.log(this.value);
         };
-        td.onclick = this.onclick
+        td.onclick = this.onclick(this.pos);
     };
 
     /**
@@ -919,7 +925,7 @@
      */
     Cell.prototype.update = function() {
         var val1 = this.value;
-        self = this;
+        var self = this;
         this.calc(function() {
             self.dom.dataValue = self.value;
             // update html if value has changed
