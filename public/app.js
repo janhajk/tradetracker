@@ -790,6 +790,29 @@
         td.colSpan = '9';
         tr.appendChild(td);
         this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
+        
+        // Start request
+        var request = new XMLHttpRequest();
+        request.open('GET', '/asset/'+this.aid+'/historical/'+this.cid+'/'+(Date.now()-1000*86400*7)+'/'+(Date.now()), true);
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                try {
+                    var data = JSON.parse(request.responseText);
+                    console.log(data);
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            else {
+                // Error
+            }
+        };
+        request.onerror = function() {
+            console.log('There was an error in xmlHttpRequest!');
+        };
+        request.send();
+
         // var div = document.createElement('div');
         // var btnClose = document.createElement('div');
         // btnClose.innerHTML = 'close';
