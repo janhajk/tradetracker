@@ -735,144 +735,152 @@
         this.style = {}; // For future purposes
         // create cell for each col and update
         this.row = {};
-    };
 
-
-    /**
-     * 
-     * 
-     * 
-     */
-    Position.prototype.load = function() {
-        for (let i in cols) {
-            let c = new Cell(i, cols[i], this); // function Cell(title, defaults, pos)
-            this.row[i] = c;
-        }
-        this.updateTotal();
-    };
-
-    /**
-     * 
-     * updates Total BTC & USD for Position
-     * 
-     * 
-     */
-    Position.prototype.updateTotal = function() {
-        // BTC
-        if (this.name.base === 'BTC' && (this.name.counter).substring(0, 3) !== 'USD') {
-            this.stats.totals.btc = this.last * this.amount;
-        }
-        else if (this.name.base === 'USD' && this.name.counter === 'USD') {
-            this.stats.totals.btc = 1 / btc * this.amount;
-        }
-        else if ((this.name.counter).substring(0, 3) == 'USD') {
-            this.stats.totals.btc = this.amount * this.last / btc;
-        }
-        else if (this.name.base === 'LTC' && this.name.counter === 'OKEX') {
-            this.stats.totals.btc = this.last * ltc;
-        }
-        else {
-            this.stats.totals.btc = this.amount;
-        }
-        // USD
-        this.stats.totals.usd = this.stats.totals.btc * btc;
-    };
-
-    /**
-     * Update position and all cells in position
-     * using latest rates
-     */
-    Position.prototype.update = function() {
-        var lRate = getLatestRate(this.aid, this.cid);
-        if (lRate) {
-            this.last = lRate.last;
-            this.rates.unshift(lRate);
-            if (this.rates.length > 3600) this.rates.pop();
-        }
-        this.updateTotal();
-        for (let cell in this.row) {
-            this.row[cell].update();
-        }
-    };
-
-    /**
-     * Renders DOM of a row
-     * returns DOM-<tr>
-     */
-    Position.prototype.domRow = function(parent) {
-        let cells = [];
-        for (let cell in this.row) {
-            if (!this.row[cell].hidden) {
-                cells.push(this.row[cell].dom);
+        /**
+         * Create the cells for the position row
+         * and update the totals
+         * 
+         */
+        this.load = function() {
+            for (let i in cols) {
+                let c = new Cell(i, cols[i], this); // function Cell(title, defaults, position)
+                this.row[i] = c;
             }
-        }
-        let tr = document.createElement('tr');
-        for (let i in cells) {
-            tr.appendChild(cells[i]);
-        }
-        this.tr = tr;
-        parent.appendChild(tr);
+            updateTotal();
+        };
+
+        /**
+         * 
+         * updates Total BTC & USD for Position
+         * 
+         * 
+         */
+        var updateTotal = function() {
+            // BTC
+            if (this.name.base === 'BTC' && (this.name.counter).substring(0, 3) !== 'USD') {
+                this.stats.totals.btc = this.last * this.amount;
+            }
+            else if (this.name.base === 'USD' && this.name.counter === 'USD') {
+                this.stats.totals.btc = 1 / btc * this.amount;
+            }
+            else if ((this.name.counter).substring(0, 3) == 'USD') {
+                this.stats.totals.btc = this.amount * this.last / btc;
+            }
+            else if (this.name.base === 'LTC' && this.name.counter === 'OKEX') {
+                this.stats.totals.btc = this.last * ltc;
+            }
+            else {
+                this.stats.totals.btc = this.amount;
+            }
+            // USD
+            this.stats.totals.usd = this.stats.totals.btc * btc;
+        };
+
+        /**
+         * Update position and all cells in position
+         * using latest rates
+         */
+        this.update = function() {
+            var lRate = getLatestRate(this.aid, this.cid);
+            if (lRate) {
+                this.last = lRate.last;
+                this.rates.unshift(lRate);
+                if (this.rates.length > 3600) this.rates.pop();
+            }
+            updateTotal();
+            for (let cell in this.row) {
+                this.row[cell].update();
+            }
+        };
+
+        /**
+         * Renders DOM of a row
+         * appends to parent
+         * saves in this.tr
+         * returns the DOM-<tr>
+         */
+        this.domRow = function(parent) {
+            let cells = [];
+            for (let cell in this.row) {
+                if (!this.row[cell].hidden) {
+                    cells.push(this.row[cell].dom);
+                }
+            }
+            let tr = document.createElement('tr');
+            for (let i in cells) {
+                tr.appendChild(cells[i]);
+            }
+            this.tr = tr;
+            parent.appendChild(tr);
+        };
+
+
+        /**
+         * 
+         * Loads Details of asset
+         * 
+         * 
+         * 
+         */
+        this.detailsToggle = function() {
+            // First Time create DOM-Row (tr) and append to Position row
+            if (this.showDetails === -1) {
+                var tr = document.createElement('tr');
+                var td = document.createElement('td');
+                td.colSpan = '9';
+                tr.appendChild(td);
+                this.trDetail = tr;
+                this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
+                this.showDetails = true;
+            }
+            // Toggle visibility => hide
+            else if (this.showDetails) {
+                this.trDetail.style.display = 'none';
+                this.showDetails = false;
+            }
+            // Toggle visibility => show
+            else {
+                this.trDetail.style.display = 'table-row';
+                this.showDetails = true;
+            }
+
+            if (this.showDetails) {
+                // Start request
+                var request = new XMLHttpRequest();
+                request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
+                request.onload = function() {
+                    if (request.status >= 200 && request.status < 400) {
+                        try {
+                            var data = JSON.parse(request.responseText);
+                            console.log(data);
+                        }
+                        catch (e) {
+                            console.log(e);
+                        }
+                    }
+                    else {
+                        // Error
+                    }
+                };
+                request.onerror = function() {
+                    console.log('There was an error in xmlHttpRequest!');
+                };
+                request.send();
+            }
+            // var div = document.createElement('div');
+            // var btnClose = document.createElement('div');
+            // btnClose.innerHTML = 'close';
+            // btnClose.onclick = function() {
+            //     //
+            // };
+            // div.appendChild(btnClose);
+            // target.appendChild(div);
+            // postable.style.display = 'none';
+            // target.style.display = 'block';
+        };
     };
 
-    /*
-     * Loads Details of asset
-     */
-    Position.prototype.detailsToggle = function() {
-        // First Time create DOM-Row (tr) and append to Position row
-        if (this.showDetails === -1) {
-            var tr = document.createElement('tr');
-            var td = document.createElement('td');
-            td.colSpan = '9';
-            tr.appendChild(td);
-            this.trDetail = tr;
-            this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
-            this.showDetails = true;
-        }
-        // Toggle visibility => hide
-        else if (this.showDetails) {
-            this.trDetail.style.display = 'none';
-            this.showDetails = false;
-        }
-        // Toggle visibility => show
-        else {
-            this.trDetail.style.display = 'table-row';
-            this.showDetails = true;
-        }
 
-        if (this.showDetails) {
-            // Start request
-            var request = new XMLHttpRequest();
-            request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
-            request.onload = function() {
-                if (request.status >= 200 && request.status < 400) {
-                    try {
-                        var data = JSON.parse(request.responseText);
-                        console.log(data);
-                    }
-                    catch (e) {
-                        console.log(e);
-                    }
-                }
-                else {
-                    // Error
-                }
-            };
-            request.onerror = function() {
-                console.log('There was an error in xmlHttpRequest!');
-            };
-            request.send();
-        }
-        // var div = document.createElement('div');
-        // var btnClose = document.createElement('div');
-        // btnClose.innerHTML = 'close';
-        // btnClose.onclick = function() {
-        //     //
-        // };
-        // div.appendChild(btnClose);
-        // target.appendChild(div);
-        // postable.style.display = 'none';
-        // target.style.display = 'block';
-    };
 
     // -------------------------
     // END OF Position
