@@ -696,6 +696,7 @@
      *
      */
     var Position = function(data) {
+        var self = this;
         this.amount = Number(data.amount);
         this.open = Number(data.open);
         this.cid = Number(data.cid);
@@ -757,23 +758,23 @@
          */
         var updateTotal = function() {
             // BTC
-            if (this.name.base === 'BTC' && (this.name.counter).substring(0, 3) !== 'USD') {
-                this.stats.totals.btc = this.last * this.amount;
+            if (self.name.base === 'BTC' && (self.name.counter).substring(0, 3) !== 'USD') {
+                self.stats.totals.btc = self.last * self.amount;
             }
-            else if (this.name.base === 'USD' && this.name.counter === 'USD') {
-                this.stats.totals.btc = 1 / btc * this.amount;
+            else if (self.name.base === 'USD' && self.name.counter === 'USD') {
+                self.stats.totals.btc = 1 / btc * self.amount;
             }
-            else if ((this.name.counter).substring(0, 3) == 'USD') {
-                this.stats.totals.btc = this.amount * this.last / btc;
+            else if ((self.name.counter).substring(0, 3) == 'USD') {
+                self.stats.totals.btc = self.amount * self.last / btc;
             }
-            else if (this.name.base === 'LTC' && this.name.counter === 'OKEX') {
-                this.stats.totals.btc = this.last * ltc;
+            else if (self.name.base === 'LTC' && self.name.counter === 'OKEX') {
+                self.stats.totals.btc = self.last * ltc;
             }
             else {
-                this.stats.totals.btc = this.amount;
+                self.stats.totals.btc = self.amount;
             }
             // USD
-            this.stats.totals.usd = this.stats.totals.btc * btc;
+            self.stats.totals.usd = self.stats.totals.btc * btc;
         };
 
         /**
