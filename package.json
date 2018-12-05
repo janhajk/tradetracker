@@ -20,6 +20,7 @@
       "express-session": "1.15.x",
       "md5": "2.2.x",
       "node-cache": "4.x.x",
-      "cloudscraper": "1.4.x"
+      "cloudscraper": "1.4.x",
+      "socket.io": "2.x.x"
    }
 }

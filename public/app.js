@@ -24,6 +24,9 @@
     var history = null;
     var positionCollection = {};
 
+    var socket = io();
+
+
     /////////////////////////////////////////
     // Main Table
     // Table Columns / Structure
@@ -74,10 +77,10 @@
             align: 'right',
             onclick: function(pp) {
                 return function() {
-                    pp.details();
+                    pp.detailsToggle();
                 };
             }
-            },
+        },
         'totBtc': {
             formula: function(p, pp, cb) {
                 p.value = pp.stats.totals.btc;
@@ -295,6 +298,32 @@
 
     /**
      * 
+     * Socket-Interaction with Host
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+    socket.on('rates', function(msg) {
+        // ...
+    });
+    socket.on('history', function(msg) {
+        // ...
+    });
+    socket.on('position', function(msg) {
+        // ...
+    });
+    socket.on('rates', function(msg) {
+        // ...
+    });
+    // For sending to socket
+    // socket.emit('chat message', $('#m').val());
+    //   $('#m').val('');
+
+
+    /**
+     * 
      * document Loaded listener
      * 
      * this executes on DocumentLoaded
@@ -362,7 +391,7 @@
                     // Create Historical Chart
                     history = new History(function(e, self) {
                         self.appendChart('main', chartsDom.row[2]);
-                        
+
                         // Start new Update Process once everything is loaded
                         updateRates();
                     });
@@ -684,7 +713,14 @@
             base: data.base,
             counter: data.counter
         };
+
+        // DOM Element of Row
         this.tr = {};
+        // DOM Element of Detail-Row
+        this.trDetail = {};
+        // Visibility state of Detail-Row
+        this.showDetails = -1;
+        // Stats of Position
         this.stats = {
             totals: {
                 btc: 0,
@@ -782,37 +818,53 @@
     };
 
     /*
-     * Loads Details of asset into target
+     * Loads Details of asset
      */
-    Position.prototype.details = function() {
-        var tr = document.createElement('tr');
-        var td = document.createElement('td');
-        td.colSpan = '9';
-        tr.appendChild(td);
-        this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
-        
-        // Start request
-        var request = new XMLHttpRequest();
-        request.open('GET', '/asset/'+this.aid+'/historical/'+this.cid+'/'+(Date.now()-1000*86400*7)+'/'+(Date.now()), true);
-        request.onload = function() {
-            if (request.status >= 200 && request.status < 400) {
-                try {
-                    var data = JSON.parse(request.responseText);
-                    console.log(data);
-                }
-                catch (e) {
-                    console.log(e);
-                }
-            }
-            else {
-                // Error
-            }
-        };
-        request.onerror = function() {
-            console.log('There was an error in xmlHttpRequest!');
-        };
-        request.send();
+    Position.prototype.detailsToggle = function() {
+        // First Time create DOM-Row (tr) and append to Position row
+        if (this.showDetails === -1) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            td.colSpan = '9';
+            tr.appendChild(td);
+            this.trDetail = tr;
+            this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
+            this.showDetails = true;
+        }
+        // Toggle visibility => hide
+        else if (this.showDetails) {
+            this.trDetail.style.display = 'none';
+            this.showDetails = false;
+        }
+        // Toggle visibility => show
+        else {
+            this.trDetail.style.display = 'block';
+            this.showDetails = true;
+        }
 
+        if (this.showDetails) {
+            // Start request
+            var request = new XMLHttpRequest();
+            request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    try {
+                        var data = JSON.parse(request.responseText);
+                        console.log(data);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
+                else {
+                    // Error
+                }
+            };
+            request.onerror = function() {
+                console.log('There was an error in xmlHttpRequest!');
+            };
+            request.send();
+        }
         // var div = document.createElement('div');
         // var btnClose = document.createElement('div');
         // btnClose.innerHTML = 'close';
@@ -1041,7 +1093,7 @@
      * and appends to parent-DOM
      *
      */
-    var emptyLineChart = function(parent) {
+    var emptyLineChart = function(parent, w, h) {
         var canvas = document.createElement('canvas');
         canvas.width = '400';
         canvas.height = '400';
@@ -1049,31 +1101,49 @@
         canvas.style.height = '400px';
         parent.appendChild(canvas);
         var ctx = canvas.getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [{
-                    data: []
-                }]
+        var chart = new Highcharts.Chart(ctx, {
+            chart: {
+                zoomType: 'x'
             },
-            options: {
-                scales: {
-                    xAxes: [{
-                        type: 'time',
-                        time: {
-                            unit: 'day'
+            title: {
+                text: ''
+            },
+            type: 'line',
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
                         }
-                    }]
-                },
-                elements: {
-                    line: {
-                        tension: 0, // disables bezier curves
-                    }
+                    },
+                    threshold: null
                 }
-            }
+            },
+            series: [{
+                type: 'area',
+                name: '',
+                data: []
+            }]
         });
         return chart;
     };
+
 
     /**
      * Create PieChart of Asset-Distribution

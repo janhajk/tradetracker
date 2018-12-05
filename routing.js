@@ -39,10 +39,10 @@ var basic = function(app, connection) {
         });
     });
 
-    app.get('/asset/:aid', auth.ensureAuthenticated, function(req, res){
+    app.get('/asset/:aid', auth.ensureAuthenticated, function(req, res) {
         var aid = req.params.aid;
         var assets = require(__dirname + '/lib/assets.js');
-        assets.get(aid, connection, function(e, data){
+        assets.get(aid, connection, function(e, data) {
             res.send(e ? e : data);
         });
     });
@@ -55,7 +55,7 @@ var basic = function(app, connection) {
      * 
      * 
      */
-    app.get('/asset/:aid/historical/:cid/:from/:to', auth.ensureAuthenticated, function(req, res){
+    app.get('/asset/:aid/historical/:cid/:from/:to', auth.ensureAuthenticated, function(req, res) {
         var aid = req.params.aid;
         var cid = req.params.cid;
         var from = req.params.from;
@@ -66,21 +66,21 @@ var basic = function(app, connection) {
             res.send(e ? e : hist);
         });
     });
-    
+
     /**
      * 
      * Load historical rate from timeago
      * 
      * 
      */
-    app.get('/asset/:aid/historical/:cid/:timeago', auth.ensureAuthenticated, function(req, res){
+    app.get('/asset/:aid/historical/:cid/:timeago', auth.ensureAuthenticated, function(req, res) {
         var aid = req.params.aid;
         var cid = req.params.cid;
         var timeago = req.params.timeago;
         var rates = require(__dirname + '/lib/rates.js');
         rates.historical(aid, cid, timeago, connection, function(e, hist) {
-            utils.log('retrieved ' + parseInt(timeago/3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
-            res.send(e ? e : {v: Number(hist)});
+            utils.log('retrieved ' + parseInt(timeago / 3600, 10) + 'h historical value for aid=' + aid + '; value = ' + hist);
+            res.send(e ? e : { v: Number(hist) });
         });
     });
 
@@ -90,14 +90,25 @@ var basic = function(app, connection) {
     });
 
     app.get('/cron/:secret', function(req, res) {
-        if(req.params.secret === config.cronSecret) {
+        if (req.params.secret === config.cronSecret) {
             rates.all('write', connection, function(e) {
-                if(e) res.send(e);
+                if (e) res.send(e);
                 else res.send('All rates successfully updated!');
             });
-        } else {
+        }
+        else {
             res.send('not authorized!');
         }
     });
 };
 exports.basic = basic;
+
+
+var io = function(io, connection) {
+    io.on('connection', function(socket) {
+        socket.on('chat message', function(msg) {
+            io.emit('chat message', msg);
+        });
+    });
+};
+exports.io = io;
