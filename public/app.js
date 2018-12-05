@@ -835,7 +835,7 @@
         }
         // Toggle visibility => show
         else {
-            this.trDetail.style.display = 'block';
+            this.trDetail.style.display = 'table-row';
             this.showDetails = true;
         }
 
