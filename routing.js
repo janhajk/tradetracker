@@ -106,7 +106,7 @@ exports.basic = basic;
 
 var io = function(io, connection) {
     io.on('connection', function(socket) {
-        socket.on('chat message', function(msg) {
+        socket.on('rates', function(msg) {
             io.emit('chat message', msg);
         });
     });

@@ -314,9 +314,6 @@
     socket.on('position', function(msg) {
         // ...
     });
-    socket.on('rates', function(msg) {
-        // ...
-    });
     // For sending to socket
     // socket.emit('chat message', $('#m').val());
     //   $('#m').val('');
