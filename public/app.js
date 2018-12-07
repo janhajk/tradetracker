@@ -921,9 +921,6 @@
             this[i] = defaults[i];
         }
         this.dom = document.createElement('td');
-        this.calc(function() {
-            self.render();
-        });
         /**
          * Renders Cell the first time
          * only called once
@@ -978,7 +975,9 @@
                 }
             }
         };
-
+        this.calc(function() {
+            self.render();
+        });
         /**
          * Formats a Cell Value to readable format
          */
