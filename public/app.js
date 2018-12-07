@@ -305,19 +305,19 @@
      * 
      * 
      */
-    (function () {
-    socket.on('rates', function(msg) {
-        // ...
-    });
-    socket.on('history', function(msg) {
-        // ...
-    });
-    socket.on('position', function(msg) {
-        // ...
-    });
-    // For sending to socket
-    // socket.emit('chat message', $('#m').val());
-    //   $('#m').val('');
+    (function() {
+        socket.on('rates', function(msg) {
+            // ...
+        });
+        socket.on('history', function(msg) {
+            // ...
+        });
+        socket.on('position', function(msg) {
+            // ...
+        });
+        // For sending to socket
+        // socket.emit('chat message', $('#m').val());
+        //   $('#m').val('');
     })();
 
     /**
@@ -554,17 +554,17 @@
      * 
      */
     var PositionCollection = function(parent) {
-    
+
         // var that holds all positions
         this.positions = [];
-    
+
         this.parent = parent;
-    
+
         // Adds a Position to the collecton
         this.add = function(position) {
             this.positions.push(position);
         };
-    
+
         // Renders a Position table
         this.tableRender = function() {
             var table = this.table();
@@ -585,7 +585,7 @@
             t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
             t.style.width = '100%';
             t.style.maxWidth = '1000px';
-    
+
             // table header
             var thead = document.createElement('thead');
             thead.class = 'thead-inverse';
@@ -603,19 +603,19 @@
             }
             thead.appendChild(tr);
             t.appendChild(thead);
-    
+
             // Positions Body
             var tbody = document.createElement('tbody');
             t.appendChild(tbody);
-    
+
             // Table Wrapper
             var div = document.createElement('div');
             div.className = 'table-responsive';
             div.appendChild(t);
             return [div, t];
         };
-    
-    
+
+
         /**
          * Get Total of all positions
          * 
@@ -634,8 +634,8 @@
             }
             return tot;
         };
-    
-    
+
+
         /**
          * Get Total of each asset
          */
@@ -658,8 +658,8 @@
             }
             return tot;
         };
-    
-    
+
+
         /**
          * Get Total for every market
          */
@@ -684,7 +684,7 @@
         };
     };
 
- 
+
     // -------------------------
     // END OF PositionCollection
     // -------------------------
@@ -975,9 +975,6 @@
                 }
             }
         };
-        this.calc(function() {
-            self.render();
-        });
         /**
          * Formats a Cell Value to readable format
          */
@@ -1030,9 +1027,12 @@
                 }
             });
         };
+        this.calc(function() {
+            self.render();
+        });
     };
 
-  
+
 
     // -------------------------
     // END OF Cell
@@ -1143,12 +1143,12 @@
             series: [{
                 type: 'area',
                 name: 'test',
-                data: [1,2,3,4,2]
+                data: [1, 2, 3, 4, 2]
             }]
         });
         return chart;
     };
-    
+
     var test = function() {
         var body = document.getElementsByTagName("BODY")[0];
         emptyLineChart(body, 300, 300);
