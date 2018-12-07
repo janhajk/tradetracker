@@ -1234,9 +1234,6 @@
             btc: []
         };
 
-        // Call prototype-function request
-        // which requests new live data from server
-        this.request(callback);
 
         // Variable that holds all historical chart objects
         this.charts = {};
@@ -1352,6 +1349,10 @@
         this.remove = function(name) {
             delete this.charts[name];
         };
+        
+        // Call prototype-function request
+        // which requests new live data from server
+        this.request(callback);
     };
 
 
