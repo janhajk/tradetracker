@@ -305,6 +305,7 @@
      * 
      * 
      */
+    (function () {
     socket.on('rates', function(msg) {
         // ...
     });
@@ -317,7 +318,7 @@
     // For sending to socket
     // socket.emit('chat message', $('#m').val());
     //   $('#m').val('');
-
+    })();
 
     /**
      * 
@@ -553,17 +554,17 @@
      * 
      */
     var PositionCollection = function(parent) {
-
+    
         // var that holds all positions
         this.positions = [];
-
+    
         this.parent = parent;
-
+    
         // Adds a Position to the collecton
         this.add = function(position) {
             this.positions.push(position);
         };
-
+    
         // Renders a Position table
         this.tableRender = function() {
             var table = this.table();
@@ -574,115 +575,116 @@
             }
             $.bootstrapSortable({ applyLast: true });
         };
-    };
-
-    /**
-     * Positions-Table
-     * Creates empty positions table
-     * Data-rows are added asynchronously
-     */
-    PositionCollection.prototype.table = function() {
-        var t = document.createElement('table');
-        t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
-        t.style.width = '100%';
-        t.style.maxWidth = '1000px';
-
-        // table header
-        var thead = document.createElement('thead');
-        thead.class = 'thead-inverse';
-        var tr = document.createElement('tr');
-        for (let c in cols) {
-            if (cols[c].hidden) continue;
-            let th = document.createElement('th');
-            th.innerHTML = c;
-            th.className = cols[c].class ? cols[c].class : '';
-            th.style.textAlign = cols[c].align ? cols[c].align : 'left';
-            if (cols[c].sort) {
-                th.dataDefaultsort = cols[c].sort;
+        /**
+         * Positions-Table
+         * Creates empty positions table
+         * Data-rows are added asynchronously
+         */
+        this.table = function() {
+            var t = document.createElement('table');
+            t.className = ['table', 'table-bordered', 'table-hover', 'table-responsive', 'table-condensed', 'sortable'].join(' ');
+            t.style.width = '100%';
+            t.style.maxWidth = '1000px';
+    
+            // table header
+            var thead = document.createElement('thead');
+            thead.class = 'thead-inverse';
+            var tr = document.createElement('tr');
+            for (let c in cols) {
+                if (cols[c].hidden) continue;
+                let th = document.createElement('th');
+                th.innerHTML = c;
+                th.className = cols[c].class ? cols[c].class : '';
+                th.style.textAlign = cols[c].align ? cols[c].align : 'left';
+                if (cols[c].sort) {
+                    th.dataDefaultsort = cols[c].sort;
+                }
+                tr.appendChild(th);
             }
-            tr.appendChild(th);
-        }
-        thead.appendChild(tr);
-        t.appendChild(thead);
-
-        // Positions Body
-        var tbody = document.createElement('tbody');
-        t.appendChild(tbody);
-
-        // Table Wrapper
-        var div = document.createElement('div');
-        div.className = 'table-responsive';
-        div.appendChild(t);
-        return [div, t];
-    };
-
-
-    /**
-     * Get Total of all positions
-     * 
-     * @param [string] currency The currency: 'btc' or 'usd'
-     * returns 
-     * 
-     */
-    PositionCollection.prototype.getTot = function(currency, formated) {
-        var tot = 0;
-        for (let i = 0; i < this.positions.length; i++) {
-            tot += this.positions[i].stats.totals[currency];
-        }
-        formated = formated || false;
-        if (formated) {
-            return tot.toLocaleString('de-CH-1996', { minimumFractionDigits: (currency === 'btc' ? 2 : 0) });
-        }
-        return tot;
-    };
-
-
-    /**
-     * Get Total of each asset
-     */
-    PositionCollection.prototype.getTotAsset = function() {
-        var tot = {};
-        var BTC = ['USD', 'OKEX', '1B'];
-        for (let i in this.positions) {
-            var assetname = this.positions[i].name.assetname;
-            if (this.positions[i].name.base === 'BTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Bitcoin';
-            if (this.positions[i].name.base === 'LTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Litecoin';
-            if (!(assetname in tot)) {
-                tot[assetname] = { btc: 0, usd: 0 };
+            thead.appendChild(tr);
+            t.appendChild(thead);
+    
+            // Positions Body
+            var tbody = document.createElement('tbody');
+            t.appendChild(tbody);
+    
+            // Table Wrapper
+            var div = document.createElement('div');
+            div.className = 'table-responsive';
+            div.appendChild(t);
+            return [div, t];
+        };
+    
+    
+        /**
+         * Get Total of all positions
+         * 
+         * @param [string] currency The currency: 'btc' or 'usd'
+         * returns 
+         * 
+         */
+        this.getTot = function(currency, formated) {
+            var tot = 0;
+            for (let i = 0; i < this.positions.length; i++) {
+                tot += this.positions[i].stats.totals[currency];
             }
-            tot[assetname].btc += this.positions[i].stats.totals.btc;
-            tot[assetname].usd += this.positions[i].stats.totals.usd;
-        }
-        var tottot = this.getTot('btc');
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i].btc / tottot);
-        }
-        return tot;
-    };
-
-
-    /**
-     * Get Total for every market
-     */
-    PositionCollection.prototype.getTotMarket = function() {
-        var tot = {};
-        for (let i in this.positions) {
-            var market = this.positions[i].row.market.value;
-            if (!(market in tot)) {
-                tot[market] = { btc: 0, usd: 0 };
+            formated = formated || false;
+            if (formated) {
+                return tot.toLocaleString('de-CH-1996', { minimumFractionDigits: (currency === 'btc' ? 2 : 0) });
             }
-            tot[market].btc += this.positions[i].stats.totals.btc;
-            tot[market].usd += this.positions[i].stats.totals.usd;
-        }
-        for (let i in tot) {
-            if (tot[i].btc === 0) delete tot[i];
-        }
-        var tottot = this.getTot('btc');
-        for (let i in tot) {
-            tot[i]['%'] = Math.round(tot[i].btc / tottot);
-        }
-        return tot;
+            return tot;
+        };
+    
+    
+        /**
+         * Get Total of each asset
+         */
+        this.getTotAsset = function() {
+            var tot = {};
+            var BTC = ['USD', 'OKEX', '1B'];
+            for (let i in this.positions) {
+                var assetname = this.positions[i].name.assetname;
+                if (this.positions[i].name.base === 'BTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Bitcoin';
+                if (this.positions[i].name.base === 'LTC' && inArray(this.positions[i].name.counter, BTC)) assetname = 'Litecoin';
+                if (!(assetname in tot)) {
+                    tot[assetname] = { btc: 0, usd: 0 };
+                }
+                tot[assetname].btc += this.positions[i].stats.totals.btc;
+                tot[assetname].usd += this.positions[i].stats.totals.usd;
+            }
+            var tottot = this.getTot('btc');
+            for (let i in tot) {
+                tot[i]['%'] = Math.round(tot[i].btc / tottot);
+            }
+            return tot;
+        };
+    
+    
+        /**
+         * Get Total for every market
+         */
+        this.getTotMarket = function() {
+            var tot = {};
+            for (let i in this.positions) {
+                var market = this.positions[i].row.market.value;
+                if (!(market in tot)) {
+                    tot[market] = { btc: 0, usd: 0 };
+                }
+                tot[market].btc += this.positions[i].stats.totals.btc;
+                tot[market].usd += this.positions[i].stats.totals.usd;
+            }
+            for (let i in tot) {
+                if (tot[i].btc === 0) delete tot[i];
+            }
+            var tottot = this.getTot('btc');
+            for (let i in tot) {
+                tot[i]['%'] = Math.round(tot[i].btc / tottot);
+            }
+            return tot;
+        };
     };
+
+ 
     // -------------------------
     // END OF PositionCollection
     // -------------------------
@@ -922,115 +924,116 @@
         this.calc(function() {
             self.render();
         });
-    };
-
-    /**
-     * Renders Cell the first time
-     * only called once
-     */
-    Cell.prototype.render = function() {
-        var td = this.dom;
-        // Image-Cells
-        if (this.value !== null && this.image) {
-            td.innerHTML = '';
-            let value = this.value.replace(/\s/g, '-').toLowerCase();
-            let path = 'images/' + this.image.folder + '/';
-            let src = path + value + '.' + this.image.filetype;
-            td.style.backgroundImage = 'url(' + src + ')';
-            td.style.backgroundRepeat = 'no-repeat';
-            td.style.backgroundSize = 'Auto 25px';
-            td.title = this.value;
-            td.style.backgroundPosition = this.align;
-            //img.title = self.tValue(this);
-        }
-        // Text-Cells
-        else {
-            td.innerHTML = this.tValue();
-        }
-        td.style.textAlign = this.align;
-        td.style.cursor = 'pointer';
-        td.className = this.class;
-        td.onmousedown = function() { return false; };
-        // For Testing purpose
-        td.ondblclick = function() {
-            console.log(this.value);
-        };
-        if (typeof(this.onclick) === 'function') {
-            td.onclick = this.onclick(this.position);
-        }
-    };
-
-    /**
-     * Calculates cell using formula
-     */
-    Cell.prototype.calc = function(cb) {
-        if (this.col) {
-            this.value = this.position[this.col];
-            cb();
-        }
-        if (this.formula !== null) {
-            if (typeof this.formula === 'function') {
-                this.formula(this, this.position, cb);
+        /**
+         * Renders Cell the first time
+         * only called once
+         */
+        this.render = function() {
+            var td = this.dom;
+            // Image-Cells
+            if (this.value !== null && this.image) {
+                td.innerHTML = '';
+                let value = this.value.replace(/\s/g, '-').toLowerCase();
+                let path = 'images/' + this.image.folder + '/';
+                let src = path + value + '.' + this.image.filetype;
+                td.style.backgroundImage = 'url(' + src + ')';
+                td.style.backgroundRepeat = 'no-repeat';
+                td.style.backgroundSize = 'Auto 25px';
+                td.title = this.value;
+                td.style.backgroundPosition = this.align;
+                //img.title = self.tValue(this);
             }
-            else if (this.formula.type === '*') {
-                this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+            // Text-Cells
+            else {
+                td.innerHTML = this.tValue();
+            }
+            td.style.textAlign = this.align;
+            td.style.cursor = 'pointer';
+            td.className = this.class;
+            td.onmousedown = function() { return false; };
+            // For Testing purpose
+            td.ondblclick = function() {
+                console.log(this.value);
+            };
+            if (typeof(this.onclick) === 'function') {
+                td.onclick = this.onclick(this.position);
+            }
+        };
+
+        /**
+         * Calculates cell using formula
+         */
+        this.calc = function(cb) {
+            if (this.col) {
+                this.value = this.position[this.col];
                 cb();
             }
-        }
-    };
-
-    /**
-     * Formats a Cell Value to readable format
-     */
-    Cell.prototype.tValue = function() {
-        var html = this.value;
-        if (typeof html === 'number') {
-            this.dom.style.textAlign = 'right';
-        }
-        if (this.round === -1) {
-            if (typeof html === 'number') {
-                let digits = smartRound(html);
-                //html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
-                html = html.toLocaleString('de-CH-1996', { minimumFractionDigits: digits });
-            }
-        }
-        else if (typeof html === 'number' && this.round > -1) {
-            var num = html;
-            html = html.toFixed(this.round);
-            html = Number(html).toLocaleString('de-CH-1996', { minimumFractionDigits: this.round });
-            if (this.prefix === 'sign' && num > 0) html = '+' + html;
-        }
-        return html;
-    };
-
-    /**
-     * Updates Cell (only if value has changed)
-     */
-    Cell.prototype.update = function() {
-        var val1 = this.value;
-        var self = this;
-        this.calc(function() {
-            self.dom.dataValue = self.value;
-            // update html if value has changed
-            if (val1 === null || self.value !== val1) {
-                self.dom.innerHTML = self.tValue();
-                if (typeof self.value === 'number' && Math.abs(self.value / val1 - 1) > 0.003) {
-                    self.dom.style.transition = 'color 1s';
-                    if (self.value > val1) {
-                        self.dom.style.backgroundColor = '#ccffcc';
-                    }
-                    else if (self.value < val1) {
-                        self.dom.style.backgroundColor = '#ff9999';
-                    }
-                    var dom = self.dom;
-                    setTimeout(function() {
-                        dom.style.transition = 'backgroundColor 4s';
-                        dom.style.backgroundColor = 'transparent';
-                    }, 2500);
+            if (this.formula !== null) {
+                if (typeof this.formula === 'function') {
+                    this.formula(this, this.position, cb);
+                }
+                else if (this.formula.type === '*') {
+                    this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+                    cb();
                 }
             }
-        });
+        };
+
+        /**
+         * Formats a Cell Value to readable format
+         */
+        this.tValue = function() {
+            var html = this.value;
+            if (typeof html === 'number') {
+                this.dom.style.textAlign = 'right';
+            }
+            if (this.round === -1) {
+                if (typeof html === 'number') {
+                    let digits = smartRound(html);
+                    //html = cutTrailingZeros(html.toLocaleString('de-CH-1996', {minimumFractionDigits:digits}));
+                    html = html.toLocaleString('de-CH-1996', { minimumFractionDigits: digits });
+                }
+            }
+            else if (typeof html === 'number' && this.round > -1) {
+                var num = html;
+                html = html.toFixed(this.round);
+                html = Number(html).toLocaleString('de-CH-1996', { minimumFractionDigits: this.round });
+                if (this.prefix === 'sign' && num > 0) html = '+' + html;
+            }
+            return html;
+        };
+
+        /**
+         * Updates Cell (only if value has changed)
+         */
+        this.update = function() {
+            var val1 = this.value;
+            var self = this;
+            this.calc(function() {
+                self.dom.dataValue = self.value;
+                // update html if value has changed
+                if (val1 === null || self.value !== val1) {
+                    self.dom.innerHTML = self.tValue();
+                    if (typeof self.value === 'number' && Math.abs(self.value / val1 - 1) > 0.003) {
+                        self.dom.style.transition = 'color 1s';
+                        if (self.value > val1) {
+                            self.dom.style.backgroundColor = '#ccffcc';
+                        }
+                        else if (self.value < val1) {
+                            self.dom.style.backgroundColor = '#ff9999';
+                        }
+                        var dom = self.dom;
+                        setTimeout(function() {
+                            dom.style.transition = 'backgroundColor 4s';
+                            dom.style.backgroundColor = 'transparent';
+                        }, 2500);
+                    }
+                }
+            });
+        };
     };
+
+  
 
     // -------------------------
     // END OF Cell
@@ -1100,14 +1103,11 @@
      *
      */
     var emptyLineChart = function(parent, w, h) {
-        var canvas = document.createElement('canvas');
-        canvas.width = '400';
-        canvas.height = '400';
-        canvas.style.width = '400px';
-        canvas.style.height = '400px';
-        parent.appendChild(canvas);
-        var ctx = canvas.getContext('2d');
-        var chart = new Highcharts.Chart(ctx, {
+        var div = document.createElement('div');
+        div.style.width = w + 'px';
+        div.style.height = h + 'px';
+        parent.appendChild(div);
+        var chart = new Highcharts.Chart(div, {
             chart: {
                 zoomType: 'x'
             },
@@ -1143,13 +1143,17 @@
             },
             series: [{
                 type: 'area',
-                name: '',
-                data: []
+                name: 'test',
+                data: [1,2,3,4,2]
             }]
         });
         return chart;
     };
-
+    
+    var test = function() {
+        var body = document.getElementsByTagName("BODY")[0];
+        emptyLineChart(body, 300, 300);
+    };
 
     /**
      * Create PieChart of Asset-Distribution
@@ -1237,120 +1241,120 @@
 
         // Variable that holds all historical chart objects
         this.charts = {};
-    };
+        /**
+         * Creates a HighChart.StockChart to display Historical
+         * Data. This Chart gets updated in realtime by adding
+         * new data to the series[].data array
+         * @param {string} name Name of the chart ex. main/modal
+         * @param {DOM} parent The DOM element of the parant
+         */
 
-    /**
-     * Creates a HighChart.StockChart to display Historical
-     * Data. This Chart gets updated in realtime by adding
-     * new data to the series[].data array
-     * @param {string} name Name of the chart ex. main/modal
-     * @param {DOM} parent The DOM element of the parant
-     */
+        this.appendChart = function(name, parent) {
+            var div = document.createElement('div');
+            parent.appendChild(div);
 
-    History.prototype.appendChart = function(name, parent) {
-        var div = document.createElement('div');
-        parent.appendChild(div);
+            var c = Highcharts.stockChart(div, {
+                yAxis: {
+                    crosshair: true
+                },
+                rangeSelector: {
+                    buttons: [{
+                        type: 'hour',
+                        count: 1,
+                        text: '1h'
+                    }, {
+                        type: 'day',
+                        count: 1,
+                        text: '24h'
+                    }, {
+                        type: 'day',
+                        count: 7,
+                        text: '1w'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'ytd',
+                        text: 'YTD'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 2
+                },
+                title: {
+                    text: 'History'
+                },
+                series: [{
+                    name: 'Total USD',
+                    data: this.data.usd
+                }]
+            });
+            this.charts[name] = c;
+        };
 
-        var c = Highcharts.stockChart(div, {
-            yAxis: {
-                crosshair: true
-            },
-            rangeSelector: {
-                buttons: [{
-                    type: 'hour',
-                    count: 1,
-                    text: '1h'
-                }, {
-                    type: 'day',
-                    count: 1,
-                    text: '24h'
-                }, {
-                    type: 'day',
-                    count: 7,
-                    text: '1w'
-                }, {
-                    type: 'month',
-                    count: 6,
-                    text: '6m'
-                }, {
-                    type: 'ytd',
-                    text: 'YTD'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: '1y'
-                }, {
-                    type: 'all',
-                    text: 'All'
-                }],
-                selected: 2
-            },
-            title: {
-                text: 'History'
-            },
-            series: [{
-                name: 'Total USD',
-                data: this.data.usd
-            }]
-        });
-        this.charts[name] = c;
-    };
+        this.update = function(newData) {
+            this.data.usd.push(newData.usd);
+            this.data.btc.push(newData.btc);
+            var timestamp = Date.now();
+            for (let i in this.charts) {
+                if (this.charts[i] != undefined) {
 
-    History.prototype.update = function(newData) {
-        this.data.usd.push(newData.usd);
-        this.data.btc.push(newData.btc);
-        var timestamp = Date.now();
-        for (let i in this.charts) {
-            if (this.charts[i] != undefined) {
+                    // new point to dataset (see: https://api.highcharts.com/class-reference/Highcharts.Series%23addPoint)
+                    // method addPoint(options [, redraw] [, shift] [, animation])
+                    this.charts[i].series[0].addPoint([timestamp, newData.usd], false, false, false);
+                    //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
 
-                // new point to dataset (see: https://api.highcharts.com/class-reference/Highcharts.Series%23addPoint)
-                // method addPoint(options [, redraw] [, shift] [, animation])
-                this.charts[i].series[0].addPoint([timestamp, newData.usd], false, false, false);
-                //this.charts[i].series[1].addPoint([Date.now(), newData.btc], false);
-
-                // Redraw chart
-                // see: https://api.highcharts.com/class-reference/Highcharts.Chart.html#redraw
-                this.charts[i].redraw();
+                    // Redraw chart
+                    // see: https://api.highcharts.com/class-reference/Highcharts.Chart.html#redraw
+                    this.charts[i].redraw();
+                }
             }
-        }
-    };
+        };
 
-    History.prototype.request = function(callback) {
-        var self = this;
-        var request = new XMLHttpRequest();
-        request.open('GET', '/history', true);
-        request.onload = function() {
-            if (request.status >= 200 && request.status < 400) {
-                try {
-                    var d = JSON.parse(request.responseText);
-                    for (let i = 0; i < d.length; i++) {
-                        self.data.usd.push([d[i].timestamp * 1000, d[i].dollar]);
-                        self.data.btc.push([d[i].timestamp * 1000, d[i].btc]);
+        this.request = function(callback) {
+            var self = this;
+            var request = new XMLHttpRequest();
+            request.open('GET', '/history', true);
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    try {
+                        var d = JSON.parse(request.responseText);
+                        for (let i = 0; i < d.length; i++) {
+                            self.data.usd.push([d[i].timestamp * 1000, d[i].dollar]);
+                            self.data.btc.push([d[i].timestamp * 1000, d[i].btc]);
+                        }
+                        callback(null, self);
                     }
-                    callback(null, self);
+                    catch (e) {
+                        console.log(e);
+                        console.log(new Date().toLocaleString() + ': not logged in');
+                        btnLogin.show();
+                        callback(e);
+                    }
                 }
-                catch (e) {
-                    console.log(e);
-                    console.log(new Date().toLocaleString() + ': not logged in');
-                    btnLogin.show();
-                    callback(e);
+                else {
+                    // Error
+                    callback('Request returned Error status ' + request.status);
                 }
-            }
-            else {
-                // Error
-                callback('Request returned Error status ' + request.status);
-            }
+            };
+            request.onerror = function(e) {
+                console.log('There was an error in xmlHttpRequest!');
+                callback(e);
+            };
+            request.send();
         };
-        request.onerror = function(e) {
-            console.log('There was an error in xmlHttpRequest!');
-            callback(e);
+
+        this.remove = function(name) {
+            delete this.charts[name];
         };
-        request.send();
     };
 
-    History.prototype.remove = function(name) {
-        delete this.charts[name];
-    };
 
     var modal_history = function() {
         var modal = new BModal('History');
