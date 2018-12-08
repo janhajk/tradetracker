@@ -826,6 +826,7 @@
          * 
          */
         this.detailsToggle = function() {
+            var self = this;
             // First Time create DOM-Row (tr) and append to Position row
             if (this.showDetails === -1) {
                 var tr = document.createElement('tr');
@@ -856,6 +857,10 @@
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
+                            var lineChart = emptyLineChart(self.trDetail, 600, 200);
+                            for (let i; i < data.length; i++) {
+                                lineChart.series[0].addPoint(data[i].timestamp, data[i].last);
+                            }
                         }
                         catch (e) {
                             console.log(e);
@@ -1142,8 +1147,8 @@
             },
             series: [{
                 type: 'area',
-                name: 'test',
-                data: [1, 2, 3, 4, 2]
+                name: '',
+                data: []
             }]
         });
         return chart;
@@ -1349,7 +1354,7 @@
         this.remove = function(name) {
             delete this.charts[name];
         };
-        
+
         // Call prototype-function request
         // which requests new live data from server
         this.request(callback);
