@@ -124,6 +124,7 @@
             },
             round: 1,
             prefix: 'sign',
+            typeFormula: 'request',
             alert: function(p, pp) {}
         },
         '±B/24h': {
@@ -152,6 +153,7 @@
                 };
                 request.send();
             },
+            typeFormula: 'request',
             round: 1,
             prefix: 'sign'
         }
@@ -973,19 +975,25 @@
          * Calculates cell using formula
          */
         this.calc = function(cb) {
-            if (this.col) {
-                this.value = this.position[this.col];
-                cb();
-            }
-            if (this.formula !== null) {
-                if (typeof this.formula === 'function') {
-                    setTimeout(this.formula(this, this.position, cb), Math.random() * 7000 + 8000);
-                }
-                else if (this.formula.type === '*') {
-                    this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+                var self = this;
+                if (this.col) {
+                    this.value = this.position[this.col];
                     cb();
                 }
-            }
+                if (this.formula !== null) {
+                    if (typeof this.formula === 'function') {
+                        if (this.typeFormula === 'request') {
+                            setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * 7000 + 8000));
+                        }
+                        else {
+                            this.formula(this, this.position, cb)
+                        }
+                    }
+                    else if (this.formula.type === '*') {
+                        this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
+                        cb();
+                    }
+                }
         };
         /**
          * Formats a Cell Value to readable format
