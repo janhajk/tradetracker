@@ -979,7 +979,7 @@
             }
             if (this.formula !== null) {
                 if (typeof this.formula === 'function') {
-                    this.formula(this, this.position, cb);
+                    setTimeout(this.formula(this, this.position, cb), Math.random() * 7000 + 8000);
                 }
                 else if (this.formula.type === '*') {
                     this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
