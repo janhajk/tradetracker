@@ -1121,6 +1121,9 @@
             title: {
                 text: ''
             },
+            xAxis: {
+                type: 'datetime'
+            },
             type: 'line',
             plotOptions: {
                 area: {
