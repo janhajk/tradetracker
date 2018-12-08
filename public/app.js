@@ -702,6 +702,7 @@
         this.amount = Number(data.amount);
         this.open = Number(data.open);
         this.cid = Number(data.cid);
+        this.rateCid = this.cid;
         this.aid = Number(data.aid);
         this.type = Number(data.tid);
         this.rates = data.rates;
@@ -849,17 +850,18 @@
             }
 
             if (this.showDetails) {
+                let cid = getCid(self.aid, self.cid);
                 // Start request
                 var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
+                request.open('GET', '/asset/' + this.aid + '/historical/' + cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
                 request.onload = function() {
                     if (request.status >= 200 && request.status < 400) {
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
                             var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
-                            for (let i=0; i < data.length; i++) {
-                                lineChart.series[0].addPoint([data[i].timestamp, data[i].last], false, false, false);
+                            for (let i = 0; i < data.length; i++) {
+                                lineChart.series[0].addPoint([new Date(data[i].timestamp*1000), data[i].last], false, false, false);
                             }
                             lineChart.redraw();
                         }
@@ -1221,6 +1223,32 @@
             // even not for same cid
             if (rates[i].aid === aid && rates[i].last !== undefined) {
                 return rates[i];
+            }
+        }
+        return false;
+    };
+
+
+
+    /**
+     * get available cid for rate
+     * returns alternative cid, if whished cid not available
+     *
+     * @param  {Number} aid Asset-ID
+     * @param  {Number} cid Connector-ID
+     * @return {Number} cid
+     */
+    var getCid = function(aid, cid) {
+        var best = rates[aid + '_' + cid];
+        if (best !== undefined && best.last !== undefined) {
+            return best.cid;
+        }
+        for (let i in rates) {
+            // if not exact rate found
+            // try to get any rate for aid
+            // even not for same cid
+            if (rates[i].aid === aid && rates[i].last !== undefined) {
+                return rates[i].cid;
             }
         }
         return false;
