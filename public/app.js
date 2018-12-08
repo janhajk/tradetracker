@@ -982,12 +982,12 @@
                 }
                 if (this.formula !== null) {
                     if (typeof this.formula === 'function') {
-                        if (this.typeFormula === 'request') {
-                            setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * (30000-6000) + 6000));
-                        }
-                        else {
+                        // if (this.typeFormula === 'request') {
+                        //     setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * (30000-6000) + 6000));
+                        // }
+                        // else {
                             this.formula(this, this.position, cb)
-                        }
+                        // }
                     }
                     else if (this.formula.type === '*') {
                         this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
