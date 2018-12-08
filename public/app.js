@@ -983,7 +983,7 @@
                 if (this.formula !== null) {
                     if (typeof this.formula === 'function') {
                         if (this.typeFormula === 'request') {
-                            setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * 7000 + 8000));
+                            setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * (30000-6000) + 6000));
                         }
                         else {
                             this.formula(this, this.position, cb)
