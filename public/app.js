@@ -857,10 +857,11 @@
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
-                            var lineChart = emptyLineChart(self.trDetail, 600, 200);
+                            var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
                             for (let i; i < data.length; i++) {
-                                lineChart.series[0].addPoint(data[i].timestamp, data[i].last);
+                                lineChart.series[0].addPoint(data[i].timestamp, data[i].last, false, false, false);
                             }
+                            lineChart.redraw();
                         }
                         catch (e) {
                             console.log(e);
