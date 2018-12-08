@@ -866,7 +866,7 @@
                             console.log(data);
                             var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
                             for (let i = 0; i < data.length; i++) {
-                                lineChart.series[0].addPoint([new Date(data[i].timestamp*1000), data[i].last], false, false, false);
+                                lineChart.series[0].addPoint([data[i].timestamp*1000, data[i].last], false, false, false);
                             }
                             lineChart.redraw();
                             self.lineChart = lineChart;
