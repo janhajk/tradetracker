@@ -707,6 +707,7 @@
         this.type = Number(data.tid);
         this.rates = data.rates;
         this.last = Number(data.rates[0].last);
+        this.lineChart = false;
         this.name = {
             market: data.name,
             assetname: data.assetname,
@@ -842,6 +843,8 @@
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
+                this.lineChart = false;
+                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild);
             }
             // Toggle visibility => show
             else {
@@ -864,6 +867,7 @@
                                 lineChart.series[0].addPoint([new Date(data[i].timestamp*1000), data[i].last], false, false, false);
                             }
                             lineChart.redraw();
+                            self.lineChart = lineChart;
                         }
                         catch (e) {
                             console.log(e);
