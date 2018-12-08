@@ -60,7 +60,6 @@ var basic = function(app, connection) {
         var cid = req.params.cid;
         var from = req.params.from;
         var to = req.params.to;
-        var rates = require(__dirname + '/lib/rates.js');
         rates.historicalRange(aid, cid, from, to, connection, function(e, hist) {
             utils.log('retrieved historical value for range' + from + ' to ' + to);
             res.send(e ? e : hist);
