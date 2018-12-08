@@ -858,7 +858,7 @@
                             var data = JSON.parse(request.responseText);
                             console.log(data);
                             var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
-                            for (let i; i < data.length; i++) {
+                            for (let i=0; i < data.length; i++) {
                                 lineChart.series[0].addPoint([data[i].timestamp, data[i].last], false, false, false);
                             }
                             lineChart.redraw();
