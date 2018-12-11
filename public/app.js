@@ -702,10 +702,12 @@
         this.amount = Number(data.amount);
         this.open = Number(data.open);
         this.cid = Number(data.cid);
+        this.rateCid = this.cid;
         this.aid = Number(data.aid);
         this.type = Number(data.tid);
         this.rates = data.rates;
         this.last = Number(data.rates[0].last);
+        this.lineChart = false;
         this.name = {
             market: data.name,
             assetname: data.assetname,
@@ -826,6 +828,7 @@
          * 
          */
         this.detailsToggle = function() {
+            var self = this; 
             // First Time create DOM-Row (tr) and append to Position row
             if (this.showDetails === -1) {
                 var tr = document.createElement('tr');
@@ -840,6 +843,8 @@
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
+                this.lineChart = false; 
+                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild); 
             }
             // Toggle visibility => show
             else {
@@ -848,14 +853,21 @@
             }
 
             if (this.showDetails) {
+                let cid = getCid(self.aid, self.cid); 
                 // Start request
                 var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
+                request.open('GET', '/asset/' + this.aid + '/historical/' + cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true); 
                 request.onload = function() {
                     if (request.status >= 200 && request.status < 400) {
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
+                            var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
+                            for (let i = 0; i < data.length; i++) {
+                                lineChart.series[0].addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
+                            }
+                            lineChart.redraw();
+                            self.lineChart = lineChart;
                         }
                         catch (e) {
                             console.log(e);
@@ -1225,30 +1237,6 @@
         }
         return false;
     };
-
-
-
-    /**
-     * @param  {Number} aid Asset-ID
-     * @param  {Number} cid Connector-ID
-     * @return {Number} The latest rate; 0 if no rate found
-     */
-    var getLatestRate = function(aid, cid) {
-        var best = rates[aid + '_' + cid];
-        if (best !== undefined && best.last !== undefined) {
-            return best;
-        }
-        for (let i in rates) {
-            // if not exact rate found
-            // try to get any rate for aid
-            // even not for same cid
-            if (rates[i].aid === aid && rates[i].last !== undefined) {
-                return rates[i];
-            }
-        }
-        return false;
-    };
-
 
 
     /**
