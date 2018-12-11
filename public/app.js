@@ -862,7 +862,7 @@
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
-                            var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
+                            var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
                             for (let i = 0; i < data.length; i++) {
                                 lineChart.series[0].addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
                             }
@@ -1115,7 +1115,7 @@
      */
     var emptyLineChart = function(parent, w, h) {
         var div = document.createElement('div');
-        div.style.width = w + 'px';
+        div.style.width = (typeof w === 'number')?w + 'px':w;
         div.style.height = h + 'px';
         parent.appendChild(div);
         var chart = new Highcharts.Chart(div, {
