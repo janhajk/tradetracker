@@ -124,7 +124,6 @@
             },
             round: 1,
             prefix: 'sign',
-            typeFormula: 'request',
             alert: function(p, pp) {}
         },
         '±B/24h': {
@@ -153,7 +152,6 @@
                 };
                 request.send();
             },
-            typeFormula: 'request',
             round: 1,
             prefix: 'sign'
         }
@@ -704,12 +702,10 @@
         this.amount = Number(data.amount);
         this.open = Number(data.open);
         this.cid = Number(data.cid);
-        this.rateCid = this.cid;
         this.aid = Number(data.aid);
         this.type = Number(data.tid);
         this.rates = data.rates;
         this.last = Number(data.rates[0].last);
-        this.lineChart = false;
         this.name = {
             market: data.name,
             assetname: data.assetname,
@@ -830,7 +826,6 @@
          * 
          */
         this.detailsToggle = function() {
-            var self = this;
             // First Time create DOM-Row (tr) and append to Position row
             if (this.showDetails === -1) {
                 var tr = document.createElement('tr');
@@ -845,8 +840,6 @@
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
-                this.lineChart = false;
-                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild);
             }
             // Toggle visibility => show
             else {
@@ -855,21 +848,14 @@
             }
 
             if (this.showDetails) {
-                let cid = getCid(self.aid, self.cid);
                 // Start request
                 var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + this.aid + '/historical/' + cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
+                request.open('GET', '/asset/' + this.aid + '/historical/' + this.cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true);
                 request.onload = function() {
                     if (request.status >= 200 && request.status < 400) {
                         try {
                             var data = JSON.parse(request.responseText);
                             console.log(data);
-                            var lineChart = emptyLineChart(self.trDetail.firstChild, 600, 200);
-                            for (let i = 0; i < data.length; i++) {
-                                lineChart.series[0].addPoint([data[i].timestamp*1000, data[i].last], false, false, false);
-                            }
-                            lineChart.redraw();
-                            self.lineChart = lineChart;
                         }
                         catch (e) {
                             console.log(e);
@@ -975,25 +961,19 @@
          * Calculates cell using formula
          */
         this.calc = function(cb) {
-                var self = this;
-                if (this.col) {
-                    this.value = this.position[this.col];
+            if (this.col) {
+                this.value = this.position[this.col];
+                cb();
+            }
+            if (this.formula !== null) {
+                if (typeof this.formula === 'function') {
+                    this.formula(this, this.position, cb);
+                }
+                else if (this.formula.type === '*') {
+                    this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
                     cb();
                 }
-                if (this.formula !== null) {
-                    if (typeof this.formula === 'function') {
-                        // if (this.typeFormula === 'request') {
-                        //     setTimeout(function() { self.formula(self, self.position, cb) }, Math.round(Math.random() * (30000-6000) + 6000));
-                        // }
-                        // else {
-                            this.formula(this, this.position, cb)
-                        // }
-                    }
-                    else if (this.formula.type === '*') {
-                        this.value = this.position.row[this.formula.x].value * this.position.row[this.formula.y].value;
-                        cb();
-                    }
-                }
+            }
         };
         /**
          * Formats a Cell Value to readable format
@@ -1163,6 +1143,9 @@
                     threshold: null
                 }
             },
+            legend: {
+                enabled: false
+            },
             series: [{
                 type: 'area',
                 name: '',
@@ -1223,6 +1206,29 @@
     /**
      * Get latest Rate-Object for Asset for specific connector
      *
+     * @param  {Number} aid Asset-ID
+     * @param  {Number} cid Connector-ID
+     * @return {Number} The latest rate; 0 if no rate found
+     */
+    var getLatestRate = function(aid, cid) {
+        var best = rates[aid + '_' + cid];
+        if (best !== undefined && best.last !== undefined) {
+            return best;
+        }
+        for (let i in rates) {
+            // if not exact rate found
+            // try to get any rate for aid
+            // even not for same cid
+            if (rates[i].aid === aid && rates[i].last !== undefined) {
+                return rates[i];
+            }
+        }
+        return false;
+    };
+
+
+
+    /**
      * @param  {Number} aid Asset-ID
      * @param  {Number} cid Connector-ID
      * @return {Number} The latest rate; 0 if no rate found
@@ -1523,6 +1529,54 @@
                 newNumber = newNumber.slice(0, -1);
             }
         }
+        // if '1234.'
+        if (newNumber.slice(-1) === '.') {
+            newNumber = newNumber.slice(0, -1);
+        }
+        return newNumber;
+    };
+
+    /**
+     * Check if an image exists
+     * @param {String} image_uri
+     * @param {Function} cb callback()
+     */
+    var imageExists = function(image_uri, td, cb) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', image_uri, false);
+        http.onload = function() {
+            cb(http.status != 404, td);
+        };
+        http.send();
+    };
+
+    /**
+     * PHP in_array() equivalent
+     */
+    var inArray = function(needle, haystack) {
+        var length = haystack.length;
+        for (let i = 0; i < length; i++) {
+            if (haystack[i] == needle) return true;
+        }
+        return false;
+    };
+
+    /**
+     * Unique color for string
+     */
+    var stringToColour = function(str) {
+        var hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        var colour = '#';
+        for (let i = 0; i < 3; i++) {
+            var value = (hash >> (i * 8)) & 0xFF;
+            colour += ('00' + value.toString(16)).substr(-2);
+        }
+        return colour;
+    };
+
         // if '1234.'
         if (newNumber.slice(-1) === '.') {
             newNumber = newNumber.slice(0, -1);
