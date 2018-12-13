@@ -35,22 +35,22 @@
     var cols = {
         'btc': {
             hidden: true,
-            formula: function(p, pp, cb) {
-                p.value = btc;
+            formula: function(cell, position, cb) {
+                cell.value = btc;
                 cb();
             }
         },
         'market': {
-            formula: function(p, pp, cb) {
-                p.value = pp.name.market;
+            formula: function(cell, position, cb) {
+                cell.value = position.name.market;
                 cb();
             },
             image: { folder: 'markets', filetype: 'png' },
             align: 'center'
         },
         'asset': {
-            formula: function(p, pp, cb) {
-                p.value = pp.name.assetname;
+            formula: function(cell, position, cb) {
+                cell.value = position.name.assetname;
                 cb();
             },
             image: { folder: 'coins/32x32', filetype: 'png' },
@@ -62,8 +62,8 @@
             align: 'right'
         },
         'open': {
-            formula: function(p, pp, cb) {
-                p.value = pp.stats.open.rate;
+            formula: function(cell, position, cb) {
+                cell.value = position.stats.open.rate;
                 cb();
             },
             class: 'hidden-xs hidden-sm',
@@ -82,31 +82,31 @@
             }
         },
         'totBtc': {
-            formula: function(p, pp, cb) {
-                p.value = pp.stats.totals.btc;
+            formula: function(cell, position, cb) {
+                cell.value = position.stats.totals.btc;
                 cb();
             },
             round: 2,
             sort: 'desc'
         },
         'totUsd': {
-            formula: function(p, pp, cb) {
-                p.value = pp.stats.totals.usd;
+            formula: function(cell, position, cb) {
+                cell.value = position.stats.totals.usd;
                 cb();
             },
             round: 0
         },
         '±B/1h': {
-            formula: function(p, pp, cb) {
-                assetGetChange(3600, p, pp, cb);
+            formula: function(cell, position, cb) {
+                assetGetChange(3600, cell, position, cb);
             },
             round: 1,
             prefix: 'sign',
             alert: function(p, pp) {}
         },
         '±B/24h': {
-            formula: function(p, pp, cb) {
-                assetGetChange(86400, p, pp, cb);
+            formula: function(cell, position, cb) {
+                assetGetChange(86400, cell, position, cb);
             },
             round: 1,
             prefix: 'sign'
@@ -784,7 +784,38 @@
          * 
          */
         this.detailsToggle = function() {
-            var self = this; 
+            var self = this;
+            var loadHistory = function(from, to, aid, cid) {
+                // Start request
+                var request = new XMLHttpRequest();
+                request.open('GET', '/asset/' + aid + '/historical/' + cid + '/' + (Date.now() - 1000 * 86400 * from) + '/' + to, true);
+                request.onload = function() {
+                    if (request.status >= 200 && request.status < 400) {
+                        try {
+                            var data = JSON.parse(request.responseText);
+                            var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
+                            for (let i = 0; i < data.length; i++) {
+                                // Add all points to chart
+                                lineChart.series[0].addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
+                            }
+                            lineChart.redraw();
+                            // Safe pointer to chart in object
+                            self.lineChart = lineChart;
+                        }
+                        catch (e) {
+                            console.log(e);
+                        }
+                    }
+                    else {
+                        console.log(request.status);
+                    }
+                };
+                request.onerror = function() {
+                    console.log('There was an error in xmlHttpRequest!');
+                };
+                request.send();
+            };
+            
             // First Time create DOM-Row (tr) and append to Position row
             if (this.showDetails === -1) {
                 var tr = document.createElement('tr');
@@ -793,61 +824,36 @@
                 tr.appendChild(td);
                 this.trDetail = tr;
                 this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
+                var buttonTypes = [ 7, 30, 365];
+                for (let i in buttonTypes) {
+                    let button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn btn-secondary btn-sm';
+                    button.innerHTML = buttonTypes[i];
+                    button.value = buttonTypes[i];
+                    button.onclick = function() {console.log(this.value);};
+                    self.trDetail.firstChild.appendChild(button);
+                };
                 this.showDetails = true;
             }
             // Toggle visibility => hide
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
-                this.lineChart = false; 
-                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild); 
+                this.lineChart = false;
+                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild);
             }
             // Toggle visibility => show
             else {
                 this.trDetail.style.display = 'table-row';
                 this.showDetails = true;
             }
-
+            
+            // Show Details
             if (this.showDetails) {
-                let cid = getCid(self.aid, self.cid); 
-                // Start request
-                var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + this.aid + '/historical/' + cid + '/' + (Date.now() - 1000 * 86400 * 7) + '/' + (Date.now()), true); 
-                request.onload = function() {
-                    if (request.status >= 200 && request.status < 400) {
-                        try {
-                            var data = JSON.parse(request.responseText);
-                            console.log(data);
-                            var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
-                            for (let i = 0; i < data.length; i++) {
-                                lineChart.series[0].addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
-                            }
-                            lineChart.redraw();
-                            self.lineChart = lineChart;
-                        }
-                        catch (e) {
-                            console.log(e);
-                        }
-                    }
-                    else {
-                        // Error
-                    }
-                };
-                request.onerror = function() {
-                    console.log('There was an error in xmlHttpRequest!');
-                };
-                request.send();
+                let cid = getCid(self.aid, self.cid);
+                loadHistory(7, (Date.now()), self.aid, cid);
             }
-            // var div = document.createElement('div');
-            // var btnClose = document.createElement('div');
-            // btnClose.innerHTML = 'close';
-            // btnClose.onclick = function() {
-            //     //
-            // };
-            // div.appendChild(btnClose);
-            // target.appendChild(div);
-            // postable.style.display = 'none';
-            // target.style.display = 'block';
         };
     };
 
