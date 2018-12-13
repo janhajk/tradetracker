@@ -98,29 +98,7 @@
         },
         '±B/1h': {
             formula: function(p, pp, cb) {
-                var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + pp.aid + '/historical/' + pp.cid + '/3600', true);
-                request.onload = function() {
-                    if (request.status >= 200 && request.status < 400) {
-                        try {
-                            var l = (JSON.parse(request.responseText)).v;
-                            pp.rates[0].last_1h = l;
-                            p.value = (l === undefined) ? 0 : (pp.last / l - 1) * 100;
-                            cb();
-                        }
-                        catch (e) {
-                            console.log(e);
-                            cb();
-                        }
-                    }
-                    else { // different status than 200-400
-                        cb();
-                    }
-                };
-                request.onerror = function() {
-                    console.log('There was an error in xmlHttpRequest!');
-                };
-                request.send();
+                assetGetChange(3600, p, pp, cb);
             },
             round: 1,
             prefix: 'sign',
@@ -128,29 +106,7 @@
         },
         '±B/24h': {
             formula: function(p, pp, cb) {
-                var request = new XMLHttpRequest();
-                request.open('GET', '/asset/' + pp.aid + '/historical/' + pp.cid + '/86400', true);
-                request.onload = function() {
-                    if (request.status >= 200 && request.status < 400) {
-                        try {
-                            var l = (JSON.parse(request.responseText)).v;
-                            pp.rates[0].last_24h = l;
-                            p.value = (l === undefined) ? 0 : (pp.last / l - 1) * 100;
-                            cb();
-                        }
-                        catch (e) {
-                            console.log(e);
-                            cb();
-                        }
-                    }
-                    else { // different status than 200-400
-                        cb();
-                    }
-                };
-                request.onerror = function() {
-                    console.log('There was an error in xmlHttpRequest!');
-                };
-                request.send();
+                assetGetChange(86400, p, pp, cb);
             },
             round: 1,
             prefix: 'sign'
@@ -1474,6 +1430,40 @@
         this.appendTo = function(parent) {
             parent.appendChild(this.dom);
         };
+    };
+    
+    
+    /**
+     * 
+     * Retrieves Asset %-Change over time
+     * 
+     * 
+     * 
+     * 
+     */
+    var assetGetChange = function(secondAgo, cell, position, cb) {
+        var request = new XMLHttpRequest();
+        request.open('GET', '/asset/' + position.aid + '/historical/' + position.cid + '/' + secondAgo, true);
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                try {
+                    var oldValue = (JSON.parse(request.responseText)).v;
+                    cell.value = (oldValue === undefined) ? 0 : (position.last / oldValue - 1) * 100;
+                    cb();
+                }
+                catch (e) {
+                    console.log(e);
+                    cb();
+                }
+            }
+            else { // different status than 200-400
+                cb();
+            }
+        };
+        request.onerror = function() {
+            console.log('There was an error in xmlHttpRequest!');
+        };
+        request.send();
     };
 
 
