@@ -837,6 +837,7 @@
                     button.innerHTML = buttonTypes[i];
                     button.value = buttonTypes[i];
                     button.onclick = function() {
+                        self.lineChart.series[0].remove();
                         let cid = getCid(self.aid, self.cid);
                         loadHistory(this.value, Date.now(), self.aid, cid)
                     };
