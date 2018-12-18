@@ -829,12 +829,12 @@
                 tr.appendChild(td);
                 this.trDetail = tr;
                 this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
-                var buttonTypes = [7, 30, 365, 99999];
+                var buttonTypes = { week: 7, month: 30, year: 365, all: 3650 };
                 for (let i in buttonTypes) {
                     let button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'btn btn-secondary btn-sm';
-                    button.innerHTML = buttonTypes[i];
+                    button.innerHTML = i;
                     button.value = buttonTypes[i];
                     button.onclick = function() {
                         self.lineChart.series[0].remove();
