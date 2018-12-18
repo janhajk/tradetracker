@@ -805,6 +805,7 @@
                                 // Add all points to chart
                                 series.addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
                             }
+                            // Remove former series and replace
                             self.lineChart.series[0].remove();
                             self.lineChart.redraw();
                         }
@@ -849,7 +850,6 @@
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
-                this.lineChart.series[0].remove();
             }
             // Toggle visibility => show
             else {
