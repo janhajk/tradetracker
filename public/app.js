@@ -793,7 +793,7 @@
                     if (request.status >= 200 && request.status < 400) {
                         try {
                             var data = JSON.parse(request.responseText);
-                            if (!this.lineChart) {
+                            if (!self.lineChart) {
                                 var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
                             }
                             var series = lineChart.addSeries({
