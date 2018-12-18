@@ -794,9 +794,9 @@
                         try {
                             var data = JSON.parse(request.responseText);
                             if (!self.lineChart) {
-                                var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
+                                self.lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
                             }
-                            var series = lineChart.addSeries({
+                            var series = self.lineChart.addSeries({
                                 type: 'area',
                                 name: '',
                                 data: []
@@ -805,9 +805,7 @@
                                 // Add all points to chart
                                 series.addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
                             }
-                            lineChart.redraw();
-                            // Safe pointer to chart in object
-                            self.lineChart = lineChart;
+                            self.lineChart.redraw();
                         }
                         catch (e) {
                             console.log(e);
