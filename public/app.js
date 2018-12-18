@@ -796,6 +796,9 @@
                             if (!self.lineChart) {
                                 self.lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
                             }
+                            while(self.lineChart.series.length) {
+                                self.lineChart.series[0].remove();
+                            }
                             var series = self.lineChart.addSeries({
                                 type: 'area',
                                 name: '',
@@ -837,7 +840,6 @@
                     button.innerHTML = i;
                     button.value = buttonTypes[i];
                     button.onclick = function() {
-                        self.lineChart.series[0].remove();
                         let cid = getCid(self.aid, self.cid);
                         loadHistory(this.value, Date.now(), self.aid, cid)
                     };
