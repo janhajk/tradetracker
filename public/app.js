@@ -793,10 +793,17 @@
                     if (request.status >= 200 && request.status < 400) {
                         try {
                             var data = JSON.parse(request.responseText);
-                            var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
+                            if (!this.lineChart) {
+                                var lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
+                            }
+                            var series = lineChart.addSeries({
+                                type: 'area',
+                                name: '',
+                                data: []
+                            });
                             for (let i = 0; i < data.length; i++) {
                                 // Add all points to chart
-                                lineChart.series[0].addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
+                                series.addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
                             }
                             lineChart.redraw();
                             // Safe pointer to chart in object
@@ -815,7 +822,7 @@
                 };
                 request.send();
             };
-            
+
             // First Time create DOM-Row (tr) and append to Position row
             if (this.showDetails === -1) {
                 var tr = document.createElement('tr');
@@ -824,14 +831,17 @@
                 tr.appendChild(td);
                 this.trDetail = tr;
                 this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
-                var buttonTypes = [ 7, 30, 365];
+                var buttonTypes = [7, 30, 365];
                 for (let i in buttonTypes) {
                     let button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'btn btn-secondary btn-sm';
                     button.innerHTML = buttonTypes[i];
                     button.value = buttonTypes[i];
-                    button.onclick = function() {console.log(this.value);};
+                    button.onclick = function() {
+                        let cid = getCid(self.aid, self.cid);
+                        loadHistory(this.value, Date.now(), self.aid, cid)
+                    };
                     self.trDetail.firstChild.appendChild(button);
                 };
                 this.showDetails = true;
@@ -840,19 +850,18 @@
             else if (this.showDetails) {
                 this.trDetail.style.display = 'none';
                 this.showDetails = false;
-                this.lineChart = false;
-                this.trDetail.firstChild.removeChild(this.trDetail.firstChild.firstChild);
+                this.lineChart.series[0].remove();
             }
             // Toggle visibility => show
             else {
                 this.trDetail.style.display = 'table-row';
                 this.showDetails = true;
             }
-            
+
             // Show Details
             if (this.showDetails) {
                 let cid = getCid(self.aid, self.cid);
-                loadHistory(7, (Date.now()), self.aid, cid);
+                loadHistory(7, Date.now(), self.aid, cid);
             }
         };
     };
@@ -1119,12 +1128,7 @@
             },
             legend: {
                 enabled: false
-            },
-            series: [{
-                type: 'area',
-                name: '',
-                data: []
-            }]
+            }
         });
         return chart;
     };
