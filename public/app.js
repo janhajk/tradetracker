@@ -796,9 +796,6 @@
                             if (!self.lineChart) {
                                 self.lineChart = emptyLineChart(self.trDetail.firstChild, '100%', 200);
                             }
-                            while(self.lineChart.series.length) {
-                                self.lineChart.series[0].remove();
-                            }
                             var series = self.lineChart.addSeries({
                                 type: 'area',
                                 name: '',
@@ -808,6 +805,7 @@
                                 // Add all points to chart
                                 series.addPoint([data[i].timestamp * 1000, data[i].last], false, false, false);
                             }
+                            self.lineChart.series[0].remove();
                             self.lineChart.redraw();
                         }
                         catch (e) {
@@ -1129,7 +1127,8 @@
             },
             legend: {
                 enabled: false
-            }
+            },
+            series: [{}]
         });
         return chart;
     };
