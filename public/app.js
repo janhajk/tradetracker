@@ -829,7 +829,7 @@
                 tr.appendChild(td);
                 this.trDetail = tr;
                 this.tr.parentNode.insertBefore(tr, this.tr.nextSibling);
-                var buttonTypes = [7, 30, 365];
+                var buttonTypes = [7, 30, 365, 99999];
                 for (let i in buttonTypes) {
                     let button = document.createElement('button');
                     button.type = 'button';
