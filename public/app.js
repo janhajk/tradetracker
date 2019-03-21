@@ -298,6 +298,7 @@
         // Create Navigation Objects
         bar = new Countdown();
         btnLogin = new Login();
+        btnLogin.show();
         labels['btc'] = new NavBubble('Tot BTC:', 'number', document.getElementById('dashline'), 'green');
         labels['usd'] = new NavBubble('Tot USD:', 'number', document.getElementById('dashline'), 'blue');
 
