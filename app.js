@@ -3,8 +3,9 @@ var config = require(__dirname + '/config.js');
 // Utils
 var utils = require(__dirname + '/utils.js');
 
-// DEV-Mode
-var dev = process.argv[2];
+// ARGV
+const PORT = process.argv[2];
+const dev = process.argv[3];
 if (dev !== undefined && dev) {
     config.dev = true;
     utils.log('running in dev mode');
@@ -66,6 +67,6 @@ routing.basic(app, connection);
 routing.io(io, connection);
 
 
-http.listen(8080, function() {
-    utils.log('App runnung on port ' + 8080);
+http.listen(PORT, function() {
+    utils.log('App runnung on port ' + PORT);
 });
