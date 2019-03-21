@@ -326,6 +326,7 @@
             if (request.status >= 200 && request.status < 400) {
                 try {
                     var data = JSON.parse(request.responseText);
+                    document.getElementById('dashline').removeChild(btnLogin.div);
                     btc = data.BTC.bitstamp.last;
                     ltc = data.LTC.poloniex.last;
                     for (let i in data.positions) {
