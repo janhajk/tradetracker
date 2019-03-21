@@ -125,20 +125,35 @@
      * 
      */
     var Login = function() {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.style.clear = 'both';
-        btn.style.float = 'right';
-        btn.className = 'btn btn-xs';
-        btn.innerHTML = 'Login';
-        btn.style.display = 'none';
-        btn.style.display = 'none';
-        btn.onclick = function() {
-            window.location = '/auth/google';
-        };
-        this.btn = btn;
-        document.getElementById('dashline').appendChild(btn);
-
+        var form = document.createElement('form');
+        form.action = "/login";
+        form.method = "POST";
+        var username = document.createElement('input');
+        username.type = "text";
+        username.name = "username";
+        var password = document.createElement('input');
+        password.type = "password";
+        password.name = "password";
+        var submit = document.createElement('input');
+        password.type = "submit";
+        password.value = "Login";
+        form.appendChild(username);
+        form.appendChild(password);
+        form.appendChild(submit);
+        // var btn = document.createElement('button');
+        // btn.type = 'button';
+        // btn.style.clear = 'both';
+        // btn.style.float = 'right';
+        // btn.className = 'btn btn-xs';
+        // btn.innerHTML = 'Login';
+        // btn.style.display = 'none';
+        // btn.style.display = 'none';
+        // btn.onclick = function() {
+        //     window.location = '/login';
+        // };
+        // this.btn = btn;
+        document.getElementById('dashline').appendChild(form);
+        
         this.show = function() {
             this.btn.style.display = 'block';
         };
