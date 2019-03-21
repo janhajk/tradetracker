@@ -119,12 +119,13 @@
 
     /**
      * 
-     * Login Button in Navbar
+     * Login Form in Navbar
      * 
      * 
      * 
      */
     var Login = function() {
+        var div = document.createElement('div');
         var form = document.createElement('form');
         form.action = "/login";
         form.method = "POST";
@@ -139,26 +140,19 @@
         submit.value = "Login";
         form.appendChild(username);
         form.appendChild(password);
+        form.appendChild(username);
+        form.appendChild(password);
         form.appendChild(submit);
-        // var btn = document.createElement('button');
-        // btn.type = 'button';
-        // btn.style.clear = 'both';
-        // btn.style.float = 'right';
-        // btn.className = 'btn btn-xs';
-        // btn.innerHTML = 'Login';
-        // btn.style.display = 'none';
-        // btn.style.display = 'none';
-        // btn.onclick = function() {
-        //     window.location = '/login';
-        // };
-        // this.btn = btn;
-        document.getElementById('dashline').appendChild(form);
-        
+        div.appendChild(form);
+        document.getElementById('dashline').appendChild(div);
+        this.div = div;
+        div.style.display = 'none';
+
         this.show = function() {
-            this.btn.style.display = 'block';
+            this.div.style.display = 'block';
         };
         this.hide = function() {
-            this.btn.style.display = 'none';
+            this.div.style.display = 'none';
         };
     };
 
