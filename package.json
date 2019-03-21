@@ -16,7 +16,7 @@
       "request": "2.x.x",
       "passport": "0.3.x",
       "passport-local": "0.2.x",
-      "cookie-parser": "1.4.x",
+      "cookie-parser": "1.x.x",
       "express-session": "1.15.x",
       "md5": "2.2.x",
       "node-cache": "4.x.x",
