@@ -76,11 +76,6 @@ var routing = function(app) {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.get('/login',
-        function(req, res) {
-            res.render('login');
-        });
-
     app.post('/login',
         passport.authenticate('local', { failureRedirect: '/login' }),
         function(req, res) {
