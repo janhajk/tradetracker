@@ -135,8 +135,8 @@
         password.type = "password";
         password.name = "password";
         var submit = document.createElement('input');
-        password.type = "submit";
-        password.value = "Login";
+        submit.type = "submit";
+        submit.value = "Login";
         form.appendChild(username);
         form.appendChild(password);
         form.appendChild(submit);
