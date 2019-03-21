@@ -320,9 +320,9 @@
             if (request.status >= 200 && request.status < 400) {
                 try {
                     var data = JSON.parse(request.responseText);
-                    document.getElementById('dashline').removeChild(btnLogin.div);
                     btc = data.BTC.bitstamp.last;
                     ltc = data.LTC.poloniex.last;
+                    document.getElementById('dashline').removeChild(btnLogin.div);
                     for (let i in data.positions) {
                         let position = new Position(data.positions[i]);
                         rates[data.positions[i].aid + '_' + data.positions[i].cid] = {
