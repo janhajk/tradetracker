@@ -16,6 +16,7 @@
       "request": "2.x.x",
       "passport": "0.3.x",
       "passport-local": "1.x.x",
+      "'connect-ensure-login": "0.x.x",
       "cookie-parser": "1.4.x",
       "express-session": "1.15.x",
       "md5": "2.2.x",
