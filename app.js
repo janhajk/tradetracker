@@ -66,6 +66,6 @@ routing.basic(app, connection);
 routing.io(io, connection);
 
 
-http.listen(config.port, function() {
+http.listen(8080, function() {
     utils.log('App runnung on port ' + 8080);
 });
