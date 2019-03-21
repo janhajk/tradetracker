@@ -1,5 +1,9 @@
 FROM node:8
 
+ENV USERNAME="admin" \
+    PASSWORD="9B*53P5E&SZK"
+
+
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -16,4 +20,4 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD node app.js 8080 1
