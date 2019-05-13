@@ -1,17 +1,18 @@
 # V1.0.1
-FROM node:8
+FROM node:latest
 
 ENV USERNAME="admin" \
-    PASSWORD="9B*53P5E&SZK"
+    PASSWORD="9B*53P5E&SZK" \
+    REP="https://github.com/janhajk/tradetracker.git"
 
+RUN apt-get update && \
+apt-get install -y git
 
 # Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+RUN git clone $REP /usr/src/app
+
 
 RUN npm install
 # If you are building your code for production

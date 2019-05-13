@@ -99,6 +99,11 @@ var basic = function(app, connection) {
             res.send('not authorized!');
         }
     });
+
+    app.get('/ping', auth.ensureAuthenticated, function(req, res) {
+        res.send('ok');
+
+    });
 };
 exports.basic = basic;
 
