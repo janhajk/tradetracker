@@ -1,4 +1,4 @@
-# V1.0.2
+# V2.0.0
 FROM node:latest
 
 ENV USERNAME="admin" \

@@ -1,3 +1,4 @@
+const version = '2.0.0';
 // User Config File
 var config = require(__dirname + '/config.js');
 // Utils
@@ -69,4 +70,5 @@ routing.io(io, connection);
 
 http.listen(PORT, function() {
     utils.log('App runnung on port ' + PORT);
+    console.log('App Version: ' + version);
 });
