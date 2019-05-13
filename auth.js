@@ -1,7 +1,15 @@
 // User Config File
-var config = require(__dirname + '/config.js');
 
 var utils = require(__dirname + '/utils.js');
+
+
+const config = {
+  users: [{
+    id: process.env.UID,
+    username: process.env.USER,
+    password: process.env.PSW
+  }]
+};
 
 
 var passport = require('passport');
@@ -14,7 +22,8 @@ var findById = function(id, cb) {
     var idx = id - 1;
     if (config.users[idx]) {
       cb(null, config.users[idx]);
-    } else {
+    }
+    else {
       cb(new Error('User ' + id + ' does not exist'));
     }
   });
@@ -40,14 +49,14 @@ var findByUsername = function(username, cb) {
 // that the password is correct and then invoke `cb` with a user object, which
 // will be set at `req.user` in route handlers after authentication.
 passport.use(new Strategy(
-    function(username, password, cb) {
-        findByUsername(username, function(err, user) {
-            if (err) { return cb(err); }
-            if (!user) { return cb(null, false); }
-            if (user.password != password) { return cb(null, false); }
-            return cb(null, user);
-        });
-    }));
+  function(username, password, cb) {
+    findByUsername(username, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      if (user.password != password) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
 
 
 // Configure Passport authenticated session persistence.
@@ -58,14 +67,14 @@ passport.use(new Strategy(
 // serializing, and querying the user record by ID from the database when
 // deserializing.
 passport.serializeUser(function(user, cb) {
-    cb(null, user.id);
+  cb(null, user.id);
 });
 
 passport.deserializeUser(function(id, cb) {
-    findById(id, function(err, user) {
-        if (err) { return cb(err); }
-        cb(null, user);
-    });
+  findById(id, function(err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
 });
 
 
@@ -73,19 +82,19 @@ var ensureAuthenticated = require('connect-ensure-login').ensureLoggedIn();
 exports.ensureAuthenticated = ensureAuthenticated;
 
 var routing = function(app) {
-    app.use(passport.initialize());
-    app.use(passport.session());
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-    app.post('/login',
-        passport.authenticate('local', { failureRedirect: '/login' }),
-        function(req, res) {
-            res.redirect('/');
-        });
+  app.post('/login',
+    passport.authenticate('local', { failureRedirect: '/login' }),
+    function(req, res) {
+      res.redirect('/');
+    });
 
-    app.get('/logout',
-        function(req, res) {
-            req.logout();
-            res.redirect('/login');
-        });
+  app.get('/logout',
+    function(req, res) {
+      req.logout();
+      res.redirect('/login');
+    });
 };
 exports.routing = routing;

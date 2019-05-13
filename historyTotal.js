@@ -1,24 +1,20 @@
 
 // User Config File
-var config = require(__dirname + '/config.js');
 var utils  = require(__dirname + '/utils.js');
 
 var pos = require(__dirname + '/lib/positions.js');
 
-var dev = Number(process.argv[2]); // 0=Normal, 1=devmode, 2=dev&non-write-mode
-if (dev !== undefined && dev) {
-    config.dev = true;
-    utils.log('running in dev mode');
-}
+const dev = process.env.LOG;
+
 
 // Database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host: config.sql.host,
-    port: config.sql.port,
-    user: config.sql.user,
-    password: config.sql.password,
-    database: config.sql.database 
+    host: process.env.SQLHOST,
+    port: process.env.SQLPORT,
+    user: process.env.SQLUSER,
+    password: process.env.SQLPSW,
+    database: process.env.SQLDB
 });
 
 var positions = [];

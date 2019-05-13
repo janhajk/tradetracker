@@ -1,6 +1,6 @@
 var fs       = require('fs');
 var path     = require('path');
-var config   = require(__dirname + '/config.js');
+const dev = process.env.LOG;
 
 
 var getContentFromMultipleUrls = function(urls, callback) {
@@ -54,7 +54,7 @@ var log = function l(log, type) {
        console.log('There was an error in your mysql');
        console.log(log);
    }
-   else if(config.dev) {
+   else if(dev) {
       console.log(log);
    }
    if (type === 'header') {

@@ -1,16 +1,10 @@
-const version = '2.0.0';
-// User Config File
-var config = require(__dirname + '/config.js');
+const version = '3.0.0';
 // Utils
 var utils = require(__dirname + '/utils.js');
 
 // ARGV
-const PORT = process.argv[2];
-const dev = process.argv[3];
-if (dev !== undefined && dev) {
-    config.dev = true;
-    utils.log('running in dev mode');
-}
+const PORT = process.env.APP_PORT;
+
 
 // Routing
 var routing = require(__dirname + '/routing.js');
@@ -20,19 +14,17 @@ var auth = require(__dirname + '/auth.js');
 
 // System
 var path = require('path');
-var fs = require('fs');
+
 
 // Database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host: config.sql.host,
-    port: config.sql.port,
-    user: config.sql.user,
-    password: config.sql.password,
-    database: config.sql.database
+    host: process.env.SQLHOST,
+    port: process.env.SQLPORT,
+    user: process.env.SQLUSER,
+    password: process.env.SQLPSW,
+    database: process.env.SQLDB
 });
-
-var rates = require(__dirname + '/lib/rates.js');
 
 // Express
 var express = require('express');
@@ -50,7 +42,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 app.use(session({
-    secret: config.cookiesecret,
+    secret: process.env.COOKIESECRET,
     proxy: true,
     resave: true,
     saveUninitialized: true

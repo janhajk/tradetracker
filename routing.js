@@ -1,6 +1,4 @@
 // User Config File
-var config = require(__dirname + '/config.js');
-
 var utils = require(__dirname + '/utils.js');
 var auth = require(__dirname + '/auth.js');
 var rates = require(__dirname + '/lib/rates.js');
@@ -89,7 +87,7 @@ var basic = function(app, connection) {
     });
 
     app.get('/cron/:secret', function(req, res) {
-        if (req.params.secret === config.cronSecret) {
+        if (req.params.secret === process.env.CRONSECRET) {
             rates.all('write', connection, function(e) {
                 if (e) res.send(e);
                 else res.send('All rates successfully updated!');
