@@ -61,6 +61,6 @@ routing.io(io, connection);
 
 
 http.listen(PORT, function() {
-    utils.log('App runnung on port ' + PORT);
+    console.log('App runnung on port ' + PORT);
     console.log('App Version: ' + version);
 });

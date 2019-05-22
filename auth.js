@@ -1,7 +1,3 @@
-// User Config File
-
-var utils = require(__dirname + '/utils.js');
-
 
 const config = {
   users: [{

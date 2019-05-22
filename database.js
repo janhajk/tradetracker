@@ -1,4 +1,4 @@
-const dev = process.env.LOG;
+var utils = require(__dirname + '/utils.js');
 
 /*
  * get one or all posoitions
@@ -9,14 +9,14 @@ var getPositions = function(pid, connection, callback) {
       pid = parseInt(pid, 10);
       q += ' WHERE pid = ' + pid;
    }
-   if (dev) console.log(q);
+   console.log(q);
    connection.query(q, function(err, rows) {
       if(err) {
-         if (dev) console.log(err);
+         utils.log(err, 'fatal');
          callback(err);
       }
       else {
-         if(dev) console.log(rows);
+         utils.log(rows);
          callback(null, rows);
       }
    });
