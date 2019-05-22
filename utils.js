@@ -1,34 +1,35 @@
-var fs       = require('fs');
-var path     = require('path');
-const dev = process.env.LOG;
+var fs = require('fs');
+var path = require('path');
+var dev = process.env.LOG === 'true' ? true : false;
+
 
 
 var getContentFromMultipleUrls = function(urls, callback) {
-    var request = require('request');
-    var contents = [];
-    var i;
-    var fileCount = urls.length;
-    var curFile = 0;
-    for(i = 0; i < fileCount; i++) {
-        request(urls[i].link, function(error, response, body) {
-            contents.push(body);
-            curFile++;
-            if(curFile++ === fileCount) {
-                var links = hosters.getAllLinksFromString(contents.join(' '));
-                callback(links);
-            }
-        });
-    }
+      var request = require('request');
+      var contents = [];
+      var i;
+      var fileCount = urls.length;
+      var curFile = 0;
+      for (i = 0; i < fileCount; i++) {
+            request(urls[i].link, function(error, response, body) {
+                  contents.push(body);
+                  curFile++;
+                  if (curFile++ === fileCount) {
+                        var links = hosters.getAllLinksFromString(contents.join(' '));
+                        callback(links);
+                  }
+            });
+      }
 };
 exports.getContentFromMultipleUrls = getContentFromMultipleUrls;
 
-var date2timestamp = function(y,m,d,h,m,s) {
-    return (new Date(y,m,d,h,m,s).getTime() / 1000);
+var date2timestamp = function(y, m, d, h, m, s) {
+      return (new Date(y, m, d, h, m, s).getTime() / 1000);
 };
 exports.date2timestamp = date2timestamp;
 
 var getFilesizeInBytes = function(filename) {
-    return (fs.statSync(filename)).size;
+      return (fs.statSync(filename)).size;
 };
 exports.getFilesizeInBytes = getFilesizeInBytes;
 
@@ -40,26 +41,26 @@ exports.getFilesizeInBytes = getFilesizeInBytes;
  */
 
 var log = function l(log, type) {
-   if (log === '-') log = '------------------------------------------------------------------------------------------';
-   else if (typeof log === 'string') {
-      log = new Date().toLocaleString() + ': ' + log;
-   }
-   if (type === 'header') {
-      l('-');
-   }
-   if (type === 'fatal') {
-      console.log(log);
-   }
-   if (type === 'mysql') {
-       console.log('There was an error in your mysql');
-       console.log(log);
-   }
-   else if(dev) {
-      console.log(log);
-   }
-   if (type === 'header') {
-      l('-');
-   }
+      if (log === '-') log = '------------------------------------------------------------------------------------------';
+      else if (typeof log === 'string') {
+            log = new Date().toLocaleString() + ': ' + log;
+      }
+      if (type === 'header') {
+            l('-');
+      }
+      if (type === 'fatal') {
+            console.log(log);
+      }
+      if (type === 'mysql') {
+            console.log('There was an error in your mysql');
+            console.log(log);
+      }
+      else if (dev) {
+            console.log(log);
+      }
+      if (type === 'header') {
+            l('-');
+      }
 };
 exports.log = log;
 
@@ -116,7 +117,7 @@ so therefore they (should) work on any platform.
 
 
 var flatten = function(arr) {
-  return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-  }, []);
+      return arr.reduce(function(flat, toFlatten) {
+            return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+      }, []);
 }
